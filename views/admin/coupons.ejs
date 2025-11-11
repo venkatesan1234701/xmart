@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coupon Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/theme.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+     .btn-success {
+    background: linear-gradient(135deg, #16a34a, #22c55e); /* Soft green gradient */
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
+  }
+
+  .btn-success:hover {
+    background: linear-gradient(135deg, #15803d, #16a34a); /* Darker on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(22, 163, 74, 0.4);
+  }
+
+  .btn-success:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(22, 163, 74, 0.3);
+  }
+
+  .btn-success:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(34, 197, 94, 0.4); /* Subtle focus ring */
+  }
+     .btn-custom {
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  /* ✏️ Edit Button */
+  .btn-edit {
+    color: #0d6efd;
+    border: 1px solid #0d6efd;
+    background-color: white;
+  }
+
+  .btn-edit:hover {
+    background-color: #0d6efd;
+    color: white;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn-edit:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(13, 110, 253, 0.2);
+  }
+
+  /* 🗑️ Delete Button */
+  .btn-delete {
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    background-color: white;
+  }
+
+  .btn-delete:hover {
+    background-color: #dc3545;
+    color: white;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn-delete:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(220, 53, 69, 0.2);
+  }
+  #openModalBtn {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: white;
+    font-weight: 600;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
+  }
+
+  #openModalBtn:hover {
+    background: linear-gradient(135deg, #15803d, #16a34a);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(22, 163, 74, 0.4);
+  }
+
+  #openModalBtn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(22, 163, 74, 0.3);
+  }
+</style>
+
+</head>
+
+<body class="bg-light">
+
+  <!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow fixed-top">
+  <div class="container-fluid px-4">
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center" href="">
+      <img src="../assets/images/logo/Xe mart.png" alt="Logo" height="40">
+    </a>
+
+    <!-- Toggle button (mobile) -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar"
+      aria-controls="topNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Nav Items -->
+    <div class="collapse navbar-collapse justify-content-end" id="topNavbar">
+      <ul class="navbar-nav align-items-center gap-3">
+
+        <!-- Dashboard -->
+        <li class="nav-item">
+          <a class="nav-link text-dark d-flex align-items-center gap-2" href="dashboard">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+              <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+              <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+            </svg>
+            Dashboard
+          </a>
+        </li>
+
+        <!-- Products -->
+        <li class="nav-item">
+          <a class="nav-link text-dark d-flex align-items-center gap-2" href="products">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M17 17h-11v-14h-2" />
+              <path d="M6 5l14 1l-1 7h-13" />
+            </svg>
+            Products
+          </a>
+        </li>
+
+        <!-- Categories -->
+        <li class="nav-item">
+          <a class="nav-link text-dark d-flex align-items-center gap-2" href="categories">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 6l11 0" />
+              <path d="M9 12l11 0" />
+              <path d="M9 18l11 0" />
+              <path d="M5 6l0 .01" />
+              <path d="M5 12l0 .01" />
+              <path d="M5 18l0 .01" />
+            </svg>
+            Categories
+          </a>
+        </li>
+
+        <!-- Customers -->
+        <li class="nav-item">
+          <a class="nav-link text-dark d-flex align-items-center gap-2" href="/admin/customers">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+              <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+            </svg>
+            Customers
+          </a>
+        </li>
+
+        <!-- Orders -->
+        <li class="nav-item">
+          <a class="nav-link text-dark d-flex align-items-center gap-2" href="/admin/orders">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+            </svg>
+            Orders
+          </a>
+        </li>
+
+        <!-- Coupons -->
+        <li class="nav-item">
+          <a class="nav-link text-dark d-flex align-items-center gap-2" href="/admin/coupons">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+            </svg>
+            Coupon
+          </a>
+        </li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/product-offer">
+    <span class="nav-link-icon">
+      <!-- Product Offer Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1v4" />
+        <path d="M6 7h12l-1 12H7L6 7z" />
+        <path d="M9 12h2v4H9zM13 12h2v4h-2z" />
+      </svg>
+    </span>
+    <span>Product Offer</span>
+  </a>
+</li>
+
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/category-offer">
+    <span class="nav-link-icon">
+      <!-- Category Offer Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M9 10h6v4H9z" />
+        <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+      </svg>
+    </span>
+    <span>Category Offer</span>
+  </a>
+</li>
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/sales-report">
+    <span class="nav-link-icon">
+      <!-- Sales Report Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3h14v14H3z" /> <!-- Square/Report icon -->
+        <path d="M3 7h14" />
+        <path d="M7 3v14" />
+      </svg>
+    </span>
+    <span>Sales Report</span>
+  </a>
+</li>
+
+
+        <!-- Logout -->
+        <li class="nav-item">
+          <a class="nav-link text-danger d-flex align-items-center gap-2" href="/admin/logout">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+              <path d="M9 12h12l-3 -3m0 6l3 -3" />
+            </svg>
+            Log Out
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <!-- Coupon Management Content -->
+<main class="container pt-5 mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-semibold text-dark">Coupons</h2>
+    <button class="btn btn-success" id="openModalBtn">+ Add Coupon</button>
+  </div>
+
+
+<form action="" method="get" class="flex items-center gap-2 mb-3">
+  <input
+    name="search"
+    id="coupon-search"
+    value="<%= search || '' %>"
+    type="search"
+    placeholder="Search Coupon or Discount..."
+    autocomplete="off"
+    class="border border-gray-300 text-gray-900 rounded-md focus:ring-green-600 focus:ring-1 block p-1.5 px-2 w-1/4 text-sm"
+  />
+  <button
+    type="submit"
+    class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm rounded-md flex items-center justify-center"
+  >
+    🔍 Search
+  </button>
+</form>
+
+
+
+  <div class="table-responsive bg-white shadow-sm rounded p-3">
+    <table class="table table-bordered table-hover align-middle text-center">
+      <thead class="table-light">
+        <tr>
+          <th>S.No</th>
+          <th>Coupon Code</th>
+          <th>Discount %</th>
+          <th>Start</th>
+          <th>Expiry</th>
+          <th>Min Purchase</th>
+          <th>Max Discount</th>
+          <th>Status</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (coupons.length === 0) { %>
+          <tr><td colspan="10" class="text-secondary py-4">No Coupons Found</td></tr>
+        <% } else { %>
+          <% coupons.forEach((c, i) => { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td><%= c.couponCode %></td>
+              <td><%= c.discountPercentage %>%</td>
+              <td><%= c.couponStartDate?.toISOString().split('T')[0] || '-' %></td>
+              <td><%= c.couponExpiryDate?.toISOString().split('T')[0] || '-' %></td>
+              <td>₹<%= c.minimumPurchase %></td>
+              <td>₹<%= c.maximumDiscount %></td>
+              <td>
+                <span class="badge 
+                  <% if(c.currentStatus==='active'){ %> bg-success <% } 
+                  else if(c.currentStatus==='expired'){ %> bg-danger <% } 
+                  else { %> bg-warning text-dark <% } %>">
+                  <%= c.currentStatus %>
+                </span>
+              </td>
+              <td><button class="btn btn-link text-primary" onclick="openEditModal('<%= c._id %>')">Edit</button></td>
+              <td><button class="btn btn-link text-danger" onclick="deleteCoupon('<%= c._id %>')">Delete</button></td>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+  <!-- Add Coupon Modal -->
+  <!-- <div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content p-3">
+        <div class="modal-header">
+          <h5 class="modal-title" id="couponModalLabel">Add New Coupon</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <form id="couponForm" class="row g-3">
+            <div class="col-12">
+              <input id="couponCode" type="text" class="form-control" placeholder="Coupon Code" required>
+            </div>
+            <div class="col-12">
+              <input id="discountPercentage" type="number" class="form-control" placeholder="Discount %" min="1" max="100" required>
+            </div>
+            <div class="col-12">
+              <input id="minimumPurchase" type="number" class="form-control" placeholder="Minimum Purchase (₹)" required>
+            </div>
+            <div class="col-12">
+              <input id="maximumDiscount" type="number" class="form-control" placeholder="Maximum Discount (₹)" required>
+            </div>
+            <div class="col-12">
+              <input id="couponStartDate" type="date" class="form-control">
+            </div>
+            <div class="col-12">
+              <input id="couponExpiryDate" type="date" class="form-control">
+            </div>
+            <div class="col-12">
+              <select id="currentStatus" class="form-select">
+                <option value="active">Active</option>
+                <option value="expired">Expired</option>
+                <option value="upcoming">Upcoming</option>
+                <option value="Special">Special</option>
+              </select>
+            </div>
+            <div class="col-12 d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-success">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+<div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content p-3">
+      <div class="modal-header">
+        <h5 class="modal-title" id="couponModalLabel">Add New Coupon</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form id="couponForm" class="row g-3">
+          <div class="col-12">
+            <input id="couponCode" type="text" class="form-control" placeholder="Coupon Code">
+          </div>
+          <div class="col-12">
+            <input id="discountPercentage" type="number" class="form-control" placeholder="Discount %" min="1" max="100">
+          </div>
+          <div class="col-12">
+            <input id="minimumPurchase" type="number" class="form-control" placeholder="Minimum Purchase (₹)">
+          </div>
+          <div class="col-12">
+            <input id="maximumDiscount" type="number" class="form-control" placeholder="Maximum Discount (₹)">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Coupon Start Date</label>
+            <input id="couponStartDate" type="date" class="form-control">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Coupon Expiry Date</label>
+            <input id="couponExpiryDate" type="date" class="form-control">
+          </div>
+          <div class="col-12">
+            <select id="currentStatus" class="form-select">
+              <option value="active">Active</option>
+              <option value="expired">Expired</option>
+              <option value="upcoming">Upcoming</option>
+              <option value="Special">Special</option>
+            </select>
+          </div>
+          <div class="col-12 d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center mt-3">
+    <% for(let i = 1; i <= totalPages; i++) { %>
+      <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+        <a class="page-link" href="?search=<%= search %>&page=<%= i %>"><%= i %></a>
+      </li>
+    <% } %>
+  </ul>
+</nav>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+ <script>
+  const modalEl = document.getElementById("couponModal");
+  const couponModal = new bootstrap.Modal(modalEl);
+  const form = document.getElementById("couponForm");
+
+  const startInput = document.getElementById("couponStartDate");
+  const expiryInput = document.getElementById("couponExpiryDate");
+
+  // Prevent past dates
+  const today = new Date().toISOString().split("T")[0];
+  startInput.setAttribute("min", today);
+  expiryInput.setAttribute("min", today);
+
+  startInput.addEventListener("change", function () {
+    expiryInput.setAttribute("min", this.value);
+  });
+
+  let editMode = false;
+  let editingId = null;
+
+  // ➕ Open Add Coupon Modal
+  document.getElementById("openModalBtn").onclick = () => {
+    editMode = false;
+    editingId = null;
+    form.reset();
+    document.getElementById("couponModalLabel").innerText = "Add New Coupon";
+    couponModal.show();
+  };
+
+  // ✏️ Open Edit Coupon Modal
+  async function openEditModal(id) {
+    try {
+      const res = await fetch(`/admin/coupons/json/${id}`);
+      if (!res.ok) throw new Error("Failed to fetch");
+      const coupon = await res.json();
+
+      editMode = true;
+      editingId = id;
+
+      document.getElementById("couponModalLabel").innerText = "Edit Coupon";
+      document.getElementById("couponCode").value = coupon.couponCode || "";
+      document.getElementById("discountPercentage").value = coupon.discountPercentage || "";
+      document.getElementById("minimumPurchase").value = coupon.minimumPurchase || "";
+      document.getElementById("maximumDiscount").value = coupon.maximumDiscount || "";
+      document.getElementById("couponStartDate").value = coupon.couponStartDate ? new Date(coupon.couponStartDate).toISOString().split("T")[0] : "";
+      document.getElementById("couponExpiryDate").value = coupon.couponExpiryDate ? new Date(coupon.couponExpiryDate).toISOString().split("T")[0] : "";
+      document.getElementById("currentStatus").value = coupon.currentStatus || "active";
+
+      couponModal.show();
+    } catch (err) {
+      Swal.fire("Error", "Failed to load coupon data", "error");
+    }
+  }
+
+  // 💾 Save / Update Coupon
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const startDate = startInput.value;
+    const expiryDate = expiryInput.value;
+
+    if (!startDate || !expiryDate) {
+      return Swal.fire("Validation Error", "Please select both start and expiry dates", "warning");
+    }
+
+    if (expiryDate < startDate) {
+      return Swal.fire("Validation Error", "Expiry date cannot be before start date", "warning");
+    }
+
+    const data = {
+      couponCode: document.getElementById("couponCode").value.trim(),
+      discountPercentage: document.getElementById("discountPercentage").value.trim(),
+      minimumPurchase: document.getElementById("minimumPurchase").value.trim(),
+      maximumDiscount: document.getElementById("maximumDiscount").value.trim(),
+      couponStartDate: startDate,
+      couponExpiryDate: expiryDate,
+      currentStatus: document.getElementById("currentStatus").value,
+    };
+
+    const url = editMode ? `/admin/coupons/edit/${editingId}` : `/admin/coupons/add`;
+    const method = editMode ? "PUT" : "POST";
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        Swal.fire("Success", result.message || "Coupon saved!", "success").then(() => location.reload());
+      } else {
+        Swal.fire("Error", result.error || "Something went wrong", "error");
+      }
+    } catch (err) {
+      Swal.fire("Error", "Server request failed!", "error");
+    }
+  });
+
+  // ❌ Delete Coupon
+  async function deleteCoupon(id) {
+    const confirmDelete = await Swal.fire({
+      title: "Are you sure?",
+      text: "This coupon will be deleted permanently.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!"
+    });
+
+    if (confirmDelete.isConfirmed) {
+      const res = await fetch(`/admin/coupons/delete/${id}`, { method: "DELETE" });
+      const result = await res.json();
+
+      if (result.message) {
+        Swal.fire("Deleted!", result.message, "success").then(() => location.reload());
+      } else {
+        Swal.fire("Error!", result.error || "Unable to delete", "error");
+      }
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Orders</title>
+
+  <!-- ✅ Bootstrap only -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+
+  <style>
+    body {
+      background-color: #f8fafc;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+    .navbar-nav {
+      display: flex !important;
+      gap: 1rem !important;
+    }
+    .navbar-nav .nav-link {
+      font-weight: 500;
+      color: #333 !important;
+    }
+    .navbar-nav .nav-link:hover {
+      color: #0d6efd !important;
+    }
+    .table th, .table td {
+      vertical-align: middle;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ✅ Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a class="navbar-brand text-primary fw-bold" href="/user/profile">Profile</a>
+    <ul class="navbar-nav flex-row gap-4 mb-0">
+      <li class="nav-item"><a class="nav-link" href="/user/orders">Order History</a></li>
+      <li class="nav-item"><a class="nav-link" href="/user/wallet">Wallet</a></li>
+      <li class="nav-item"><a class="nav-link" href="/user/add-address">Add Address</a></li>
+    </ul>
+    <div class="d-flex align-items-center">
+      <form id="logoutForm" action="/logout" method="POST" class="me-2 mb-0">
+        <button class="btn btn-outline-secondary">Logout</button>
+      </form>
+      <a class="btn btn-outline-primary" href="/">Home</a>
+    </div>
+  </div>
+
+
+</nav>
+
+<!-- ✅ Orders Section -->
+<div class="container bg-white p-4 rounded shadow-sm mb-5">
+  <!-- 🔍 Search Bar -->
+  <form action="/user/orders" method="get" class="flex gap-2 mb-4">
+    <input
+      name="search"
+      value="<%= search || '' %>"
+      class="border border-gray-300 text-gray-900 rounded-lg focus:ring-green-600 focus:ring-1 block p-2 px-3 w-full text-base"
+      type="search"
+      placeholder="Search by Order ID, Product Name, or Date"
+      autocomplete="off"
+    />
+    <button
+      type="submit"
+      class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+    >
+      Search
+    </button>
+  </form>
+
+  <h1 class="text-center mb-4 fw-bold text-dark">My Orders</h1>
+
+  <% if (!orders || orders.length === 0) { %>
+    <p class="text-muted text-center py-5">
+      You haven’t placed any orders yet.
+    </p>
+  <% } else { %>
+   <div class="table-responsive">
+  <table class="table table-bordered align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Product</th>
+        <th>Order ID</th>
+        <th>Date</th>
+        <th>Order Status</th>
+        <th>Payment Status</th> <!-- ✅ Added column -->
+        <th>Total</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% orders.forEach((order, index) => { 
+        const firstProduct = order.products[0];
+        const firstProductData = firstProduct?.productId;
+        const imgToShow =
+          firstProductData?.productPic?.[0] ||
+          firstProductData?.images?.[0] ||
+          firstProductData?.image ||
+          "/images/default-product.jpg";
+      %>
+      <tr>
+        <td>
+          <div class="d-flex align-items-center gap-3">
+            <img
+              src="<%= imgToShow %>"
+              alt="Product"
+              class="rounded border"
+              style="width: 64px; height: 64px; object-fit: cover;"
+            />
+            <div>
+              <p class="fw-semibold mb-0">
+                <%= firstProductData?.name || 'Unknown Product' %>
+              </p>
+              <% if (order.products.length > 1) { %>
+                <small class="text-muted">
+                  +<%= order.products.length - 1 %> more item<%= order.products.length - 1 > 1 ? 's' : '' %>
+                </small>
+              <% } %>
+            </div>
+          </div>
+        </td>
+
+        <td class="font-monospace"><%= order.orderId %></td>
+        <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
+
+        <!-- ✅ Order Status -->
+        <td>
+          <% if (order.orderStatus === 'Delivered') { %>
+            <span class="badge bg-success">Delivered</span>
+          <% } else if (order.orderStatus === 'Cancelled') { %>
+            <span class="badge bg-danger">Cancelled</span>
+          <% } else { %>
+            <span class="badge bg-warning text-dark">
+              <%= order.orderStatus || 'Processing' %>
+            </span>
+          <% } %>
+        </td>
+
+        <!-- ✅ Payment Status -->
+     <td>
+  <% if (order.paymentDetails?.status === 'Completed') { %>
+    <span class="badge bg-success">Completed</span>
+  <% } else if (order.paymentDetails?.status === 'Pending') { %>
+    <span class="badge bg-warning text-dark">Pending</span>
+  <% } else if (order.paymentDetails?.status === 'Failed') { %>
+    <span class="badge bg-danger">Failed</span>
+  <% } else if (order.paymentDetails?.status === 'Refunded') { %>
+    <span class="badge bg-info text-dark">Refunded</span>
+  <% } else if (order.paymentDetails?.status === 'Cancelled') { %>
+    <span class="badge bg-dark text-light">Cancelled</span>
+  <% } else if (order.paymentDetails?.status === 'Partially Refunded') { %>
+    <span class="badge bg-primary text-light">Partially Refunded</span>
+  <% } else { %>
+    <span class="badge bg-secondary">Unknown</span>
+  <% } %>
+</td>
+
+
+        <td class="fw-semibold">₹<%= order.grandTotal.toFixed(2) %></td>
+
+        <td>
+          <button
+            class="btn btn-sm btn-outline-primary details-btn"
+            data-order-index="<%= index %>"
+          >
+            Details
+          </button>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+    <!-- 📦 Store all order data in JSON once -->
+    <script id="orderData" type="application/json">
+      <%- JSON.stringify(orders) %>
+    </script>
+  <% } %>
+</div>
+
+
+
+<% if (totalPages > 1) { %>
+  <nav class="d-flex justify-content-center mt-4">
+    <ul class="pagination">
+      <% if (currentPage > 1) { %>
+        <li class="page-item">
+          <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+        </li>
+      <% } else { %>
+        <li class="page-item disabled">
+          <span class="page-link">Previous</span>
+        </li>
+      <% } %>
+
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+          <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+        </li>
+      <% } %>
+
+      <% if (currentPage < totalPages) { %>
+        <li class="page-item">
+          <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+        </li>
+      <% } else { %>
+        <li class="page-item disabled">
+          <span class="page-link">Next</span>
+        </li>
+      <% } %>
+    </ul>
+  </nav>
+<% } %>
+
+<!-- ✅ Modal -->
+<!-- 🧾 ORDER DETAILS MODAL -->
+<div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-lg shadow-lg">
+
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Order Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <h6 class="font-semibold text-lg mb-3">🧾 Order Info</h6>
+        <p><strong>Order ID:</strong> <span id="modalOrderId"></span></p>
+        <p><strong>Payment Method:</strong> <span id="modalPayment"></span></p>
+        <p><strong>Status:</strong> <span id="modalStatus"></span></p>
+        <p><strong>Total Amount:</strong> ₹<span id="modalTotal"></span></p>
+        <p><strong>Date:</strong> <span id="modalDate"></span></p>
+
+        <hr class="my-3">
+
+        <h6 class="font-semibold text-lg mb-3">📦 Products</h6>
+        <div id="modalProducts" class="space-y-3"></div>
+
+        <hr class="my-3">
+
+        <h6 class="font-semibold text-lg mb-3">🏠 Shipping Address</h6>
+        <p id="modalAddress" class="text-sm text-gray-700"></p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-success" id="downloadInvoiceBtn">
+          <i class="bi bi-file-earmark-arrow-down"></i> Download Invoice
+        </button>
+
+        <!-- ✅ Repay button (hidden unless failed) -->
+        <button class="btn btn-warning d-none" id="repayBtn">
+          <i class="bi bi-arrow-repeat"></i> Repay
+        </button>
+
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+ document.addEventListener("DOMContentLoaded", () => {
+     const orders = JSON.parse('<%- JSON.stringify(orders || []) %>');
+
+    document.querySelectorAll(".details-btn").forEach((btn, index) => {
+      btn.addEventListener("click", async () => {
+        const order = orders[index];
+
+        // 🧾 Fill modal with order details
+        document.getElementById("modalOrderId").innerText = order.orderId;
+        document.getElementById("modalPayment").innerText = order.paymentDetails.method || "N/A";
+        document.getElementById("modalStatus").innerText = order.orderStatus;
+        document.getElementById("modalTotal").innerText = order.grandTotal;
+        document.getElementById("modalDate").innerText = new Date(order.createdAt).toLocaleString();
+
+        const repayBtn = document.getElementById("repayBtn");
+
+        // ✅ Show Repay button only if payment failed
+        if (order.paymentDetails?.status === "Failed") {
+          repayBtn.classList.remove("d-none");
+        } else {
+          repayBtn.classList.add("d-none");
+        }
+
+        // ✅ Handle Repay button click
+        repayBtn.onclick = async () => {
+          try {
+            const res = await fetch("/create-repay-order", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ orderId: order.orderId }),
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+              alert("❌ Error creating repayment order!");
+              return;
+            }
+
+            const options = {
+              key: data.key_id,
+              amount: data.amount,
+              currency: "INR",
+              name: "FreshCart",
+              description: "Retry Payment",
+              order_id: data.razorpayOrderId,
+              handler: async function (response) {
+                const verifyRes = await fetch("/payment/verify-repay", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    ...response,
+                    oldOrderId: order.orderId, // ✅ Pass old failed order ID
+                  }),
+                });
+
+                const result = await verifyRes.text();
+                document.open();
+                document.write(result);
+                document.close();
+              },
+              theme: { color: "#10b981" },
+            };
+
+            const rzp = new Razorpay(options);
+            rzp.open();
+          } catch (err) {
+            console.error("❌ Repay failed:", err);
+            alert("Something went wrong while retrying payment.");
+          }
+        };
+
+        // ✅ Show modal
+        new bootstrap.Modal(document.getElementById("orderDetailsModal")).show();
+      });
+    });
+  });
+
+
+document.getElementById("downloadInvoiceBtn").addEventListener("click", function() {
+  // Select only the modal content
+  const modalContent = document.querySelector("#orderDetailsModal .modal-content");
+
+  const opt = {
+    margin: 0.5,
+    filename: 'invoice.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+  };
+
+  // Generate and save the PDF
+  html2pdf().set(opt).from(modalContent).save();
+});
+
+
+
+
+
+// document.addEventListener("DOMContentLoaded", () => {
+//   const orders = JSON.parse(document.getElementById("orderData")?.textContent || "[]");
+//   const modal = new bootstrap.Modal(document.getElementById("orderDetailsModal"));
+//   let currentOrder = null;
+
+//   // 🟢 Handle "Details" button click
+//   document.querySelectorAll(".details-btn").forEach(btn => {
+//     btn.addEventListener("click", () => {
+//       const order = orders[btn.dataset.orderIndex];
+//       currentOrder = order;
+//       showOrderDetails(order);
+//       modal.show();
+//     });
+//   });
+
+//   // 🧾 Show order details inside modal
+//   function showOrderDetails(order) {
+//     document.getElementById("modalOrderId").innerText = order.orderId;
+//     document.getElementById("modalPayment").innerText = order.paymentMethod || "N/A";
+//     document.getElementById("modalStatus").innerText = order.orderStatus;
+//     document.getElementById("modalTotal").innerText = order.grandTotal;
+//     document.getElementById("modalDate").innerText = new Date(order.createdAt).toLocaleString();
+
+//     // 🏠 Shipping address
+//     const addr = order.shippingAddress;
+//     document.getElementById("modalAddress").innerHTML = addr
+//       ? `${addr.firstName || ""} ${addr.lastName || ""}<br>${addr.addressLine1 || ""}<br>${addr.city || ""}, ${addr.state || ""} - ${addr.zipCode || ""}`
+//       : "No address available.";
+
+//     // 🛒 Product list
+//     const productsContainer = document.getElementById("modalProducts");
+//     productsContainer.innerHTML = "";
+
+//     order.products.forEach(item => {
+//       const prod = item.productId || {};
+//       const img = prod.productPic?.[0] || prod.images?.[0] || prod.image || "/images/default-product.jpg";
+
+//       let actionBtns = "";
+
+//       // ✅ Show Return button only if Delivered
+//       if (order.orderStatus === "Delivered") {
+//         if (item.itemStatus === "Returned") {
+//           actionBtns = `<span class="badge bg-secondary">Returned</span>`;
+//         } else {
+//           actionBtns = `
+//             <button class="btn btn-sm btn-outline-warning"
+//               onclick="returnProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
+//               Return
+//             </button>`;
+//         }
+//       }
+
+//       // ❌ If Cancelled → show only Cancelled badge (no buttons)
+//       else if (order.orderStatus === "Cancelled") {
+//         actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
+//       }
+
+//       // 🟠 For other statuses (Pending, Processing, Shipped)
+//       else {
+//         if (item.itemStatus === "Cancelled") {
+//           actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
+//         } else {
+//           actionBtns = `
+//             <button class="btn btn-sm btn-outline-danger"
+//               onclick="cancelProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
+//               Cancel
+//             </button>`;
+//           // 🚫 No Return button here anymore!
+//         }
+//       }
+
+//       const productHtml = `
+//         <div class="d-flex align-items-center justify-content-between border p-2 rounded mb-2">
+//           <div class="d-flex align-items-center gap-3">
+//             <img src="${img}" width="60" height="60" class="rounded border" style="object-fit:cover;">
+//             <div>
+//               <p class="fw-semibold mb-1">${prod.name || "Product"}</p>
+//               <small class="text-muted">Size: ${item.selectedSize || "-"} | Qty: ${item.quantity}</small><br>
+//               <small class="text-muted">₹${item.totalPrice}</small>
+//             </div>
+//           </div>
+//           <div>${actionBtns}</div>
+//         </div>`;
+//       productsContainer.insertAdjacentHTML("beforeend", productHtml);
+//     });
+
+//     // 🧩 Hide Cancel Order button if Delivered or Cancelled
+//     const cancelOrderBtn = document.getElementById("cancelOrderBtn");
+//     if (order.orderStatus === "Delivered" || order.orderStatus === "Cancelled") {
+//       cancelOrderBtn.style.display = "none";
+//     } else {
+//       cancelOrderBtn.style.display = "inline-block";
+//     }
+//   }
+
+//   // ❌ Cancel entire order
+//   document.getElementById("cancelOrderBtn").addEventListener("click", async () => {
+//     if (!currentOrder?._id) return;
+
+//     const confirm = await Swal.fire({
+//       title: "Cancel this entire order?",
+//       text: "Once cancelled, this cannot be undone.",
+//       icon: "warning",
+//       showCancelButton: true,
+//       confirmButtonText: "Yes, cancel it",
+//       cancelButtonText: "No, keep it"
+//     });
+//     if (!confirm.isConfirmed) return;
+
+//     try {
+//       const res = await fetch(`/user/orders/${currentOrder._id}/cancel`, {
+//         method: "PUT",
+//         headers: { "Content-Type": "application/json" },
+//       });
+
+//       if (res.ok) {
+//         await Swal.fire("✅ Cancelled!", "Your order has been cancelled successfully.", "success");
+//         location.reload();
+//       } else {
+//         const data = await res.json();
+//         Swal.fire("❌ Error", data.message || "Failed to cancel order.", "error");
+//       }
+//     } catch (error) {
+//       console.error("Cancel Order Error:", error);
+//       Swal.fire("❌ Error", "Something went wrong while cancelling.", "error");
+//     }
+//   });
+// });
+
+// // ✅ Cancel specific product
+// async function cancelProduct(orderId, productId, size) {
+//   const confirm = await Swal.fire({
+//     title: "Cancel this product?",
+//     icon: "warning",
+//     showCancelButton: true,
+//     confirmButtonText: "Yes, cancel it"
+//   });
+//   if (!confirm.isConfirmed) return;
+
+//   const res = await fetch(`/user/orders/${orderId}/cancel-item`, {
+//     method: "PUT",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({ productId, selectedSize: size })
+//   });
+
+//   const data = await res.json();
+//   if (res.ok) {
+//     await Swal.fire("✅ Cancelled!", data.message, "success");
+//     location.reload();
+//   } else {
+//     Swal.fire("❌ Error", data.message || "Failed to cancel product.", "error");
+//   }
+// }
+
+// // ✅ Return specific product
+// async function returnProduct(orderId, productId, size) {
+//   const confirm = await Swal.fire({
+//     title: "Return this product?",
+//     icon: "warning",
+//     showCancelButton: true,
+//     confirmButtonText: "Yes, return it"
+//   });
+//   if (!confirm.isConfirmed) return;
+
+//   const res = await fetch(`/user/orders/${orderId}/return-item`, {
+//     method: "PUT",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({ productId, selectedSize: size })
+//   });
+
+//   const data = await res.json();
+//   if (res.ok) {
+//     await Swal.fire("✅ Returned!", data.message, "success");
+//     location.reload();
+//   } else {
+//     Swal.fire("❌ Error", data.message || "Failed to return product.", "error");
+//   }
+// }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const orders = JSON.parse(document.getElementById("orderData")?.textContent || "[]");
+  const modal = new bootstrap.Modal(document.getElementById("orderDetailsModal"));
+  let currentOrder = null;
+
+  // 🟢 Handle "Details" button click
+  document.querySelectorAll(".details-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const order = orders[btn.dataset.orderIndex];
+      currentOrder = order;
+      showOrderDetails(order);
+      modal.show();
+    });
+  });
+
+  // 🧾 Show order details inside modal
+  function showOrderDetails(order) {
+    document.getElementById("modalOrderId").innerText = order.orderId;
+    document.getElementById("modalPayment").innerText = order.paymentMethod || "N/A";
+    document.getElementById("modalStatus").innerText = order.orderStatus;
+    document.getElementById("modalTotal").innerText = order.grandTotal;
+    document.getElementById("modalDate").innerText = new Date(order.createdAt).toLocaleString();
+
+    // 🏠 Shipping address
+    const addr = order.shippingAddress;
+    document.getElementById("modalAddress").innerHTML = addr
+      ? `${addr.firstName || ""} ${addr.lastName || ""}<br>${addr.addressLine1 || ""}<br>${addr.city || ""}, ${addr.state || ""} - ${addr.zipCode || ""}`
+      : "No address available.";
+
+    // 🛒 Product list
+    const productsContainer = document.getElementById("modalProducts");
+    productsContainer.innerHTML = "";
+
+    order.products.forEach(item => {
+      const prod = item.productId || {};
+      const img = prod.productPic?.[0] || prod.images?.[0] || prod.image || "/images/default-product.jpg";
+
+      let actionBtns = "";
+
+      // ✅ Delivered → Return only if not already returned
+      if (order.orderStatus === "Delivered") {
+        actionBtns = item.itemStatus === "Returned"
+          ? `<span class="badge bg-secondary">Returned</span>`  // ✅ Hide Cancel
+          : `<button class="btn btn-sm btn-outline-warning"
+                onclick="returnProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
+                  Return
+             </button>`;
+      }
+      // ❌ Cancelled → only show Cancelled badge
+      else if (order.orderStatus === "Cancelled") {
+        actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
+      }
+      // 🟠 Other statuses (Pending, Processing, Shipped)
+      else {
+        if (item.itemStatus === "Cancelled") {
+          actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
+        } else if (item.itemStatus === "Returned") {
+          actionBtns = `<span class="badge bg-secondary">Returned</span>`;  // ✅ Hide Cancel
+        } else {
+          actionBtns = `<button class="btn btn-sm btn-outline-danger"
+                          onclick="cancelProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
+                            Cancel
+                       </button>`;
+        }
+      }
+
+      const productHtml = `
+        <div class="d-flex align-items-center justify-content-between border p-2 rounded mb-2">
+          <div class="d-flex align-items-center gap-3">
+            <img src="${img}" width="60" height="60" class="rounded border" style="object-fit:cover;">
+            <div>
+              <p class="fw-semibold mb-1">${prod.name || "Product"}</p>
+              <small class="text-muted">Size: ${item.selectedSize || "-"} | Qty: ${item.quantity}</small><br>
+              <small class="text-muted">₹${item.totalPrice}</small>
+            </div>
+          </div>
+          <div>${actionBtns}</div>
+        </div>`;
+      productsContainer.insertAdjacentHTML("beforeend", productHtml);
+    });
+
+    // 🧩 Hide Cancel Order button if Delivered or Cancelled
+    const cancelOrderBtn = document.getElementById("cancelOrderBtn");
+    if (order.orderStatus === "Delivered" || order.orderStatus === "Cancelled") {
+      cancelOrderBtn.style.display = "none";
+    } else {
+      cancelOrderBtn.style.display = "inline-block";
+    }
+  }
+
+  // ❌ Cancel entire order
+  document.getElementById("cancelOrderBtn").addEventListener("click", async () => {
+    if (!currentOrder?._id) return;
+
+    const confirm = await Swal.fire({
+      title: "Cancel this entire order?",
+      text: "Once cancelled, this cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, cancel it",
+      cancelButtonText: "No, keep it"
+    });
+    if (!confirm.isConfirmed) return;
+
+    try {
+      const res = await fetch(`/user/orders/${currentOrder._id}/cancel`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (res.ok) {
+        await Swal.fire("✅ Cancelled!", "Your order has been cancelled successfully.", "success");
+        location.reload();
+      } else {
+        const data = await res.json();
+        Swal.fire("❌ Error", data.message || "Failed to cancel order.", "error");
+      }
+    } catch (error) {
+      console.error("Cancel Order Error:", error);
+      Swal.fire("❌ Error", "Something went wrong while cancelling.", "error");
+    }
+  });
+});
+
+// ✅ Cancel specific product
+async function cancelProduct(orderId, productId, size) {
+  const confirm = await Swal.fire({
+    title: "Cancel this product?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, cancel it"
+  });
+  if (!confirm.isConfirmed) return;
+
+  const res = await fetch(`/user/orders/${orderId}/cancel-item`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ productId, selectedSize: size })
+  });
+
+  const data = await res.json();
+  if (res.ok) {
+    await Swal.fire("✅ Cancelled!", data.message, "success");
+    location.reload();
+  } else {
+    Swal.fire("❌ Error", data.message || "Failed to cancel product.", "error");
+  }
+}
+
+// ✅ Return specific product
+async function returnProduct(orderId, productId, size) {
+  const confirm = await Swal.fire({
+    title: "Return this product?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, return it"
+  });
+  if (!confirm.isConfirmed) return;
+
+  const res = await fetch(`/user/orders/${orderId}/return-item`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ productId, selectedSize: size })
+  });
+
+  const data = await res.json();
+  if (res.ok) {
+    await Swal.fire("✅ Returned!", data.message, "success");
+    location.reload();
+  } else {
+    Swal.fire("❌ Error", data.message || "Failed to return product.", "error");
+  }
+}
+
+
+</script>
+
+</body>
+</html>

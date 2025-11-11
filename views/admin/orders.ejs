@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+
+
+<!-- Mirrored from freshcart-tailwind.codescandy.com/dashboard/categories.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Dec 2024 13:19:37 GMT -->
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="shortcut icon" type="image/x-icon" href="../assets/images/favicon/favicon.ico" />
+
+<!-- Libs CSS -->
+<link rel="preconnect" href="https://fonts.googleapis.com/" />
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" />
+<link rel="stylesheet" href="../../cdn.jsdelivr.net/npm/%40tabler/icons-webfont%402.46.0/tabler-icons.min.css" />
+<link rel="stylesheet" href="../assets/libs/simplebar/dist/simplebar.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Theme CSS -->
+<link rel="stylesheet" href="../assets/css/theme.min.css">
+
+	<title>TailwindCSS Dashboard eCommerce HTML Template - FreshCart</title>
+
+
+<style>
+.green-btn {
+  display: inline-block;
+  background-color: #28a745;   /* Green */
+  color: white;
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.green-btn:hover {
+  background-color: #218838;   /* Darker green on hover */
+}
+</style>
+
+
+
+
+<body>
+  <div class="main-wrapper">
+
+<nav class="w-full bg-white shadow-md fixed top-0 left-0 z-50">
+  <div class="flex items-center justify-between px-6 py-3">
+    <!-- Logo -->
+    <a href="" class="navbar-brand flex items-center">
+      <img src="../assets/images/logo/Xe mart.png" alt="Logo" class="h-10" />
+    </a>
+
+    <!-- Nav Items -->
+    <ul class="flex items-center gap-x-6" id="topNavbar">
+
+      <!-- Dashboard -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="dashboard">
+          <span class="nav-link-icon">
+            <!-- Dashboard Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+              <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+              <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+            </svg>
+          </span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <!-- Products -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="products">
+          <span class="nav-link-icon">
+            <!-- Products Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M17 17h-11v-14h-2" />
+              <path d="M6 5l14 1l-1 7h-13" />
+            </svg>
+          </span>
+          <span>Products</span>
+        </a>
+      </li>
+
+      <!-- Categories -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="categories">
+          <span class="nav-link-icon">
+            <!-- Categories Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 6l11 0" />
+              <path d="M9 12l11 0" />
+              <path d="M9 18l11 0" />
+              <path d="M5 6l0 .01" />
+              <path d="M5 12l0 .01" />
+              <path d="M5 18l0 .01" />
+            </svg>
+          </span>
+          <span>Categories</span>
+        </a>
+      </li>
+
+      <!-- Customers -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/customers">
+          <span class="nav-link-icon">
+            <!-- Customers Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+              <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+            </svg>
+          </span>
+          <span>Customers</span>
+        </a>
+      </li>
+
+      <!-- Reviews -->
+
+
+
+      <li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/orders">
+    <span class="nav-link-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+      </svg>
+    </span>
+    <span>Orders</span>
+  </a>
+</li>
+
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/coupons">
+    <span class="nav-link-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+      </svg>
+    </span>
+    <span>coupon</span>
+  </a>
+</li>
+
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/product-offer">
+    <span class="nav-link-icon">
+      <!-- Product Offer Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1v4" />
+        <path d="M6 7h12l-1 12H7L6 7z" />
+        <path d="M9 12h2v4H9zM13 12h2v4h-2z" />
+      </svg>
+    </span>
+    <span>Product Offer</span>
+  </a>
+</li>
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/category-offer">
+    <span class="nav-link-icon">
+      <!-- Category Offer Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M9 10h6v4H9z" />
+        <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+      </svg>
+    </span>
+    <span>Category Offer</span>
+  </a>
+</li>
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/sales-report">
+    <span class="nav-link-icon">
+      <!-- Sales Report Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3h14v14H3z" /> <!-- Square/Report icon -->
+        <path d="M3 7h14" />
+        <path d="M7 3v14" />
+      </svg>
+    </span>
+    <span>Sales Report</span>
+  </a>
+</li>
+
+
+      <!-- Logout -->
+      <li>
+        <a class="flex items-center gap-2 text-red-600 hover:text-red-800" href="/admin/logout">
+          <span class="nav-link-icon">
+            <!-- Logout Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+              <path d="M9 12h12l-3 -3m0 6l3 -3" />
+            </svg>
+          </span>
+          <span>Log Out</span>
+        </a>
+      </li>
+
+    </ul>
+  </div>
+</nav>
+
+	<main class="main-content-wrapper">
+
+    <div class="container">
+
+<div class="grid grid-cols-1 mb-8">
+						<!-- page header -->
+						<div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+							<div>
+								<h2 class="text-xl">Categories</h2>
+								<!-- breacrumb -->
+								<nav aria-label="breadcrumb">
+									<ol class="flex flex-wrap">
+										<li class="inline-block text-green-600">
+											<a href="#!">
+												Dashboard
+												<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+													viewBox="0 0 24 24" fill="none" stroke="currentColor"
+													stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+													class="icon icon-tabler icons-tabler-outline icon-tabler-slash inline-block mx-2">
+													<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+													<path d="M17 5l-10 14" />
+												</svg>
+											</a>
+										</li>
+
+										<li class="inline-block text-gray-500 active" aria-current="page">Orders
+										</li>
+									</ol>
+								</nav>
+							</div>
+							<!-- button -->
+
+
+<!-- Search bar -->
+<form action="/admin/orders" method="get" class="flex gap-2 mb-4">
+  <input
+    name="search"
+    value="<%= search || '' %>"
+    class="border border-gray-300 text-gray-900 rounded-lg focus:ring-green-600 focus:ring-1 block p-2 px-3 w-full text-base"
+    type="search"
+    placeholder="Search by Customer Name or Status"
+    autocomplete="off"
+  />
+  <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg">
+    Search
+  </button>
+</form>
+
+
+
+
+
+
+
+
+
+						</div>
+					</div>
+
+
+
+          <div class="w-full mt-6">
+  <div class="overflow-x-auto">
+    <table class="w-full border border-gray-300 rounded-lg shadow-sm">
+      <thead class="bg-gray-100 text-gray-700 uppercase text-sm">
+        <tr>
+          <th class="px-6 py-3 text-left">Image</th>
+          <th class="px-6 py-3 text-left">Order Id</th>
+          <th class="px-6 py-3 text-left">Customer</th>
+          <th class="px-6 py-3 text-left">Date</th>
+          <th class="px-6 py-3 text-left">Payment</th>
+          <th class="px-6 py-3 text-left">Status</th>
+          <th class="px-6 py-3 text-right">Amount</th>
+          <th class="px-6 py-3 text-right">Action</th> 
+        </tr>
+      </thead>
+
+      <tbody class="text-gray-800 bg-white">
+        <% if (orders && orders.length > 0) { %>
+          <% orders.forEach(order => { %>
+            <tr class="border-t hover:bg-gray-50 transition">
+              
+              <!-- 🖼️ Product Image -->
+              <td class="px-6 py-3">
+                <% 
+                  let img = order.products[0]?.productId?.images?.[0] 
+                    || order.products[0]?.productId?.productPic?.[0] 
+                    || order.products[0]?.productId?.image 
+                    || "/images/default-product.jpg";
+                %>
+                <img src="<%= img %>" alt="Product Image" class="w-14 h-14 rounded object-cover border" />
+              </td>
+
+              <!-- 🧾 Order ID -->
+              <td class="px-6 py-3 font-medium"><%= order.orderId %></td>
+
+              <!-- 👤 Customer -->
+              <td class="px-6 py-3">
+                <%= order.userId?.name || order.shippingAddress?.firstName || "Unknown" %><br>
+                <span class="text-sm text-gray-500"><%= order.userId?.email || "" %></span>
+              </td>
+
+              <!-- 📅 Date -->
+              <td class="px-6 py-3"><%= new Date(order.createdAt).toLocaleDateString() %></td>
+
+              <!-- 💳 Payment -->
+              <td class="px-6 py-3"><%= order.paymentDetails?.method || "N/A" %></td>
+
+              <!-- 🚚 Status -->
+              <td class="px-6 py-3">
+                <span class="
+                  px-3 py-1 rounded text-sm font-semibold
+                  <% if (order.orderStatus === 'Delivered') { %> bg-green-100 text-green-700 
+                  <% } else if (order.orderStatus === 'Pending') { %> bg-yellow-100 text-yellow-700 
+                  <% } else if (order.orderStatus === 'Cancelled') { %> bg-red-100 text-red-700 
+                  <% } else { %> bg-gray-100 text-gray-700 <% } %>">
+                  <%= order.orderStatus %>
+                </span>
+              </td>
+
+              <!-- 💰 Total Amount -->
+              <td class="px-6 py-3 text-right font-semibold">
+                ₹<%= order.grandTotal?.toFixed(2) || "0.00" %>
+              </td>
+
+              <!-- 🔍 Details Button -->
+             <td class="px-6 py-3 text-right">
+  <a 
+    href="/admin/singleOrder/<%= order._id %>" 
+    class="green-btn">
+    Detail
+  </a>
+</td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="8" class="text-center text-gray-500 py-8 text-lg">
+              No orders found.
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="flex justify-center items-center mt-6 gap-2">
+  <% if (currentPage > 1) { %>
+    <a href="?page=<%= currentPage - 1 %>&search=<%= search %>" class="px-3 py-1 border rounded hover:bg-gray-100">Prev</a>
+  <% } %>
+
+  <% for (let i = 1; i <= totalPages; i++) { %>
+    <a href="?page=<%= i %>&search=<%= search %>"
+       class="px-3 py-1 border rounded <%= i === currentPage ? 'bg-green-600 text-white' : 'hover:bg-gray-100' %>">
+      <%= i %>
+    </a>
+  <% } %>
+
+  <% if (currentPage < totalPages) { %>
+    <a href="?page=<%= currentPage + 1 %>&search=<%= search %>" class="px-3 py-1 border rounded hover:bg-gray-100">Next</a>
+  <% } %>
+</div>
+
+
+
+    </div>
+<!-- ✅ Pagination -->
+<!-- ✅ Pagination -->
+
+
+  </main>
+
+		
+
+
+
+  </div>
+
+
+ 
+  <script>
+
+
+
+document.getElementById("orderSearchForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const query = document.getElementById("orderSearchInput").value.trim();
+  // redirect with query param
+  window.location.href = `/admin/orders?status=${encodeURIComponent(query)}`;
+});
+
+
+
+
+
+function showOrderDetails(encodedOrder) {
+  const order = JSON.parse(decodeURIComponent(encodedOrder));
+  console.log("🧾 Order Details:", order);
+
+  // Example modal code
+  Swal.fire({
+    title: `Order #${order.orderId}`,
+    html: `
+      <b>Status:</b> ${order.orderStatus}<br>
+      <b>Payment:</b> ${order.paymentDetails?.method || "N/A"}<br>
+      <b>Total:</b> ₹${order.grandTotal?.toFixed(2) || "0.00"}<br>
+      <b>Date:</b> ${new Date(order.createdAt).toLocaleString()}
+    `,
+    icon: "info"
+  });
+}
+</script> 
+
+
+
+
+
+</body>
+</html>

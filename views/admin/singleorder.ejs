@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Details - <%= order.orderId %></title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f9fafb;
+      font-family: 'Inter', sans-serif;
+    }
+    .order-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .table th, .table td {
+      vertical-align: middle;
+    }
+    .badge {
+      font-size: 0.85rem;
+    }
+
+.save-btn {
+  background-color: #16a34a;       /* Tailwind green-600 */
+  color: #ffffff;                  /* White text */
+  padding: 6px 12px;               /* px-2 py-1 */
+  border-radius: 0.375rem;         /* rounded */
+  font-size: 0.875rem;             /* text-sm */
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.save-btn:hover {
+  background-color: #15803d;      
+  transform: scale(1.03);         
+}
+
+.save-btn:active {
+  transform: scale(0.98);          
+}
+
+.save-btn:disabled {
+  background-color: #16a34a;      
+  opacity: 0.6;                   
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+  </style>
+</head>
+<body class="container py-4">
+
+  <!-- 🧾 Page Title -->
+  <div class="text-center mb-4">
+    <h2 class="fw-bold text-primary">Order Details</h2>
+    <p class="text-muted">Order ID: <%= order.orderId %></p>
+  </div>
+
+  <!-- 👥 Customer & Order Info -->
+  <div class="row g-4">
+    <!-- Customer -->
+    <div class="col-md-6">
+      <div class="order-card">
+        <h5 class="border-bottom pb-2 mb-3">👤 Customer Details</h5>
+        <p class="fw-semibold"><%= order.user.name %></p>
+        <p class="text-muted mb-2"><%= order.user.email %></p>
+        <p><strong>Phone:</strong> <%= order.user.phone %></p>
+
+        <h6 class="border-bottom pb-2 mb-2 mt-3">📦 Shipping Address</h6>
+        <p><%= order.shippingAddress?.addressLine1 || "" %></p>
+        <% if (order.shippingAddress?.addressLine2) { %>
+          <p><%= order.shippingAddress.addressLine2 %></p>
+        <% } %>
+        <p>
+          <%= order.shippingAddress?.city || "" %>,
+          <%= order.shippingAddress?.state || "" %> -
+          <%= order.shippingAddress?.zipCode || "" %>
+        </p>
+        <p><%= order.shippingAddress?.country || "India" %></p>
+      </div>
+    </div>
+
+    <!-- Order Info -->
+    <div class="col-md-6">
+      <div class="order-card">
+        <h5 class="border-bottom pb-2 mb-3">🧾 Order Details</h5>
+        <p><strong>Payment Method:</strong> <%= order.paymentDetails.method %></p>
+        <p><strong>Payment Status:</strong> <%= order.paymentDetails.status %></p>
+        <p><strong>Shipping Cost:</strong> ₹<%= order.shippingCost.toFixed(2) %></p>
+        <p><strong>Expected Delivery:</strong>
+          <%= order.expectedDelivery ? new Date(order.expectedDelivery).toLocaleDateString() : "N/A" %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🛍️ Products -->
+  <div class="order-card mt-4">
+    <h5 class="border-bottom pb-2 mb-3">🛒 Ordered Products</h5>
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Product</th>
+            <th class="text-center">Qty</th>
+            <th class="text-center">Size</th>
+            <th class="text-end">Total</th>
+            <th class="text-center">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% order.products.forEach(item => { %>
+            <tr>
+            <td>
+  <div class="d-flex align-items-center gap-3">
+    <img 
+      src="<%= item.image %>" 
+      alt="Product" 
+      width="60" 
+      height="60" 
+      class="rounded border object-cover"
+      onerror="this.onerror=null; this.src='/images/default-product.jpg';">
+    <span><%= item.name %></span>
+  </div>
+</td>
+
+              <td class="text-center"><%= item.quantity %></td>
+              <td class="text-center"><%= item.size || '-' %></td>
+              <td class="text-end fw-semibold">₹<%= item.totalPrice.toFixed(2) %></td>
+
+
+              <td class="text-center">
+  <div class="flex items-center justify-center gap-2">
+<!-- <select 
+  id="status-<%= order._id %>" 
+  class="form-select border rounded px-2 py-1 text-sm"
+  <%= (order.orderStatus === "Delivered" || order.orderStatus === "Cancelled") ? "disabled" : "" %>>
+  
+  <% if (order.orderStatus === "Cancelled") { %>
+    <option value="Cancelled" selected>Cancelled</option>
+  <% } else { %>
+   
+    <option value="Pending" <%= order.orderStatus === "Pending" ? "selected" : "" %>>Pending</option>
+    <option value="Shipped" <%= order.orderStatus === "Shipped" ? "selected" : "" %>>Shipped</option>
+    <option value="Delivered" <%= order.orderStatus === "Delivered" ? "selected" : "" %>>Delivered</option>
+  <% } %>
+</select> -->
+
+<!-- <select 
+  id="status-<%= order._id %>" 
+  class="form-select border rounded px-2 py-1 text-sm"
+  onchange="updateOrderStatus('<%= order._id %>')"
+  <%= (order.orderStatus === 'Delivered' || order.orderStatus === 'Cancelled') ? 'disabled' : '' %>>
+  
+  <% if (order.orderStatus === 'Cancelled') { %>
+    <option value="Cancelled" selected>Cancelled</option>
+  <% } else { %>
+    <option value="Pending" <%= order.orderStatus === 'Pending' ? 'selected' : '' %>>Pending</option>
+    <option value="Shipped" <%= order.orderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+    <option value="Delivered" <%= order.orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+  <% } %>
+</select> -->
+
+
+
+
+<!-- <select 
+  id="status-<%= order._id %>" 
+  class="form-select border rounded px-2 py-1 text-sm"
+  onchange="updateOrderStatus('<%= order._id %>')"
+  <%= (order.orderStatus === 'Delivered' || order.orderStatus === 'Cancelled') ? 'disabled' : '' %>>
+  
+  <% if (order.orderStatus === 'Cancelled') { %>
+    <option value="Cancelled" selected>Cancelled</option>
+  <% } else { %>
+    <option value="Pending" <%= order.orderStatus === 'Pending' ? 'selected' : '' %>>Pending</option>
+    <option value="Processing" <%= order.orderStatus === 'Processing' ? 'selected' : '' %>>Processing</option>
+    <option value="Shipped" <%= order.orderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+    <option value="Delivered" <%= order.orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+  <% } %>
+</select> -->
+
+
+<select 
+  id="status-<%= order._id %>" 
+  class="form-select border rounded px-2 py-1 text-sm"
+  onchange="updateOrderStatus('<%= order._id %>')"
+  <%= (order.orderStatus === 'Delivered' || order.orderStatus === 'Cancelled' || order.orderStatus === 'Returned') ? 'disabled' : '' %>>
+  
+  <% if (order.orderStatus === 'Cancelled') { %>
+    <option value="Cancelled" selected>Cancelled</option>
+  <% } else if (order.orderStatus === 'Returned') { %>
+    <option value="Returned" selected>Returned</option>
+  <% } else { %>
+    <option value="Pending" <%= order.orderStatus === 'Pending' ? 'selected' : '' %>>Pending</option>
+    <option value="Processing" <%= order.orderStatus === 'Processing' ? 'selected' : '' %>>Processing</option>
+    <option value="Shipped" <%= order.orderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+    <option value="Delivered" <%= order.orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+  <% } %>
+</select>
+
+
+
+
+ <button 
+  type="button" 
+  class="save-btn"
+  onclick="confirmAndUpdate('<%= order._id %>')"
+  <%= (order.orderStatus === "Delivered" || order.orderStatus === "Cancelled") ? "disabled" : "" %>>
+  Save
+</button>
+
+
+  </div>
+</td>
+
+
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between flex-wrap mt-4 border-top pt-3">
+      <div>
+        <h6>Payment Info</h6>
+        <span class="badge bg-light text-dark p-2">
+          <%= order.paymentDetails.method %>
+        </span>
+      </div>
+      <div class="text-end">
+        <p><strong>Sub Total:</strong> ₹<%= order.subTotal.toFixed(2) %></p>
+        <p><strong>Shipping:</strong> ₹<%= order.shippingCost.toFixed(2) %></p>
+        <p class="fw-bold text-success fs-5">Grand Total: ₹<%= order.grandTotal.toFixed(2) %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+  <!-- 🛍️ Products -->
+ 
+  <div class="text-center mt-4">
+    <a href="/admin/orders" class="btn btn-primary px-4">⬅ Back to Orders</a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+<script>
+
+
+
+  async function updateOrderStatus(orderId) {
+    const newStatus = document.getElementById(`status-${orderId}`).value;
+
+    try {
+      const res = await fetch(`/admin/update-order-status/${orderId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderStatus: newStatus })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        alert('✅ Order status updated successfully!');
+        location.reload(); // Refresh page to show updated status
+      } else {
+        alert('❌ Failed to update order status: ' + data.message);
+      }
+    } catch (err) {
+      console.error('❌ Error updating order status:', err);
+      alert('⚠️ Something went wrong while updating order status');
+    }
+  }
+
+
+//  async function updateOrderStatus(orderId) {
+//     const status = document.getElementById(`status-${orderId}`).value;
+//     try {
+//       const res = await fetch(`/admin/orders/${orderId}/update-status`, {
+//         method: "PUT",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ status }),
+//       });
+//       const data = await res.json();
+//       if (data.success) {
+//         alert("✅ Order status updated successfully!");
+//         location.reload();
+//       } else {
+//         alert("❌ " + data.message);
+//       }
+//     } catch (err) {
+//       console.error(err);
+//       alert("Server error while updating order status.");
+//     }
+//   }
+
+
+
+
+
+
+async function confirmAndUpdate(orderId) {
+  const selectEl = document.getElementById(`status-${orderId}`);
+  const newStatus = selectEl.value;
+
+  // ❗If already delivered, block further changes
+  if (selectEl.disabled) {
+    Swal.fire({
+      icon: "info",
+      title: "Locked",
+      text: "This order is already delivered and cannot be modified.",
+    });
+    return;
+  }
+
+  const result = await Swal.fire({
+    title: 'Confirm Update',
+    text: `Change order status to "${newStatus}"?`,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#16a34a',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, Update it!',
+  });
+
+  if (result.isConfirmed) {
+    try {
+      const res = await fetch(`/admin/updateOrderStatus/${orderId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        await Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: 'Order status updated successfully.',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        // ✅ Disable the dropdown + button if delivered
+        if (newStatus === "Delivered") {
+          selectEl.disabled = true;
+          document.querySelector(`button[onclick="confirmAndUpdate('${orderId}')"]`).disabled = true;
+        }
+
+        // Optional: refresh page if needed
+        // window.location.reload();
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed!',
+          text: data.message || 'Update failed.',
+        });
+      }
+    } catch (err) {
+      console.error('❌ Fetch error:', err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Server error. Please try again later.',
+      });
+    }
+  }
+}
+</script>
+  
+</body>
+</html>

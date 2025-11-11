@@ -1,0 +1,1516 @@
+<!doctype html>
+<html lang="en">
+
+
+<!-- Mirrored from freshcart-tailwind.codescandy.com/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Dec 2024 13:18:01 GMT -->
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<link href="assets/libs/tiny-slider/dist/tiny-slider.css" rel="stylesheet" />
+	<link rel="stylesheet" href="assets/libs/swiper/swiper-bundle.min.css" />
+	<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon/favicon.ico" />
+
+<!-- Libs CSS -->
+<link rel="preconnect" href="https://fonts.googleapis.com/" />
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" />
+<link rel="stylesheet" href="../cdn.jsdelivr.net/npm/%40tabler/icons-webfont%402.46.0/tabler-icons.min.css" />
+<link rel="stylesheet" href="assets/libs/simplebar/dist/simplebar.min.css" />
+
+<!-- Theme CSS -->
+<link rel="stylesheet" href="../assets/css/theme.min.css">
+ <!-- Analytics Code -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M8S4MT3EYG"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+
+    gtag("config", "G-M8S4MT3EYG");
+</script>
+<script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+        c[a] =
+            c[a] ||
+            function () {
+                (c[a].q = c[a].q || []).push(arguments);
+            };
+        t = l.createElement(r);
+        t.async = 1;
+        t.src = "https://www.clarity.ms/tag/" + i;
+        y = l.getElementsByTagName(r)[0];
+        y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", "mzh5eyaatk");
+</script>
+<!-- Affiliate tracking script -->
+<script>window.lemonSqueezyAffiliateConfig = { store: "codescandy" };</script>
+<script src="../lmsqueezy.com/affiliate.js" defer></script> <!-- buy now template button Remove if you do not want. -->
+<div class="fixed bottom-0 right-0 m-4">
+    <!-- <a href="https://codescandy.lemonsqueezy.com/buy/7b77d92f-acf6-4fdc-885b-00fa9a0786e4" target="_blank"
+        rel="noopener noreferrer"
+        class="btn gap-x-2 bg-green-600 text-white border-green-600 disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"> -->
+        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+            <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+            <path d="M17 17h-11v-14h-2" />
+            <path d="M6 5l14 1l-1 7h-13" />
+        </svg> -->
+        <!-- Buy Theme
+    </a> -->
+</div>
+
+	<title>Homepage v1 - TailwindCSS eCommerce HTML Template - Xe Mart</title>
+</head>
+
+<body>
+	<header>
+	<!-- navbar -->
+	<div class="border-b">
+		<div class="bg-gray-100 py-1">
+			<div class="container">
+			
+			</div>
+		</div>
+		<div class="pt-5">
+			<div class="container">
+				<div class="flex flex-wrap w-full items-center justify-between">
+					<div class="lg:w-1/6 md:w-1/2 w-2/5">
+						<a class="navbar-brand" href="index.html">
+							<img src="../assets/images/logo/Xe mart.png" alt="TailwindCSS eCommerce HTML Template" />
+						</a>
+					</div>
+					<div class="lg:w-2/5 hidden lg:block">
+						<form action="#">
+						<div class="mb-4">
+
+
+
+							<div class="flex gap-2 relative">
+  <input
+    type="search"
+    id="searchProducts"
+    placeholder="Search for products"
+    class="border border-gray-300 rounded-lg p-2 w-full focus:ring-green-600 focus:border-green-600"
+	autocomplete="off" 
+  />
+  <button id="searchBtn" class="px-4 py-2 bg-green-600 text-white rounded-lg">Search</button>
+
+
+  
+</div>
+
+
+  <ul id="searchResults" class="absolute bg-white border rounded w-full mt-1 z-50 hidden"></ul>
+  
+</div>
+						</form>
+					</div>
+					<div class="lg:w-1/5 hidden lg:block">
+						
+						<!-- Button trigger modal -->
+					
+					</div>
+					<div class="lg:w-1/5 text-end md:w-1/2 w-3/5">
+						<div class="flex gap-7 items-center justify-end">
+							<!-- <div>
+								<a href="shop-wishlist.html" class="relative">
+									<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-heart" width="24"
+										height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+										<path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
+									</svg>
+									<span
+										class="absolute top-0 -mt-1 left-full rounded-full h-5 w-5 -ml-2 bg-green-600 text-white text-center font-semibold text-sm">
+										5
+										<span class="invisible">unread messages</span>
+									</span>
+								</a>
+							</div> -->
+							
+<!-- <div>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19.5 10c-2.483 0-4.5 2.015-4.5 4.5s2.017 4.5 4.5 4.5 4.5-2.015 4.5-4.5-2.017-4.5-4.5-4.5zm2.5 5h-2v2h-1v-2h-2v-1h2v-2h1v2h2v1zm-6.527 4.593c-1.108 1.086-2.275 2.219-3.473 3.407-6.43-6.381-12-11.147-12-15.808 0-6.769 8.852-8.346 12-2.944 3.125-5.362 12-3.848 12 2.944 0 .746-.156 1.496-.423 2.253-1.116-.902-2.534-1.445-4.077-1.445-3.584 0-6.5 2.916-6.5 6.5 0 2.063.97 3.901 2.473 5.093z"/></svg>
+</div> -->
+
+
+
+
+
+ 
+<div class="relative flex items-center gap-4">
+<a href="/user/wishlist" 
+   class="flex items-center gap-2 text-gray-700 font-medium cursor-pointer hover:text-red-600 transition">
+
+  <!-- Wishlist (Heart) SVG Icon -->
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" 
+       fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+    <path d="M19.5 12.572l-7.5 7.428l-7.5-7.428a5 5 0 1 1 7.5-6.566a5 5 0 1 1 7.5 6.572"/>
+  </svg>
+
+  <!-- Optional Label -->
+  <!-- <span>Wishlist</span> -->
+</a>
+
+
+  
+  <!-- My Cards Button -->
+  <a href="/user/card" 
+     class="flex items-center gap-2 text-gray-700 font-medium cursor-pointer hover:text-blue-600 transition">
+    
+    <!-- Card SVG Icon -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <rect x="2" y="5" width="20" height="14" rx="2" />
+      <line x1="2" y1="10" x2="22" y2="10" />
+      <line x1="6" y1="15" x2="6.01" y2="15" />
+      <line x1="10" y1="15" x2="14" y2="15" />
+    </svg>
+
+    <!-- <span>My Cards</span> -->
+  </a>
+
+  <!-- User Menu -->
+  <div class="relative">
+    <!-- User button -->
+    <a href="<%= user ? 'javascript:void(0)' : '/signin' %>" 
+       id="userDropdownBtn" 
+       class="flex items-center gap-2 text-gray-700 font-medium cursor-pointer hover:text-blue-600 transition">
+
+      <% if (user && user.firstName) { %>
+        <span>Hi, <%= user.firstName %></span>
+        <!-- Dropdown Arrow -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="pointer-events: none;">
+          <path d="M1.5 5.5l6 6 6-6"/>
+        </svg>
+      <% } else { %>
+        <span>Hi, Guest</span>
+        <!-- User Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="pointer-events: none;">
+          <path d="M0 0h24v24H0z" stroke="none"/>
+          <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/>
+          <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>
+        </svg>
+      <% } %>
+    </a>
+
+    <!-- Dropdown menu -->
+    <% if (user) { %>
+      <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50">
+        <a href="/user/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+          Account Settings
+        </a>
+        <form id="logoutForm" action="/logout" method="POST">
+          <button type="submit" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+            Logout
+          </button>
+        </form>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+
+
+
+
+
+
+<!--  -->
+
+
+
+
+
+
+
+							<!-- <div>
+								<button type="button" class="text-gray-600 relative" data-bs-toggle="offcanvas"
+									data-bs-target="#offcanvasRight" role="button" aria-controls="offcanvasRight">
+									<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shopping-bag" width="24"
+										height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+										<path
+											d="M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1 -2.966 2.544h-6.852a3 3 0 0 1 -2.965 -2.544l-1.255 -8.152a2 2 0 0 1 1.977 -2.304z" />
+										<path d="M9 11v-5a3 3 0 0 1 6 0v5" />
+									</svg>
+									<span id="cartCount"
+										class="absolute top-0 -mt-1 left-full rounded-full h-5 w-5 -ml-3 bg-green-600 text-white text-center font-semibold text-sm">
+										0
+										<span class="invisible">unread messages</span>
+									</span>
+								</button>
+							</div> -->
+							<!-- <div class="lg:hidden leading-none"> -->
+								<!-- Button -->
+								<!-- <button class="collapsed" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbar-default"
+									aria-controls="navbar-default" aria-label="Toggle navigation">
+									<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2 text-gray-800"
+										width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+										<path d="M4 6l16 0" />
+										<path d="M4 12l16 0" />
+										<path d="M4 18l16 0" />
+									</svg>
+								</button> -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<nav
+			class="navbar relative navbar-expand-lg lg:flex lg:flex-wrap items-center content-between text-black navbar-default"
+			aria-label="Offcanvas navbar large">
+			<div class="container max-w-7xl mx-auto w-full xl:px-4 lg:px-0">
+				<div class="offcanvas offcanvas-left lg:visible" tabindex="-1" id="navbar-default">
+					<div class="offcanvas-header pb-1">
+						<a href="index.html"><img src="../assets/images/logo/freshcart-logo.svg"
+								alt="TailwindCSS eCommerce HTML Template" /></a>
+						<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+							<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x text-gray-700" width="24"
+								height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+								stroke-linecap="round" stroke-linejoin="round">
+								<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+								<path d="M18 6l-12 12" />
+								<path d="M6 6l12 12" />
+							</svg>
+						</button>
+					</div>
+					<div class="offcanvas-body lg:flex lg:items-center">
+						<div class="block lg:hidden mb-4">
+							<form action="#">
+								<div class="relative">
+									<label for="searhNavbar" class="invisible hidden">Search</label>
+									<input
+										class="border border-gray-300 text-gray-900 rounded-lg focus:shadow-[0_0_0_.25rem_rgba(10,173,10,.25)] focus:ring-green-600 focus:ring-0 focus:border-green-600 block p-2 px-3 disabled:opacity-50 disabled:pointer-events-none w-full text-base"
+										type="search" placeholder="Search for products" id="searhNavbar" />
+									<button class="absolute right-0 top-0 p-3" type="button">
+										<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="16"
+											height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+											stroke-linecap="round" stroke-linejoin="round">
+											<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+											<path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+											<path d="M21 21l-6 -6" />
+										</svg>
+									</button>
+								</div>
+							</form>
+						</div>
+					
+						</div>
+
+
+
+						<div class="dropdown hidden lg:block">
+							<button
+								class="mr-4 btn inline-flex items-center gap-x-2 bg-green-600 text-white border-green-600 disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
+								type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+								<span>
+									<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-layout-grid" width="16"
+										height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+										<path d="M4 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+										<path d="M14 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+										<path d="M4 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+										<path d="M14 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+									</svg>
+								</span>
+								All Departments
+							</button>
+							<ul class="dropdown-menu">
+						</div>
+						<div>
+							<ul class="navbar-nav lg:flex gap-3 lg:items-center">
+															<li class="nav-item w-full lg:w-auto">
+  <a class="nav-link" href="/">Home</a>
+</li>
+
+								<li class="nav-item w-full lg:w-auto">
+  <a class="nav-link" href="/shop">Shop</a>
+</li>
+
+
+								<li class="nav-item dropdown w-full lg:w-auto dropdown-fullwidth">
+									<div class="dropdown-menu pb-0">
+										<div class="flex flex-wrap lg:flex-nowrap p-2 lg:p-6 gap-x-6">
+											<div class="lg:w-1/4 w-full mb-4">
+										
+											</div>
+
+									
+											<div class="lg:w-1/4 w-full mb-4">
+												<div class="card border-0">
+													<img src="../assets/images/banner/menu-banner.jpg"
+														alt="TailwindCSS eCommerce HTML Template" />
+													<div class="absolute pl-6 mt-8">
+														<h5>
+															Dont miss this
+															<br />
+															offer today.
+														</h5>
+														<a href="#"
+															class="btn inline-flex items-center gap-x-2 bg-green-600 text-white border-green-600 disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 btn-sm mt-3">
+															Shop Now
+														</a>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</li>
+
+								<li class="nav-item dropdown w-full lg:w-auto dropdown-flyout">
+									<div class="dropdown-menu dropdown-menu-lg lg:right-0 xl:right-auto">
+										<a class="dropdown-item items-start" href="docs/index.html">
+											<div>
+												<svg xmlns="http://www.w3.org/2000/svg"
+													class="icon icon-tabler icon-tabler-file-text text-green-500" width="24" height="24"
+													viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+													stroke-linejoin="round">
+													<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+													<path d="M14 3v4a1 1 0 0 0 1 1h4" />
+													<path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+													<path d="M9 9l1 0" />
+													<path d="M9 13l6 0" />
+													<path d="M9 17l6 0" />
+												</svg>
+											</div>
+											<div class="ml-3 leading-none">
+												<h6 class="mb-1">Documentations</h6>
+												<p class="text-sm">Browse the all documentation</p>
+											</div>
+										</a>
+										<a class="dropdown-item items-start" href="docs/changelog.html">
+											<div>
+												<svg xmlns="http://www.w3.org/2000/svg"
+													class="icon icon-tabler icon-tabler-box-multiple text-green-500" width="24" height="24"
+													viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+													stroke-linejoin="round">
+													<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+													<path d="M7 3m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" />
+													<path d="M17 17v2a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h2" />
+												</svg>
+											</div>
+											<div class="ml-3 leading-none">
+												<h6 class="mb-1">
+													Changelog
+													<span class="text-green-600 ml-1">v1.4.0</span>
+												</h6>
+												<p class="text-sm">See what's new</p>
+											</div>
+										</a>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+	</div>
+</header>
+<!-- Modal -->
+
+<!-- Shop Cart -->
+
+<div class="offcanvas offcanvas-right" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+	<div class="offcanvas-header border-b">
+		<div>
+			<h5 id="offcanvasRightLabel">Shop Cart</h5>
+			<span>Location in 382480</span>
+		</div>
+		<button type="button" class="btn-close text-inherit" data-bs-dismiss="offcanvas" aria-label="Close">
+			<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x text-gray-700" width="24"
+				height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+				stroke-linejoin="round">
+				<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+				<path d="M18 6l-12 12" />
+				<path d="M6 6l12 12" />
+			</svg>
+		</button>
+	</div>
+	<div class="offcanvas-body p-4">
+		<div>
+			<!-- alert -->
+			<div class="bg-red-500 bg-opacity-25 text-red-800 mb-3 rounded-lg p-4" role="alert">
+				You’ve got FREE delivery. Start
+				<a href="#!" class="alert-link">checkout now!</a>
+			</div>
+			<ul class="list-none">
+				<!-- list group -->
+				<li class="py-3 border-t">
+					<div class="flex items-center">
+						<div class="w-1/2 md:w-1/2 lg:w-3/5">
+							<div class="flex">
+								<img src="../assets/images/products/product-img-1.jpg" alt="Ecommerce" class="w-16 h-16" />
+								<div class="ml-3">
+									<!-- title -->
+									<a href="shop-single.html" class="text-inherit">
+										<h6>Haldiram's Sev Bhujia</h6>
+									</a>
+									<span><small class="text-gray-500">.98 / lb</small></span>
+									<!-- text -->
+									<div class="mt-2 small leading-none">
+										<a href="#!" class="text-green-600 flex items-center">
+											<span class="mr-1 align-text-bottom">
+												<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="14"
+													height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+													stroke-linecap="round" stroke-linejoin="round">
+													<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+													<path d="M4 7l16 0" />
+													<path d="M10 11l0 6" />
+													<path d="M14 11l0 6" />
+													<path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+													<path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+												</svg>
+											</span>
+											<span class="text-gray-500 text-sm">Remove</span>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- input group -->
+						<div class="w-1/3 md:w-1/4 lg:w-1/5">
+							<!-- input -->
+							<div class="input-group input-spinner rounded-lg flex justify-between items-center">
+								<input type="button" value="-" class="button-minus w-8 py-1 border-r cursor-pointer border-gray-300"
+									data-field="quantity" />
+								<input type="number" step="1" max="10" value="1" name="quantity"
+									class="quantity-field w-9 px-2 text-center h-7 border-0 bg-transparent" />
+								<input type="button" value="+" class="button-plus w-8 py-1 border-l cursor-pointer border-gray-300"
+									data-field="quantity" />
+							</div>
+						</div>
+						<!-- price -->
+						<div class="w-1/5 text-center md:w-1/5">
+							<span class="font-bold text-gray-800">$5.00</span>
+						</div>
+					</div>
+				</li>
+				<!-- list group -->
+				<li class="py-3 border-t">
+					<div class="flex items-center">
+						<div class="w-1/2 md:w-1/2 lg:w-3/5">
+							<div class="flex">
+								<img src="../assets/images/products/product-img-2.jpg" alt="Ecommerce" class="w-16 h-16" />
+								<div class="ml-3">
+									<a href="shop-single.html" class="text-inherit">
+										<h6>NutriChoice Digestive</h6>
+									</a>
+									<span><small class="text-gray-500">250g</small></span>
+									<!-- text -->
+									<div class="mt-2 small leading-none">
+										<a href="#!" class="text-green-600 flex items-center">
+											<span class="mr-1 align-text-bottom">
+												<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="14"
+													height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+													stroke-linecap="round" stroke-linejoin="round">
+													<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+													<path d="M4 7l16 0" />
+													<path d="M10 11l0 6" />
+													<path d="M14 11l0 6" />
+													<path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+													<path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+												</svg>
+											</span>
+											<span class="text-gray-500 text-sm">Remove</span>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- input group -->
+						<div class="w-1/3 md:w-1/4 lg:w-1/5">
+							<!-- input -->
+							<div class="input-group input-spinner rounded-lg flex justify-between items-center">
+								<input type="button" value="-" class="button-minus w-8 py-1 border-r cursor-pointer border-gray-300"
+									data-field="quantity" />
+								<input type="number" step="1" max="10" value="1" name="quantity"
+									class="quantity-field w-9 px-2 text-center h-7 border-0 bg-transparent" />
+								<input type="button" value="+" class="button-plus w-8 py-1 border-l cursor-pointer border-gray-300"
+									data-field="quantity" />
+							</div>
+						</div>
+						<!-- price -->
+						<div class="w-1/5 text-center md:w-1/5">
+							<span class="font-bold text-red-600">$20.00</span>
+							<div class="line-through text-gray-500 small">$26.00</div>
+						</div>
+					</div>
+				</li>
+				<!-- list group -->
+				<li class="py-3 border-t">
+					<div class="flex items-center">
+						<div class="w-1/2 md:w-1/2 lg:w-3/5">
+							<div class="flex">
+								<img src="../assets/images/products/product-img-3.jpg" alt="Ecommerce" class="w-16 h-16" />
+								<div class="ml-3">
+									<!-- title -->
+									<a href="shop-single.html" class="text-inherit">
+										<h6>Cadbury 5 Star Chocolate</h6>
+									</a>
+									<span><small class="text-gray-500">1 kg</small></span>
+									<!-- text -->
+									<div class="mt-2 small leading-none">
+										<a href="#!" class="text-green-600 flex items-center">
+											<span class="mr-1 align-text-bottom">
+												<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="14"
+													height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+													stroke-linecap="round" stroke-linejoin="round">
+													<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+													<path d="M4 7l16 0" />
+													<path d="M10 11l0 6" />
+													<path d="M14 11l0 6" />
+													<path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+													<path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+												</svg>
+											</span>
+											<span class="text-gray-500 text-sm">Remove</span>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- input group -->
+						<div class="w-1/3 md:w-1/4 lg:w-1/5">
+							<!-- input -->
+							<div class="input-group input-spinner rounded-lg flex justify-between items-center">
+								<input type="button" value="-" class="button-minus w-8 py-1 border-r cursor-pointer border-gray-300"
+									data-field="quantity" />
+								<input type="number" step="1" max="10" value="1" name="quantity"
+									class="quantity-field w-9 px-2 text-center h-7 border-0 bg-transparent" />
+								<input type="button" value="+" class="button-plus w-8 py-1 border-l cursor-pointer border-gray-300"
+									data-field="quantity" />
+							</div>
+						</div>
+						<!-- price -->
+						<div class="w-1/5 text-center md:w-1/5">
+							<span class="font-bold text-gray-800">$15.00</span>
+							<div class="line-through text-gray-500 small">$20.00</div>
+						</div>
+					</div>
+				</li>
+				<!-- list group -->
+				<li class="py-3 border-t">
+					<div class="flex items-center">
+						<div class="w-1/2 md:w-1/2 lg:w-3/5">
+							<div class="flex">
+								<img src="../assets/images/products/product-img-4.jpg" alt="Ecommerce" class="w-16 h-16" />
+								<div class="ml-3">
+									<!-- title -->
+									<!-- title -->
+									<a href="shop-single.html" class="text-inherit">
+										<h6>Onion Flavour Potato</h6>
+									</a>
+									<span><small class="text-gray-500">250g</small></span>
+									<!-- text -->
+									<div class="mt-2 small leading-none">
+										<a href="#!" class="text-green-600 flex items-center">
+											<span class="mr-1 align-text-bottom">
+												<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="14"
+													height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+													stroke-linecap="round" stroke-linejoin="round">
+													<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+													<path d="M4 7l16 0" />
+													<path d="M10 11l0 6" />
+													<path d="M14 11l0 6" />
+													<path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+													<path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+												</svg>
+											</span>
+											<span class="text-gray-500 text-sm">Remove</span>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- input group -->
+						<div class="w-1/3 md:w-1/4 lg:w-1/5">
+							<!-- input -->
+							<div class="input-group input-spinner rounded-lg flex justify-between items-center">
+								<input type="button" value="-" class="button-minus w-8 py-1 border-r cursor-pointer border-gray-300"
+									data-field="quantity" />
+								<input type="number" step="1" max="10" value="1" name="quantity"
+									class="quantity-field w-9 px-2 text-center h-7 border-0 bg-transparent" />
+								<input type="button" value="+" class="button-plus w-8 py-1 border-l cursor-pointer border-gray-300"
+									data-field="quantity" />
+							</div>
+						</div>
+						<!-- price -->
+						<div class="w-1/5 text-center md:w-1/5">
+							<span class="font-bold text-gray-800">$15.00</span>
+							<div class="line-through text-gray-500 small">$20.00</div>
+						</div>
+					</div>
+				</li>
+				<!-- list group -->
+				<li class="py-3 border-t border-b">
+					<div class="flex items-center">
+						<div class="w-1/2 md:w-1/2 lg:w-3/5">
+							<div class="flex">
+								<img src="../assets/images/products/product-img-5.jpg" alt="Ecommerce" class="w-16 h-16" />
+								<div class="ml-3">
+									<!-- title -->
+									<a href="shop-single.html" class="text-inherit">
+										<h6>Salted Instant Popcorn</h6>
+									</a>
+									<span><small class="text-gray-500">100g</small></span>
+									<!-- text -->
+									<div class="mt-2 small leading-none">
+										<a href="#!" class="text-green-600 flex items-center">
+											<span class="mr-1 align-text-bottom">
+												<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="14"
+													height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+													stroke-linecap="round" stroke-linejoin="round">
+													<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+													<path d="M4 7l16 0" />
+													<path d="M10 11l0 6" />
+													<path d="M14 11l0 6" />
+													<path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+													<path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+												</svg>
+											</span>
+											<span class="text-gray-500 text-sm">Remove</span>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- input group -->
+						<div class="w-1/3 md:w-1/4 lg:w-1/5">
+							<!-- input -->
+							<div class="input-group input-spinner rounded-lg flex justify-between items-center">
+								<input type="button" value="-" class="button-minus w-8 py-1 border-r cursor-pointer border-gray-300"
+									data-field="quantity" />
+								<input type="number" step="1" max="10" value="1" name="quantity"
+									class="quantity-field w-9 px-2 text-center h-7 border-0 bg-transparent" />
+								<input type="button" value="+" class="button-plus w-8 py-1 border-l cursor-pointer border-gray-300"
+									data-field="quantity" />
+							</div>
+						</div>
+						<!-- price -->
+						<div class="w-1/5 text-center md:w-1/5">
+							<span class="font-bold text-gray-800">$15.00</span>
+							<div class="line-through text-gray-500 small">$25.00</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+			<!-- btn -->
+			<div class="flex justify-between mt-4">
+				<a href="#!"
+					class="btn inline-flex items-center gap-x-2 bg-green-600 text-white border-green-600 disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-300">
+					Continue Shopping
+				</a>
+				<a href="#!"
+					class="btn inline-flex items-center gap-x-2 bg-gray-800 text-white border-gray-800 disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-gray-900 hover:border-gray-900 active:bg-gray-900 active:border-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300">
+					Update Cart
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+
+	<main>
+		<section class="mt-8">
+			<div class="container">
+				<div class="swiper-container swiper" id="swiper-1" data-pagination-type="" data-speed="400"
+					data-space-between="100" data-pagination="true" data-navigation="false" data-autoplay="true"
+					data-autoplay-delay="3000" data-effect="fade"
+					data-breakpoints='{"480": {"slidesPerView": 1}, "768": {"slidesPerView": 1}, "1024": {"slidesPerView": 1}}'>
+					<div class="swiper-wrapper pb-8">
+						<div class="swiper-slide"
+						
+							
+							
+						</div>
+						<div class="swiper-slide"
+							style="background: url(/uploads/products/banner.jpg) no-repeat; background-size: cover; border-radius: 0.5rem; background-position: center">
+							
+
+
+<div class="lg:py-32 lg:pl-12 lg:pr-6 px-12 py-12 xl:w-2/5 md:w-3/5">
+  <span
+    class="inline-block p-2 text-sm align-baseline leading-none rounded-lg bg-yellow-500 text-gray-900 font-semibold">
+    Free Shipping - orders over $100
+  </span>
+  <div class="my-7 flex flex-col gap-2">
+    <h2 class="text-white text-xl lg:text-5xl font-bold leading-tight">
+      Free Shipping on
+      <br />
+      orders over
+      <span class="text-green-400">$100</span>
+    </h2>
+    <p class="text-md font-light text-white">
+      Free Shipping to First-Time Customers Only, After promotions and discounts are applied.
+    </p>
+  </div>
+  <a href="#!"
+     class="btn inline-flex items-center gap-x-2 bg-gray-800 text-white border-gray-800 disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-gray-900 hover:border-gray-900 active:bg-gray-900 active:border-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300">
+    Shop Now
+    <svg xmlns="http://www.w3.org/2000/svg"
+         class="icon icon-tabler icon-tabler-arrow-right inline-block" width="14"
+         height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+         fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M5 12l14 0" />
+      <path d="M13 18l6 -6" />
+      <path d="M13 6l6 6" />
+    </svg>
+  </a>
+</div>
+
+
+
+
+
+
+
+						</div>
+
+						<!-- Add more slides as needed -->
+					</div>
+					<!-- Add Pagination -->
+					<div class="swiper-pagination !bottom-14"></div>
+					<!-- Add Navigation -->
+					<div class="swiper-navigation">
+						<div class="swiper-button-next"></div>
+						<div class="swiper-button-prev"></div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section class="mt-8">
+			<div class="container">
+				<div class="flex flex-wrap">
+					<div class="w-full">
+						<!-- <h2 class="text-lg absolute z-10">Featured Categories</h2> -->
+					</div>
+				</div>
+				
+			</div>
+		</section>
+
+		<section>
+			<div class="container">
+				<div class="flex md:space-x-2 lg:space-x-6 flex-wrap md:flex-nowrap">
+					<div class="w-full md:w-1/2 mb-3">
+  <div class="py-10 px-8 rounded-lg"
+       style="height:250px; background: url(/uploads/products/0987654321.jpg) no-repeat; background-size: cover; background-position: center;">
+    <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-1">
+        <p>
+          <!-- Get Upto -->
+          <!-- <span class="font-bold text-gray-800">30%</span> -->
+          <!-- Off -->
+        </p>
+      </div>
+
+      <div class="flex flex-wrap">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+					<div class="w-full md:w-1/2">
+						<div class="py-10 px-8 rounded-lg"
+							 style="height:250px; background: url(/uploads/products/1234567890.jpg) no-repeat; background-size: cover; background-position: center;">
+							<div class="flex flex-col gap-5">
+								<div class="flex flex-col gap-1">
+									<h2 class="font-bold text-xl"></h2>
+									<p>
+										<!-- Get Upto -->
+										<span class="font-bold text-gray-800"></span>
+										
+									</p>
+								</div>
+
+								<div class="flex flex-wrap">
+									
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+	<!-- Popular Products Start-->
+
+	<section class="lg:my-14 my-8">
+  <div class="container">
+    <div class="flex flex-wrap">
+      <div class="w-full mb-6">
+        <h2 class="text-lg">Popular Products</h2>
+      </div>
+    </div>
+
+    <%
+  // Use let instead of const to avoid redeclaration errors
+  let popularProductsFiltered = products
+    .filter(p => p.category && !p.category.isBlocked && !p.category.isDeleted)
+    .sort((a, b) => {
+      const priceA = a.prices && a.prices.find(p => p > 0) ? a.prices.find(p => p > 0) : 0;
+      const priceB = b.prices && b.prices.find(p => p > 0) ? b.prices.find(p => p > 0) : 0;
+      return priceB - priceA;
+    })
+    .slice(0, 8); // top 8 popular products
+%>
+
+<div class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
+  <% popularProductsFiltered.forEach(product => { 
+       const basePrice = product.prices && product.prices.find(p => p>0) ? product.prices.find(p=>p>0) : 0;
+       const offerPercentage = product.offer ? product.offer.offerPercentage : 0;
+       const finalPrice = offerPercentage > 0 ? Math.floor(basePrice - (basePrice * offerPercentage / 100)) : basePrice;
+
+       let imgToShow = (product.images && product.images.length > 0) 
+                        ? product.images[0] 
+                        : (product.productPic && product.productPic.length > 0) 
+                          ? product.productPic[0] 
+                          : "images/default-product.jpg";
+  %>
+
+    <div class="relative rounded-lg border bg-white border-gray-300 shadow p-4 mb-6 card-product w-full mx-auto">
+      
+      <% if(offerPercentage > 0){ %>
+        <div class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+          <%= offerPercentage %>% OFF
+        </div>
+      <% } %>
+
+      <div class="flex-1 mb-3 overflow-hidden rounded mx-auto" style="width:200px; height:200px;">
+        <img src="<%= imgToShow.startsWith('http') || imgToShow.startsWith('/') ? imgToShow : '/' + imgToShow %>" 
+             alt="<%= product.name %>" 
+             style="width:200px; height:200px; object-fit:cover;">
+      </div>
+
+      <div class="flex flex-col justify-end items-center mt-auto">
+        <% if(product.category && product.category.name){ %>
+          <p class="text-gray-500 text-sm mb-1 text-center"><%= product.category.name %></p>
+        <% } %>
+
+        <h3 class="text-center text-lg font-semibold mb-1 truncate w-full"><%= product.name %></h3>
+
+        <% if(offerPercentage > 0){ %>
+          <p class="text-green-600 font-bold mb-3 text-center">
+            ₹<%= finalPrice %> 
+            <span class="line-through text-gray-400 text-sm">₹<%= basePrice %></span>
+          </p>
+        <% } else { %>
+          <p class="text-green-600 font-bold mb-3 text-center">
+            ₹<%= basePrice %>
+          </p>
+        <% } %>
+
+        <a href="/product/<%= product._id %>">
+          <button class="bg-green-600 text-white text-sm px-3 py-1 rounded hover:bg-green-700">
+            Add
+          </button>
+        </a>
+      </div>
+
+    </div>
+
+  <% }) %>
+</div>
+
+  </div>
+</section>
+
+
+<!-- Popular Products Start-->
+
+
+<!-- <section class="lg:my-14 my-8">
+  <div class="container">
+    <div class="flex flex-wrap">
+      <div class="w-full mb-6">
+        <h2 class="text-lg">Popular Products</h2>
+      </div>
+    </div>
+
+    <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
+
+      <% 
+        // Filter products: sort by highest price first
+        const popularProducts = products
+          .filter(p => p.category && !p.category.isBlocked && !p.category.isDeleted)
+          .sort((a,b) => {
+            const priceA = a.prices && a.prices.find(p => p > 0) ? a.prices.find(p => p > 0) : 0;
+            const priceB = b.prices && b.prices.find(p => p > 0) ? b.prices.find(p => p > 0) : 0;
+            return priceB - priceA;
+          })
+          .slice(0, 8); // max 2 lines * 4 products
+      %>
+
+      <% popularProducts.forEach(product => { %>
+        <div class="relative rounded-lg border bg-white border-gray-300 shadow p-4 mb-6 card-product w-full mx-auto">
+          <div class="flex flex-col h-full">
+        
+            <div class="flex-1 mb-3 overflow-hidden rounded mx-auto" style="width:200px; height:200px;">
+              <% 
+                let imgToShow = (product.images && product.images.length > 0) 
+                                ? product.images[0] 
+                                : (product.productPic && product.productPic.length > 0) 
+                                  ? product.productPic[0] 
+                                  : "images/default-product.jpg"; 
+              %>
+              <img src="<%= imgToShow.startsWith('http') || imgToShow.startsWith('/') ? imgToShow : '/' + imgToShow %>" 
+                   alt="<%= product.name %>" 
+                   style="width:200px; height:200px; object-fit:cover;">
+            </div>
+
+            <div class="flex flex-col justify-end items-center mt-auto">
+              
+              <% if(product.category && product.category.name){ %>
+                <p class="text-gray-500 text-sm mb-1 text-center"><%= product.category.name %></p>
+              <% } %>
+
+              <h3 class="text-center text-lg font-semibold mb-1 truncate w-full"><%= product.name %></h3>
+
+              <p class="text-green-600 font-bold mb-3 text-center">
+                ₹<%= product.prices && product.prices.find(p => p > 0) ? product.prices.find(p => p > 0) : 0 %>
+              </p>
+
+              <a href="/product/<%= product._id %>">
+                <button class="bg-green-600 text-white text-sm px-3 py-1 rounded hover:bg-green-700">
+                  Add
+                </button>
+              </a>
+
+            </div>
+          </div>
+        </div>
+      <% }) %>
+
+    </div>
+  </div>
+</section> -->
+
+
+		<!-- Popular Products End-->
+
+	
+		
+	</main>
+	<!-- footer -->
+<footer class="bg-gray-200 py-8">
+	<div class="container">
+		<div class="flex flex-wrap md:gap-4 lg:gap-0 py-4 mb-6">
+			<div class="w-full md:w-full lg:w-1/3 flex flex-col gap-4 mb-6">
+				<h6>Categories</h6>
+				<div class="flex flex-wrap">
+					<div class="w-1/2">
+						<!-- list -->
+						<ul class="flex flex-col gap-2">
+							<li><a href="#!" class="inline-block hover:text-green-600">Vegetables & Fruits</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Breakfast & instant food</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Bakery & Biscuits</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Atta, rice & dal</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Sauces & spreads</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Organic & gourmet</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Baby care</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Cleaning essentials</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Personal care</a></li>
+						</ul>
+					</div>
+					<div class="w-1/2">
+						<!-- list -->
+						<ul class="flex flex-col gap-2">
+							<li><a href="#!" class="inline-block hover:text-green-600">Dairy, bread & eggs</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Cold drinks & juices</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Tea, coffee & drinks</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Masala, oil & more</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Chicken, meat & fish</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Paan corner</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Pharma & wellness</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Home & office</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Pet care</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="w-full md:w-full lg:w-2/3">
+				<div class="flex flex-wrap">
+					<div class="w-1/2 sm:w-1/2 md:w-1/4 flex flex-col gap-4 mb-6">
+						<h6>Get to know us</h6>
+						<!-- list -->
+						<ul class="flex flex-col gap-2">
+							<li><a href="#!" class="inline-block hover:text-green-600">Company</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">About</a></li>
+							<li><a href="#!" class="inline-block">Blog</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Help Center</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Our Value</a></li>
+						</ul>
+					</div>
+					<div class="w-1/2 sm:w-1/2 md:w-1/4 flex flex-col gap-4 mb-6">
+						<h6>For Consumers</h6>
+						<ul class="flex flex-col gap-2">
+							<!-- list -->
+							<li><a href="#!" class="inline-block hover:text-green-600">Payments</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Shipping</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Product Returns</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">FAQ</a></li>
+							<li><a href="shop-checkout.html" class="inline-block">Shop Checkout</a></li>
+						</ul>
+					</div>
+					<div class="w-1/2 sm:w-1/2 md:w-1/4 flex flex-col gap-4">
+						<h6>Become a Shopper</h6>
+						<ul class="flex flex-col gap-2">
+							<!-- list -->
+							<li><a href="#!" class="inline-block hover:text-green-600">Shopper Opportunities</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Become a Shopper</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Earnings</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Ideas & Guides</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">New Retailers</a></li>
+						</ul>
+					</div>
+					<div class="w-1/2 sm:w-1/2 md:w-1/4 flex flex-col gap-4">
+						<h6>Freshcart programs</h6>
+						<ul class="flex flex-col gap-2">
+							<!-- list -->
+							<li><a href="#!" class="inline-block hover:text-green-600">Freshcart programs</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Gift Cards</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Promos & Coupons</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Freshcart Ads</a></li>
+							<li><a href="#!" class="inline-block hover:text-green-600">Careers</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="border-t py-4 border-gray-300">
+			<div class="gap-y-4 flex flex-wrap items-center justify-center lg:justify-start">
+				<div class="lg:w-2/5 lg:text-left text-center">
+					<div class="flex md:flex-row flex-col gap-3 md:gap-6 items-center">
+						<div class="text-gray-900">Payment Partners</div>
+						<ul class="flex items-center flex-row gap-4">
+							<li>
+								<a href="#!"><img src="../assets/images/payment/amazonpay.svg" alt="amazon pay" /></a>
+							</li>
+							<li>
+								<a href="#!"><img src="../assets/images/payment/american-express.svg" alt="american express" /></a>
+							</li>
+							<li>
+								<a href="#!"><img src="../assets/images/payment/mastercard.svg" alt="mastercard" /></a>
+							</li>
+							<li>
+								<a href="#!"><img src="../assets/images/payment/paypal.svg" alt="paypal" /></a>
+							</li>
+							<li>
+								<a href="#!"><img src="../assets/images/payment/visa.svg" alt="visa" /></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="lg:w-3/5 flex justify-end">
+					<div class="flex flex-col md:flex-row items-center gap-3 md:gap-6">
+						<div class="text-gray-900">Get deliveries with FreshCart</div>
+						<ul class="flex flex-row gap-2">
+							<li>
+								<a href="#!"><img src="../assets/images/appbutton/appstore-btn.svg" alt="" style="width: 140px" /></a>
+							</li>
+							<li>
+								<a href="#!"><img src="../assets/images/appbutton/googleplay-btn.svg" alt="" style="width: 140px" /></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="border-t py-4 border-gray-300">
+			<div class="flex flex-col md:flex-row items-center gap-3">
+				<div class="md:w-1/2">
+					<span class="text-sm text-gray-500">
+						©
+						<span id="copyright">
+							<script>
+								document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()));
+							</script>
+						</span>
+						FreshCart TailwindCSS eCommerce HTML Template. Powered by
+						<a href="https://codescandy.com/" target="_blank" class="text-green-600">Codescandy</a>
+						.
+					</span>
+				</div>
+				<div class="md:w-1/2 flex md:justify-end items-center">
+					<div class="flex flex-row gap-5 items-center">
+						<div class="text-gray-500">Follow us on</div>
+						<ul class="flex items-center justify-end text-sm gap-1">
+							<li>
+								<a
+									href="#!"
+									class="inline-flex justify-center items-center align-middle text-center select-none border font-normal whitespace-no-wrap rounded leading-normal no-underline h-8 w-8 border-gray-300 hover:border-green-600 hover:text-green-600 transition ease-in-out"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="icon icon-tabler icon-tabler-brand-facebook"
+										width="16"
+										height="16"
+										viewBox="0 0 24 24"
+										stroke-width="1.5"
+										stroke="currentColor"
+										fill="none"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+										<path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3" />
+									</svg>
+								</a>
+							</li>
+							<li>
+								<a
+									href="#!"
+									class="inline-flex justify-center items-center align-middle text-center select-none border font-normal whitespace-no-wrap rounded leading-normal no-underline h-8 w-8 border-gray-300 hover:border-green-600 hover:text-green-600 transition ease-in-out"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="icon icon-tabler icon-tabler-brand-x"
+										width="16"
+										height="16"
+										viewBox="0 0 24 24"
+										stroke-width="1.5"
+										stroke="currentColor"
+										fill="none"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+										<path d="M4 4l11.733 16h4.267l-11.733 -16z" />
+										<path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+									</svg>
+								</a>
+							</li>
+							<li>
+								<a
+									href="#!"
+									class="inline-flex justify-center items-center align-middle text-center select-none border font-normal whitespace-no-wrap rounded leading-normal no-underline h-8 w-8 border-gray-300 hover:border-green-600 hover:text-green-600 transition ease-in-out"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="icon icon-tabler icon-tabler-brand-instagram"
+										width="16"
+										height="16"
+										viewBox="0 0 24 24"
+										stroke-width="1.5"
+										stroke="currentColor"
+										fill="none"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+										<path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z" />
+										<path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+										<path d="M16.5 7.5l0 .01" />
+									</svg>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+<!-- buy now template button
+Remove if you do not want.
+-->
+
+
+
+
+
+ <!-- Libs JS -->
+<script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/libs/simplebar/dist/simplebar.min.js"></script>
+
+<!-- Theme JS -->
+
+<script src="assets/js/theme.min.js"></script>
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
+
+<script>
+
+
+
+
+
+	const searchInput = document.getElementById("searchProducts");
+const searchBtn = document.getElementById("searchBtn");
+
+searchBtn.addEventListener("click", async () => {
+  const query = searchInput.value.trim();
+
+  if(query.length === 0){
+    Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Please enter product name!' });
+    return;
+  }
+
+  try{
+    const res = await fetch(`/search-product?query=${encodeURIComponent(query)}`);
+    const data = await res.json();
+
+    if(!data || data.length === 0){
+      Swal.fire({ icon: 'error', title: 'Oops...', text: 'Product not found!' });
+      return;
+    }
+
+    // If multiple products match, go to the first one (or you can list them)
+    window.location.href = `/product/${data[0]._id}`;
+
+  } catch(err){
+    console.error(err);
+    Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later.' });
+  }
+});
+
+// const searchInput = document.getElementById("searchProducts");
+const resultsList = document.getElementById("searchResults");
+
+let timeout = null;
+
+searchInput.addEventListener("input", () => {
+  const query = searchInput.value.trim();
+
+  // Clear previous timeout
+  if(timeout) clearTimeout(timeout);
+
+  // Small delay before sending request
+  timeout = setTimeout(async () => {
+    if(query.length === 0){
+      resultsList.innerHTML = '';
+      resultsList.classList.add('hidden');
+      return;
+    }
+
+    try{
+      const res = await fetch(`/search-products?query=${encodeURIComponent(query)}`);
+      const data = await res.json();
+
+      resultsList.innerHTML = '';
+
+      if(data.length === 0){
+        resultsList.classList.add('hidden');
+        Swal.fire({ icon: 'error', title: 'Oops...', text: 'No products found!' });
+        return;
+      }
+
+      data.forEach(product => {
+        const li = document.createElement('li');
+        li.textContent = product.name;
+        li.className = 'px-3 py-2 cursor-pointer hover:bg-gray-100';
+        li.addEventListener('click', () => {
+          window.location.href = `/product/${product._id}`; // redirect to product page
+        });
+        resultsList.appendChild(li);
+      });
+
+      resultsList.classList.remove('hidden');
+
+    } catch(err){
+      console.error(err);
+      Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later' });
+    }
+
+  }, 300); // 300ms debounce
+});
+
+// Hide results if click outside
+document.addEventListener('click', e => {
+  if(!resultsList.contains(e.target) && e.target !== searchInput){
+    resultsList.classList.add('hidden');
+  }
+});
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  // =========================
+  // Dropdown toggle & click outside to close (only if logged in)
+  // =========================
+  const btn = document.getElementById("userDropdownBtn");
+  const dropdown = document.getElementById("userDropdown");
+
+  if(btn && dropdown) {
+    // Toggle dropdown on button click
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle("hidden");
+    });
+
+    // Close dropdown on clicking outside
+    window.addEventListener("click", (e) => {
+      if(!btn.contains(e.target) && !dropdown.contains(e.target)){
+        dropdown.classList.add("hidden");
+      }
+    });
+  }
+
+  // =========================
+  // Logout SweetAlert confirmation
+  // =========================
+  const logoutForm = document.getElementById("logoutForm");
+  if(logoutForm){
+    logoutForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You will be logged out!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, logout!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          logoutForm.submit();
+        }
+      });
+    });
+  }
+
+  // =========================
+  // Login form with SweetAlert & POST
+  // =========================
+  const loginForm = document.getElementById("loginForm");
+  if(loginForm){
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password) {
+        Swal.fire({ 
+          icon: "warning", 
+          title: "Oops!", 
+          text: "Please enter email and password" 
+        });
+        return;
+      }
+
+      try {
+        const res = await fetch("/signin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        const result = await res.json();
+
+        if (result.success) {
+          // Email verification check
+          if (!result.user.isVerified) {
+            Swal.fire({
+              icon: "warning",
+              title: "Email Not Verified",
+              text: "Please verify your email first."
+            });
+            return;
+          }
+
+          // Blocked user check
+          if (result.user.isBlocked) {
+            Swal.fire({
+              icon: "error",
+              title: "Account Blocked",
+              text: "Your account is blocked. Contact support."
+            });
+            return;
+          }
+
+          // Correct login -> show success & reload page
+          Swal.fire({
+            icon: "success",
+            title: "Login Successful 🎉",
+            text: `Welcome ${result.user.name.split(' ')[0]}!`, // First name only
+            confirmButtonColor: "#16a34a"
+          }).then(() => {
+            window.location.reload(); // reload page to show dropdown with username
+          });
+
+        } else {
+          Swal.fire({ 
+            icon: "error", 
+            title: "Login Failed ❌", 
+            text: result.message 
+          });
+        }
+
+      } catch (err) {
+        Swal.fire({ 
+          icon: "error", 
+          title: "Server Error", 
+          text: "Try again later" 
+        });
+      }
+    });
+  }
+
+});
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+	<script src="assets/js/vendors/countdown.js"></script>
+
+	<script src="assets/libs/tiny-slider/dist/min/tiny-slider.js"></script>
+	<script src="assets/js/vendors/tns-slider.js"></script>
+	<script src="assets/js/vendors/zoom.js"></script>
+	<script src="assets/js/vendors/language.js"></script>
+	<!-- Swiper JS -->
+	<script src="assets/libs/swiper/swiper-bundle.min.js"></script>
+	<script src="assets/js/vendors/swiper.js"></script>
+	<script src="assets/js/vendors/validation.js"></script>
+</body>
+
+
+<!-- Mirrored from freshcart-tailwind.codescandy.com/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Dec 2024 13:18:39 GMT -->
+</html>

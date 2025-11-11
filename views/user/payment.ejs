@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Razorpay Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  </head>
+  <body>
+    <h2>Make a Payment</h2>
+    <form action="/payment/order" method="POST">
+      <input type="number" name="amount" placeholder="Enter Amount (INR)" required />
+      <button type="submit">Pay Now</button>
+    </form>
+
+    <% if (typeof order !== 'undefined') { %>
+      <script>
+        const options = {
+          key: "<%= key_id %>",
+          amount: "<%= order.amount %>",
+          currency: "INR",
+          name: "Your App Name",
+          description: "Test Transaction",
+          order_id: "<%= order.id %>",
+          handler: function (response) {
+            // submit verification
+            const form = document.createElement("form");
+            form.method = "POST";
+            form.action = "/payment/verify";
+
+            for (const key in response) {
+              const input = document.createElement("input");
+              input.name = key;
+              input.value = response[key];
+              form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+          },
+          theme: { color: "#3399cc" },
+        };
+
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+      </script>
+    <% } %>
+  </body>
+</html>

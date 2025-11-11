@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <link rel="stylesheet" href="/styles/csscommon.css">
+    <link rel="stylesheet" href="/styles/validationCommon.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Theme CSS -->
+ <link rel="stylesheet" href="/public/assets/css/theme.min.css">
+  <!-- <link rel="stylesheet" href="/public/assets/css/theme.min.css"> -->
+<style>
+  
+</style>
+</head>
+
+<body>
+  <div id="loading-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); color: white; font-size: 24px; text-align: center; line-height: 100vh; z-index: 100;">
+    OTP sending... Please wait.
+  </div>
+    <div class="validationHeader row contain-width">
+        <div class="headerLogo col-lg-6 col-2 pt-3 ">
+            <img src="/images/freshKartLogo/freshcart-logo.png" alt="">
+        </div>       
+
+        <p class="pt-3 col-10 col-lg-6 text-end">Already Have an account? <a href="/signin" class="text-success text-decoration-none">Sign in</a></p>
+    </div>
+<!-- Sign up Page -->
+
+
+<div class="validation-form row contain-width mt-5 mb-5">
+    <div class="sign-in-image col-lg-6 text-end">
+        <img src="../assets/images/svg-graphics/signup-g.svg" alt="">
+    </div>
+<div class="sign-up-content col-lg-6 col-md-6">
+  <h2>Get Start Shopping</h2>
+  <p>Welcome to FreshCart! Enter your email to get started.</p>
+
+  <!-- Single form -->
+  <form id="sign-up-form" method="POST" action="/signup">
+    <!-- First Name and Last Name -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="firstName" class="form-label">First Name</label>
+        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter your first name" autocomplete="off">
+        <span class="error-style text-danger" id="firstNameError"></span>
+      </div>
+      <div class="col-md-6">
+        <label for="lastName" class="form-label">Last Name</label>
+        <input type="text" class="form-control" id="lastName" name="secondName" placeholder="Enter your last name" autocomplete="off">
+        <span class="error-style text-danger" id="lastNameError"></span>
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+      <label for="email" class="form-label">Email Address</label>
+      <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" autocomplete="off">
+      <span class="error-style text-danger" id="emailError"></span>
+    </div>
+
+    <!-- Phone -->
+    <div class="mb-3">
+      <label for="phone" class="form-label">Phone Number</label>
+      <input type="tel" class="form-control" id="phone" name="phoneNumber" maxlength="10" placeholder="Enter your phone number" autocomplete="off">
+      <span class="error-style text-danger" id="phoneError"></span>
+    </div>
+
+    <!-- Password -->
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <div style="position: relative;">
+        <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" autocomplete="off">
+        <span id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">👁</span>
+      </div>
+      <span class="error-style text-danger" id="passwordError"></span>
+    </div>
+
+    <!-- Referral -->
+    <div class="mb-3">
+      <label for="referralCode" class="form-label">Referral Code (Optional)</label>
+      <input type="text" class="form-control" id="referralCode" name="referralCode" maxlength="6" placeholder="Enter referral code" autocomplete="off">
+      <span class="error-style text-danger" id="referralCodeError"></span>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="btn btn-success w-100">Sign Up</button>
+    <p class="error-style text-center" id="userExistError"></p>
+  </form>
+
+
+
+
+
+<% if (typeof sweetError !== 'undefined') { %>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: '<%= sweetError %>',
+      confirmButtonText: 'OK'
+    });
+  </script>
+<% } %>
+
+
+
+
+
+
+
+
+
+  <!-- Divider -->
+  <div class="text-center my-3">
+    <span>or</span>
+  </div>
+
+  <!-- Google -->
+  <a href="/auth/google/signup" >
+    <button type="button" class="btn btn-outline-danger w-100">
+      <img src="/images/validation/google-brands-solid.png" alt="" class="google-icon me-3"> Sign Up with Google
+    </button>
+  </a>
+</div>
+
+
+
+
+
+
+
+
+
+
+<!-- Sign up Page -->
+    <%-include('../partials/footer')%>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/js/sign-up-validator.js"></script>
+<script src="/js/sign-up.js"></script>
+
+
+
+<script>
+  
+  const signupForm = document.getElementById("sign-up-form");
+const signUpBtn = signupForm.querySelector("button[type='submit']");
+
+// Clear error when user types in the input
+signupForm.querySelectorAll("input").forEach(input => {
+  input.addEventListener("input", () => {
+    const errorEl = document.getElementById(input.id + "Error");
+    if (errorEl) errorEl.textContent = ""; // clear error on input
+  });
+});
+
+// Form submit & validation
+signupForm.addEventListener("submit", function (e) {
+  e.preventDefault(); // prevent default submit
+
+  let isValid = true;
+
+  // Reset error messages
+  document.querySelectorAll(".error-style").forEach(el => el.textContent = "");
+
+  // Get values
+  const firstName = document.getElementById("firstName").value.trim();
+  const lastName = document.getElementById("lastName").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const referral = document.getElementById("referralCode").value.trim();
+
+  const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  const phoneRegex = /^[0-9]{10}$/;
+
+  if (!firstName) { document.getElementById("firstNameError").textContent = "First name is required"; isValid = false; }
+  if (!lastName) { document.getElementById("lastNameError").textContent = "Last name is required"; isValid = false; }
+  if (!email) { document.getElementById("emailError").textContent = "Email is required"; isValid = false; }
+  else if (!emailRegex.test(email)) { document.getElementById("emailError").textContent = "Enter a valid email"; isValid = false; }
+  if (!phone) { document.getElementById("phoneError").textContent = "Phone number is required"; isValid = false; }
+  else if (!phoneRegex.test(phone)) { document.getElementById("phoneError").textContent = "Enter a valid 10-digit phone number"; isValid = false; }
+  if (!password) { document.getElementById("passwordError").textContent = "Password is required"; isValid = false; }
+  else if (password.length < 6) { document.getElementById("passwordError").textContent = "Password must be at least 6 characters"; isValid = false; }
+  if (referral && referral.length !== 6) { document.getElementById("referralCodeError").textContent = "Referral code must be 6 characters"; isValid = false; }
+
+  if (!isValid) return; // stop submit if invalid
+
+  // Disable button after valid submission to prevent multiple clicks
+  signUpBtn.disabled = true;
+  signUpBtn.innerText = "Signing Up...";
+
+  signupForm.submit();
+});
+
+// Toggle password visibility
+document.getElementById("togglePassword").addEventListener("click", function () {
+  const pwd = document.getElementById("password");
+  pwd.type = pwd.type === "password" ? "text" : "password";
+});
+
+</script>
+
+
+</body>
+</html>

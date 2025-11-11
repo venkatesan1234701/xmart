@@ -1,0 +1,23 @@
+@media (max-width: 992px) {
+  .sign-in-image {
+    display: none;
+  }
+  .validation-form {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 488px) {
+  .validationHeader p {
+    display: none;
+  }
+}
+.google-icon {
+  width: 20px;
+}
+
+.error-style {
+  color: red;
+  font-weight: bolder;
+  font-size: 12px;
+}

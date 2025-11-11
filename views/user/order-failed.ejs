@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Payment Failed</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        background: #fef2f2;
+        color: #991b1b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        height: 100vh;
+      }
+      .card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        max-width: 400px;
+        text-align: center;
+      }
+      h1 {
+        color: #dc2626;
+        margin-bottom: 15px;
+      }
+      .btn {
+        background: #dc2626;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 20px;
+      }
+      .btn:hover {
+        background: #b91c1c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>❌ Payment Failed</h1>
+      <p>It looks like your payment did not go through.</p>
+      <p>Please try again or use another payment method.</p>
+       <a href="/user/orders" 
+       class="btn btn-success mt-4 px-4 py-2 shadow-sm">
+      View My Orders
+    </a>
+    </div>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+<!-- views/user/order-failed.ejs -->
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <title>Payment Failed</title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body class="text-center p-5">
+    <h2 style="color: red;">⚠️ Payment Failed</h2>
+    <p>Your order (<%= orderId %>) was created, but payment was not successful.</p>
+    <p>Total: ₹<%= grandTotal %></p>
+    <p>Payment Method: <%= paymentMethod %></p>
+
+    <a href="/user/orders" class="btn btn-primary mt-3">View My Orders</a>
+  </body>
+</html> -->
+

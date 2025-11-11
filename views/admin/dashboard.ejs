@@ -1,0 +1,1210 @@
+<!doctype html>
+<html lang="en">
+
+
+<!-- Mirrored from freshcart-tailwind.codescandy.com/dashboard/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Dec 2024 13:19:20 GMT -->
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="shortcut icon" type="image/x-icon" href="../assets/images/favicon/favicon.ico" />
+
+<!-- Libs CSS -->
+<link rel="preconnect" href="https://fonts.googleapis.com/" />
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" />
+<link rel="stylesheet" href="../../cdn.jsdelivr.net/npm/%40tabler/icons-webfont%402.46.0/tabler-icons.min.css" />
+<link rel="stylesheet" href="../assets/libs/simplebar/dist/simplebar.min.css" />
+
+<!-- Theme CSS -->
+<link rel="stylesheet" href="../assets/css/theme.min.css">
+
+	<title>TailwindCSS Dashboard eCommerce HTML Template - FreshCart</title>
+</head>
+
+<body>
+	<!-- main -->
+	<div>
+		<!-- navbar -->
+
+
+		<div class="main-wrapper">
+			<!-- navbar vertical -->
+			 			
+<nav class="w-full bg-white shadow-md fixed top-0 left-0 z-50">
+  <div class="flex items-center justify-between px-6 py-3">
+    <!-- Logo -->
+    <a href="" class="navbar-brand flex items-center">
+      <img src="../assets/images/logo/Xe mart.png" alt="Logo" class="h-10" />
+    </a>
+
+    <!-- Nav Items -->
+    <ul class="flex items-center gap-x-6" id="topNavbar">
+
+      <!-- Dashboard -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="dashboard">
+          <span class="nav-link-icon">
+            <!-- Dashboard Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+              <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+              <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+            </svg>
+          </span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <!-- Products -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="products">
+          <span class="nav-link-icon">
+            <!-- Products Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M17 17h-11v-14h-2" />
+              <path d="M6 5l14 1l-1 7h-13" />
+            </svg>
+          </span>
+          <span>Products</span>
+        </a>
+      </li>
+
+      <!-- Categories -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="categories">
+          <span class="nav-link-icon">
+            <!-- Categories Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 6l11 0" />
+              <path d="M9 12l11 0" />
+              <path d="M9 18l11 0" />
+              <path d="M5 6l0 .01" />
+              <path d="M5 12l0 .01" />
+              <path d="M5 18l0 .01" />
+            </svg>
+          </span>
+          <span>Categories</span>
+        </a>
+      </li>
+
+      <!-- Customers -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/customers">
+          <span class="nav-link-icon">
+            <!-- Customers Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+              <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+            </svg>
+          </span>
+          <span>Customers</span>
+        </a>
+      </li>
+
+      <!-- Reviews -->
+  
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/orders">
+    <span class="nav-link-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+      </svg>
+    </span>
+    <span>Orders</span>
+  </a>
+</li>
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/coupons">
+    <span class="nav-link-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+      </svg>
+    </span>
+    <span>coupon</span>
+  </a>
+</li>
+
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/product-offer">
+    <span class="nav-link-icon">
+      <!-- Product Offer Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1v4" />
+        <path d="M6 7h12l-1 12H7L6 7z" />
+        <path d="M9 12h2v4H9zM13 12h2v4h-2z" />
+      </svg>
+    </span>
+    <span>Product Offer</span>
+  </a>
+</li>
+
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/category-offer">
+    <span class="nav-link-icon">
+      <!-- Category Offer Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M9 10h6v4H9z" />
+        <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+      </svg>
+    </span>
+    <span>Category Offer</span>
+  </a>
+</li>
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/sales-report">
+    <span class="nav-link-icon">
+      <!-- Sales Report Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3h14v14H3z" /> <!-- Square/Report icon -->
+        <path d="M3 7h14" />
+        <path d="M7 3v14" />
+      </svg>
+    </span>
+    <span>Sales Report</span>
+  </a>
+</li>
+
+
+      <!-- Logout -->
+      <li>
+        <a class="flex items-center gap-2 text-red-600 hover:text-red-800" href="/admin/logout">
+          <span class="nav-link-icon">
+            <!-- Logout Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+              <path d="M9 12h12l-3 -3m0 6l3 -3" />
+            </svg>
+          </span>
+          <span>Log Out</span>
+        </a>
+      </li>
+
+    </ul>
+  </div>
+</nav>
+
+			<!-- navbar -->
+
+<nav class="navbar-vertical-nav offcanvas offcanvas-left navbar-offcanvac" tabindex="-1" id="offcanvasExample">
+	<div class="navbar-vertical">
+		<div class="px-4 py-5 flex justify-between items-center">
+			<a href="../index.html" class="navbar-brand">
+				<img src="../assets/images/logo/Xe mart.png" alt="" />
+			</a>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		</div>
+		<div class="navbar-vertical-content flex-grow-1" data-simplebar="">
+			<ul class="navbar-nav flex-col">
+				<li class="nav-item">
+					<a class="nav-link  active " href="index.html">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-home"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+									<path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+									<path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Dashboard</span>
+						</div>
+					</a>
+				</li>
+				<li class="nav-item mt-6 mb-3">
+					<span class="nav-label">Store Managements</span>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link " href="products.html">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+									<path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+									<path d="M17 17h-11v-14h-2" />
+									<path d="M6 5l14 1l-1 7h-13" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Products</span>
+						</div>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link " href="categories.html">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-list"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M9 6l11 0" />
+									<path d="M9 12l11 0" />
+									<path d="M9 18l11 0" />
+									<path d="M5 6l0 .01" />
+									<path d="M5 12l0 .01" />
+									<path d="M5 18l0 .01" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Categories</span>
+						</div>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a
+						class="nav-link  collapsed "
+						href="#"
+						data-bs-toggle="collapse"
+						data-bs-target="#navCategoriesOrders"
+						aria-expanded="false"
+						aria-controls="navCategoriesOrders"
+					>
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-bag"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1 -2.966 2.544h-6.852a3 3 0 0 1 -2.965 -2.544l-1.255 -8.152a2 2 0 0 1 1.977 -2.304z" />
+									<path d="M9 11v-5a3 3 0 0 1 6 0v5" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Orders</span>
+						</div>
+					</a>
+					<div id="navCategoriesOrders" class="collapse " data-bs-parent="#sideNavbar">
+						<ul class="nav flex-col">
+							<li class="nav-item">
+								<a class="nav-link " href="order-list.html">List</a>
+							</li>
+							<!-- Nav item -->
+							<li class="nav-item">
+								<a class="nav-link " href="order-single.html">Single</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+				<li class="nav-item">
+					<a class="nav-link " href="vendor-grid.html">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-building-store"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M3 21l18 0" />
+									<path d="M3 7v1a3 3 0 0 0 6 0v-1m0 1a3 3 0 0 0 6 0v-1m0 1a3 3 0 0 0 6 0v-1h-18l2 -4h14l2 4" />
+									<path d="M5 21l0 -10.15" />
+									<path d="M19 21l0 -10.15" />
+									<path d="M9 21v-4a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v4" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Sellers / Vendors</span>
+						</div>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a
+						class="nav-link  collapsed "
+						href="#"
+						data-bs-toggle="collapse"
+						data-bs-target="#navCustomer"
+						aria-expanded="false"
+						aria-controls="navCustomer"
+					>
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-users"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+									<path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+									<path d="M16 3.13a4 4 0 0 1 0 7.75" />
+									<path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Customers</span>
+						</div>
+					</a>
+					<div id="navCustomer" class="collapse " data-bs-parent="#sideNavbar">
+						<ul class="nav flex-col">
+							<li class="nav-item">
+								<a class="nav-link " href="customers.html">Customers</a>
+							</li>
+							<!-- Nav item -->
+							<li class="nav-item">
+								<a class="nav-link " href="create-customers.html">Create Customers</a>
+							</li>
+							<!-- Nav item -->
+							<li class="nav-item">
+								<a class="nav-link " href="customers-edits.html">Edit Customers</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+				<li class="nav-item">
+					<a class="nav-link " href="/admin/reviews">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-star"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Reviews</span>
+						</div>
+					</a>
+				</li>
+				<!-- Nav item -->
+				<li class="nav-item">
+					<a
+						class="nav-link  collapsed "
+						href="#"
+						data-bs-toggle="collapse"
+						data-bs-target="#navMenuLevelFirst"
+						aria-expanded="false"
+						aria-controls="navMenuLevelFirst"
+					>
+						<span class="nav-link-icon">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="icon icon-tabler icons-tabler-outline icon-tabler-corner-left-down"
+							>
+								<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+								<path d="M18 6h-6a3 3 0 0 0 -3 3v10l-4 -4m8 0l-4 4" />
+							</svg>
+						</span>
+						<span class="nav-link-text">Menu Level</span>
+					</a>
+					<div id="navMenuLevelFirst" class="collapse " data-bs-parent="#sideNavbar">
+						<ul class="nav flex-col">
+							<li class="nav-item">
+								<a
+									class="nav-link "
+									href="#"
+									data-bs-toggle="collapse"
+									data-bs-target="#navMenuLevelSecond1"
+									aria-expanded="false"
+									aria-controls="navMenuLevelSecond1"
+								>
+									Two Level
+								</a>
+								<div id="navMenuLevelSecond1" class="collapse" data-bs-parent="#navMenuLevel">
+									<ul class="nav flex-col">
+										<li class="nav-item">
+											<a class="nav-link " href="#">NavItem 1</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link " href="#">NavItem 2</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li class="nav-item">
+								<a
+									class="nav-link  collapsed "
+									href="#"
+									data-bs-toggle="collapse"
+									data-bs-target="#navMenuLevelThreeOne1"
+									aria-expanded="false"
+									aria-controls="navMenuLevelThreeOne1"
+								>
+									Three Level
+								</a>
+								<div id="navMenuLevelThreeOne1" class="collapse " data-bs-parent="#navMenuLevel">
+									<ul class="nav flex-col">
+										<li class="nav-item">
+											<a
+												class="nav-link  collapsed "
+												href="#"
+												data-bs-toggle="collapse"
+												data-bs-target="#navMenuLevelThreeTwo"
+												aria-expanded="false"
+												aria-controls="navMenuLevelThreeTwo"
+											>
+												NavItem 1
+											</a>
+											<div id="navMenuLevelThreeTwo" class="collapse " data-bs-parent="#navMenuLevelThree">
+												<ul class="nav flex-col">
+													<li class="nav-item">
+														<a class="nav-link " href="#">NavChild Item 1</a>
+													</li>
+												</ul>
+											</div>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link " href="#">Nav Item 2</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+				<li class="nav-item mt-6 mb-3">
+					<span class="nav-label">Site Settings</span>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link  collapsed " href="#" data-bs-toggle="collapse" data-bs-target="#navBlog" aria-expanded="false" aria-controls="navBlog">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-news"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1 -4 0v-13a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1v12a3 3 0 0 0 3 3h11" />
+									<path d="M8 8l4 0" />
+									<path d="M8 12l4 0" />
+									<path d="M8 16l4 0" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Blog</span>
+						</div>
+					</a>
+					<div id="navBlog" class="collapse " data-bs-parent="#sideNavbar">
+						<ul class="nav flex-col">
+							<li class="nav-item">
+								<a class="nav-link " href="blog-grid.html">Grid</a>
+							</li>
+							<!-- Nav item -->
+							<li class="nav-item">
+								<a class="nav-link " href="blog-list.html">List</a>
+							</li>
+							<!-- Nav item -->
+							<li class="nav-item">
+								<a class="nav-link " href="blog-new-post.html">Add Post</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+				<li class="nav-item">
+					<a class="nav-link disabled" href="#!">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-photo-check"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M15 8h.01" />
+									<path d="M11.5 21h-5.5a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v7" />
+									<path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l4 4" />
+									<path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l.5 .5" />
+									<path d="M15 19l2 2l4 -4" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Media</span>
+						</div>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link disabled" href="#!">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-settings"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path
+										d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"
+									/>
+									<path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Store Settings</span>
+						</div>
+					</a>
+				</li>
+
+				<li class="nav-item mt-6 mb-3">
+					<span class="nav-label">Support</span>
+					<span class="inline-block p-1 text-sm align-baseline leading-none rounded bg-cyan-100 text-cyan-800 border border-cyan-200 font-semibold">Coming Soon</span>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link disabled" href="#!">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-headphones"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M4 13m0 2a2 2 0 0 1 2 -2h1a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-1a2 2 0 0 1 -2 -2z" />
+									<path d="M15 13m0 2a2 2 0 0 1 2 -2h1a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-1a2 2 0 0 1 -2 -2z" />
+									<path d="M4 15v-3a8 8 0 0 1 16 0v3" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Support Ticket</span>
+						</div>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link disabled" href="#">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-help-octagon"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path
+										d="M12.802 2.165l5.575 2.389c.48 .206 .863 .589 1.07 1.07l2.388 5.574c.22 .512 .22 1.092 0 1.604l-2.389 5.575c-.206 .48 -.589 .863 -1.07 1.07l-5.574 2.388c-.512 .22 -1.092 .22 -1.604 0l-5.575 -2.389a2.036 2.036 0 0 1 -1.07 -1.07l-2.388 -5.574a2.036 2.036 0 0 1 0 -1.604l2.389 -5.575c.206 -.48 .589 -.863 1.07 -1.07l5.574 -2.388a2.036 2.036 0 0 1 1.604 0z"
+									/>
+									<path d="M12 16v.01" />
+									<path d="M12 13a2 2 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Help Center</span>
+						</div>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link disabled" href="#!">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-infinity"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M9.828 9.172a4 4 0 1 0 0 5.656a10 10 0 0 0 2.172 -2.828a10 10 0 0 1 2.172 -2.828a4 4 0 1 1 0 5.656a10 10 0 0 1 -2.172 -2.828a10 10 0 0 0 -2.172 -2.828" />
+								</svg>
+							</span>
+							<!-- <span class="nav-link-text">How FreshCart Works</span> -->
+						</div>
+					</a>
+				</li>
+
+				<li class="nav-item mt-6 mb-3">
+					<span class="nav-label">Our Apps</span>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link disabled" href="#!">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-brand-apple"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path
+										d="M8.286 7.008c-3.216 0 -4.286 3.23 -4.286 5.92c0 3.229 2.143 8.072 4.286 8.072c1.165 -.05 1.799 -.538 3.214 -.538c1.406 0 1.607 .538 3.214 .538s4.286 -3.229 4.286 -5.381c-.03 -.011 -2.649 -.434 -2.679 -3.23c-.02 -2.335 2.589 -3.179 2.679 -3.228c-1.096 -1.606 -3.162 -2.113 -3.75 -2.153c-1.535 -.12 -3.032 1.077 -3.75 1.077c-.729 0 -2.036 -1.077 -3.214 -1.077z"
+									/>
+									<path d="M12 4a2 2 0 0 0 2 -2a2 2 0 0 0 -2 2" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Apple Store</span>
+						</div>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link disabled" href="#!">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-brand-google-play"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M4 3.71v16.58a.7 .7 0 0 0 1.05 .606l14.622 -8.42a.55 .55 0 0 0 0 -.953l-14.622 -8.419a.7 .7 0 0 0 -1.05 .607z" />
+									<path d="M15 9l-10.5 11.5" />
+									<path d="M4.5 3.5l10.5 11.5" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Google Play Store</span>
+						</div>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+			<!-- main wrapper -->
+			<main class="main-content-wrapper">
+				<section class="container">
+					<!-- row -->
+					<div class="grid grid-cols-12 mb-8">
+						<div class="col-span-12">
+							<!-- card -->
+							<div class="card bg-gray-100 border-0 rounded-2xl"
+								style="background-image: url(../style/1234567890.jpg); background-repeat: no-repeat; background-size: cover; background-position: right">
+								<div class="card-body lg:p-12">
+									<h1>Welcome back! XMART</h1>
+									<p class="mb-6">FreshCart is simple & clean design for developer and designer.</p>
+									<a href="#"
+										class="btn inline-flex items-center gap-x-2 bg-green-600 text-white border-green-600 disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-100">
+										Create Product
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- table -->
+
+					<div class="grid grid-cols-12 gap-y-8 lg:gap-x-8 mb-8">
+						<div class="lg:col-span-4 col-span-12">
+							<!-- card -->
+							<div class="card h-full card-lg">
+  <div class="card-body p-6">
+    <!-- Heading -->
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h4 class="mb-0 text-md">Earnings</h4>
+      </div>
+      <div class="h-10 w-10 bg-red-100 text-red-800 rounded-full flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"
+          class="icon icon-tabler icon-tabler-outline icon-tabler-currency-dollar">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2" />
+          <path d="M12 3v3m0 12v3" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Earnings Amount -->
+    <div class="leading-snug text-center">
+      <h4>Earnings: ₹<%= totalEarnings.toLocaleString('en-IN') %> (Monthly)</h4>
+      <span class="text-sm text-gray-500">Monthly revenue (Delivered Orders Only)</span>
+    </div>
+  </div>
+</div>
+
+						</div>
+						<div class="lg:col-span-4 col-span-12">
+							<!-- card -->
+							<div class="card h-full card-lg">
+								<!-- card body -->
+								<div class="card-body p-6">
+  <!-- Heading -->
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h4 class="mb-0 text-md">Orders To Ship</h4>
+    </div>
+    <div class="h-10 w-10 bg-yellow-100 text-yellow-800 rounded-full flex items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round"
+        class="icon icon-tabler icon-tabler-outline icon-tabler-shopping-cart">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+        <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+        <path d="M17 17h-11v-14h-2" />
+        <path d="M6 5l14 1l-1 7h-13" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- Orders Count -->
+  <div class="leading-snug text-center">
+  <h1 class="mb-2 font-bold text-lg"><%= totalOrders %></h1>
+  <span class="text-sm text-gray-500">Total Orders</span>
+</div>
+</div>
+
+							</div>
+						</div>
+						<div class="lg:col-span-4 col-span-12">
+							<!-- card -->
+					<div class="card h-full card-lg">
+  <div class="card-body p-6">
+    <!-- heading -->
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h4 class="mb-0 text-md">Orders </h4>
+      </div>
+      <div
+        class="h-10 w-10 bg-green-100 text-green-800 rounded-full flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"
+          class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+          <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+          <path d="M17 17h-11v-14h-2" />
+          <path d="M6 5l14 1l-1 7h-13" />
+        </svg>
+      </div>
+    </div>
+    <!-- project number -->
+    <div class="leading-snug">
+      <ul>
+  <li>Delivered: <%= ordersByStatus.Delivered %></li>
+  <li>Pending: <%= ordersByStatus.Pending %></li>
+  <li>Cancelled: <%= ordersByStatus.Cancelled %></li>
+  <li>Returned: <%= ordersByStatus.Returned %></li>
+</ul>
+    </div>
+  </div>
+</div>
+
+						</div>
+						<div class="lg:col-span-4 col-span-12">
+							<!-- card -->
+							<div class="card h-full card-lg">
+								<!-- card body -->
+								<div class="card-body p-6">
+									<!-- heading -->
+									<div class="flex justify-between items-center mb-6">
+										<div>
+											<h4 class="mb-0 text-md">Customer</h4>
+										</div>
+										<div
+											class="h-10 w-10 bg-cyan-100 text-cyan-800 rounded-full flex items-center justify-center">
+											<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+												viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+												stroke-linecap="round" stroke-linejoin="round"
+												class="icon icon-tabler icons-tabler-outline icon-tabler-users">
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+												<path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+												<path d="M16 3.13a4 4 0 0 1 0 7.75" />
+												<path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+											</svg>
+										</div>
+									</div>
+									<!-- project number -->
+									<div class="leading-snug">
+										<h4>Total Users: <%= totalUsers %></h4>
+										
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- row -->
+
+<div class="grid grid-cols-12 gap-y-8 lg:gap-x-8 mb-8">
+
+  <!-- Revenue Card -->
+  <div class="xl:col-span-8 lg:col-span-6 md:col-span-12 col-span-12">
+    <div class="card h-full card-lg">
+      <div class="card-body p-6">
+        <div class="flex justify-between items-center">
+          <h3 class="mb-1 text-md font-semibold">Revenue</h3>
+          <select id="revenueFilter" class="text-base py-2 block w-40 border-gray-300 rounded-lg focus:border-green-600 focus:ring focus:ring-green-600">
+            <option value="week" selected>Week</option>
+            <option value="month">Month</option>
+            <option value="year">Year</option>
+          </select>
+        </div>
+
+        <div class="flex gap-2 mt-3">
+          <button id="downloadRevenue" class="px-3 py-1.5 bg-blue-600 text-white rounded-md">Download Revenue Chart</button>
+        </div>
+
+        <!-- <form id="date-wise-filter" class="flex gap-2 mt-3">
+          <input type="date" id="startDate" class="border rounded px-2 py-1" />
+          <input type="date" id="endDate" class="border rounded px-2 py-1" />
+          <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded">Apply</button>
+        </form> -->
+
+        <canvas id="revenueChart" class="mt-6 h-64"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total Orders Card -->
+<div class="xl:col-span-4 lg:col-span-6 col-span-12">
+  <div class="card h-full card-lg">
+    <div class="card-body p-6">
+      <h3 class="mb-3 text-md font-semibold">Total Orders</h3>
+      <select id="ordersFilter" class="text-base py-2 block w-full border-gray-300 rounded-lg focus:border-green-600 focus:ring focus:ring-green-600 mb-4">
+        <option value="week" selected>Week</option>
+        <option value="month">Month</option>
+        <option value="year">Year</option>
+      </select>
+
+      <canvas id="ordersChart" class="h-64"></canvas>
+
+      <ul class="mt-4 space-y-2 text-sm">
+        <li class="flex items-center gap-2"><span class="w-3 h-3 bg-green-600 rounded-full"></span> Delivered: <%= ordersByStatus.Delivered %></li>
+        <li class="flex items-center gap-2"><span class="w-3 h-3 bg-red-600 rounded-full"></span> Returned: <%= ordersByStatus.Returned %></li>
+        <li class="flex items-center gap-2"><span class="w-3 h-3 bg-blue-600 rounded-full"></span> Cancelled: <%= ordersByStatus.Cancelled %></li>
+        <li class="flex items-center gap-2"><span class="w-3 h-3 bg-yellow-600 rounded-full"></span> Pending: <%= ordersByStatus.Pending %></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+					<!-- row -->
+					<div class="grid lg:grid-cols-2 gap-8 mb-8">
+						<div class="">
+							<!-- card -->
+							
+						</div>
+						<div class="">
+							<div class="position-relative h-full">
+								<!-- card -->
+								
+								<!-- card -->
+								
+							</div>
+						</div>
+					</div>
+					<!-- row -->
+					
+				</section>
+			</main>
+		</div>
+	</div>
+
+	<!-- Libs JS -->
+<script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/libs/simplebar/dist/simplebar.min.js"></script>
+
+<!-- Theme JS -->
+
+<script src="../assets/js/theme.min.js"></script>
+
+	<script src="../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
+	<script src="../assets/js/vendors/chart.js"></script>
+
+
+<!-- Chart.js CDN -->
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+
+document.getElementById('revenueFilter').addEventListener('change', updateCharts);
+document.getElementById('ordersFilter').addEventListener('change', updateCharts);
+
+async function updateCharts() {
+  const timeframe = document.getElementById('revenueFilter').value;
+
+  try {
+    const res = await fetch(`/admin/orders-summary?timeframe=${timeframe}`);
+    const data = await res.json();
+
+    // Update revenue chart
+    revenueChart.data.labels = data.labels;
+    revenueChart.data.datasets[0].data = data.revenuePerDay;
+    revenueChart.update();
+
+    // Update orders chart
+    const totalOrders = data.ordersByStatus.Delivered + data.ordersByStatus.Returned +
+                        data.ordersByStatus.Cancelled + data.ordersByStatus.Pending;
+
+    ordersChart.data.datasets[0].data = [
+      data.ordersByStatus.Delivered,
+      data.ordersByStatus.Returned,
+      data.ordersByStatus.Cancelled,
+      data.ordersByStatus.Pending
+    ];
+
+    // Update center text
+    ordersChart.options.plugins.centerText = {
+      display: true,
+      text: totalOrders
+    };
+
+    ordersChart.update();
+
+  } catch (err) {
+    console.error('Error fetching data:', err);
+  }
+}
+
+
+
+
+
+
+
+
+  // ------------------------
+  // Download Revenue Chart
+  // ------------------------
+  const downloadBtn = document.getElementById('downloadRevenue');
+  if(downloadBtn){
+    downloadBtn.addEventListener('click', function() {
+      const link = document.createElement('a');
+      link.href = revenueChart.toBase64Image();
+      link.download = 'RevenueChart.png';
+      link.click();
+    });
+  }
+
+  // ------------------------
+  // Backend Data from EJS
+  // ------------------------
+  const labels = JSON.parse('<%- JSON.stringify(labels || []) %>');
+  const revenueData = JSON.parse('<%- JSON.stringify(revenuePerDay || []) %>');
+  const ordersData = JSON.parse('<%- JSON.stringify(ordersByStatus || {}) %>');  // {Delivered, Pending, Cancelled, Returned}
+
+  // ------------------------
+  // Revenue Line Chart
+  // ------------------------
+  const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+  const revenueChart = new Chart(revenueCtx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Revenue',
+        data: revenueData,
+        borderColor: '#22c55e',
+        backgroundColor: 'rgba(34,197,94,0.2)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  // ------------------------
+  // Orders Doughnut Chart
+  // ------------------------
+  const totalOrdersCtx = document.getElementById('ordersChart').getContext('2d');
+  const ordersChart = new Chart(totalOrdersCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Delivered','Returned','Cancelled','Pending'],
+      datasets: [{
+        data: [
+          ordersData.Delivered || 0,
+          ordersData.Returned || 0,
+          ordersData.Cancelled || 0,
+          ordersData.Pending || 0
+        ],
+        backgroundColor: ['#22c55e','#ef4444','#3b82f6','#facc15'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' },
+        tooltip: { enabled: true }
+      }
+    }
+  });
+
+  // ------------------------
+  // Optional: Date-wise Filter (Dynamic Update)
+  // ------------------------
+  const dateFilterForm = document.getElementById('date-wise-filter');
+  if(dateFilterForm){
+    dateFilterForm.addEventListener('submit', function(e){
+      e.preventDefault();
+
+      // Example: replace with AJAX call to fetch filtered backend data
+      const newRevenueData = labels.map(() => Math.floor(Math.random()*3000)+500);
+      revenueChart.data.datasets[0].data = newRevenueData;
+      revenueChart.update();
+
+      const newOrdersData = {
+        Delivered: labels.map(() => Math.floor(Math.random()*12)),
+        Returned: labels.map(() => Math.floor(Math.random()*5)),
+        Cancelled: labels.map(() => Math.floor(Math.random()*3)),
+        Pending: labels.map(() => Math.floor(Math.random()*4))
+      };
+      ordersChart.data.datasets[0].data = [
+        newOrdersData.Delivered.reduce((a,b)=>a+b,0),
+        newOrdersData.Returned.reduce((a,b)=>a+b,0),
+        newOrdersData.Cancelled.reduce((a,b)=>a+b,0),
+        newOrdersData.Pending.reduce((a,b)=>a+b,0)
+      ];
+      ordersChart.update();
+    });
+  }
+</script> 
+
+
+
+</body>
+
+
+<!-- Mirrored from freshcart-tailwind.codescandy.com/dashboard/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Dec 2024 13:19:25 GMT -->
+</html>

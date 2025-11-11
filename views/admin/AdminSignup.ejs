@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+
+
+<!-- Mirrored from freshcart-tailwind.codescandy.com/signin.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Dec 2024 13:19:17 GMT -->
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<link rel="shortcut icon" type="image/x-icon" href="../assets/images/favicon/favicon.ico" />
+
+<!-- Libs CSS -->
+<link rel="preconnect" href="https://fonts.googleapis.com/" />
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" />
+<link rel="stylesheet" href="../cdn.jsdelivr.net/npm/%40tabler/icons-webfont%402.46.0/tabler-icons.min.css" />
+<link rel="stylesheet" href="../assets/libs/simplebar/dist/simplebar.min.css" />
+
+<!-- Theme CSS -->
+<link rel="stylesheet" href="../assets/css/theme.min.css">
+ <!-- Analytics Code -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M8S4MT3EYG"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+
+    gtag("config", "G-M8S4MT3EYG");
+</script>
+<script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+        c[a] =
+            c[a] ||
+            function () {
+                (c[a].q = c[a].q || []).push(arguments);
+            };
+        t = l.createElement(r);
+        t.async = 1;
+        t.src = "https://www.clarity.ms/tag/" + i;
+        y = l.getElementsByTagName(r)[0];
+        y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", "mzh5eyaatk");
+</script>
+<!-- Affiliate tracking script -->
+<script>window.lemonSqueezyAffiliateConfig = { store: "codescandy" };</script>
+<script src="../lmsqueezy.com/affiliate.js" defer></script> <!-- buy now template button Remove if you do not want. -->
+<div class="fixed bottom-0 right-0 m-4">
+    <!-- <a href="https://codescandy.lemonsqueezy.com/buy/7b77d92f-acf6-4fdc-885b-00fa9a0786e4" target="_blank"
+        rel="noopener noreferrer"
+        < class="btn gap-x-2 bg-green-600 text-white border-green-600 disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"> -->
+        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+            <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+            <path d="M17 17h-11v-14h-2" />
+            <path d="M6 5l14 1l-1 7h-13" />
+        </svg> -->
+        <!-- Buy Theme -->
+    <!-- </a> --> 
+</div>
+
+	<title>Sign in - TailwindCSS eCommerce HTML Template - FreshCart</title>
+</head>
+
+<body>
+	<main>
+		<!-- navigation -->
+<div class="border-b shadow-sm">
+	<nav class="relative md:flex flex-wrap w-full items-center py-3 text-center">
+		<div class="container sm:flex justify-between items-center">
+			<a class="inline-block mr-4 text-lg whitespace-no-wrap" href="index.html">
+				<img src="../assets/images/logo/Xe mart.png" alt="" class="inline-block align-text-top" />
+			</a>
+		
+		</div>
+	</nav>
+</div>
+
+		<!-- section -->
+		<section class="my-10">
+			<div class="container">
+				<div class="flex flex-wrap justify-center items-center gap-8 lg:gap-16">
+					<div class="w-full md:w-1/3 xl:w-1/3 lg:order-1 order-2">
+						<!-- img -->
+						<img src="../assets/images/svg-graphics/signin-g.svg" alt="" class="max-w-full h-auto" />
+					</div>
+					<div class="w-full md:w-1/2 lg:mx-1/6 xl:w-1/4 lg:order-2 order-1 flex flex-col gap-6">
+						<div class="flex flex-col gap-1">
+							<h1 class="text-xl">Sign in to FreshCart</h1>
+							<p>Welcome back to FreshCart! Enter your email to get started.</p>
+						</div>
+						<form class="needs-validation" novalidate action="/admin/login" method="post">
+							<div class="flex flex-col gap-5">
+								<div class="flex flex-col gap-3">
+									<div class="w-full">
+										<!-- input -->
+										<label for="formSigninEmail" class="invisible hidden">Email address</label>
+										<input type="email" name="email"
+											class="form-control border border-gray-300 text-gray-900 rounded-lg focus:shadow-[0_0_0_.25rem_rgba(10,173,10,.25)] focus:ring-green-600 focus:ring-0 focus:border-green-600 block p-2 px-3 disabled:opacity-50 disabled:pointer-events-none w-full text-base"
+											id="formSigninEmail" placeholder="Email" required name="email" autocomplete="off"/>
+										<div class="invalid-feedback">Please enter name.</div>
+									</div>
+									<div class="w-full">
+										<!-- input -->
+										<div class="password-field relative">
+											<label for="formSigninPassword" class="invisible hidden">Password</label>
+											<div class="password-field relative">
+												<input type="password" name="password"
+													class="form-control border border-gray-300 text-gray-900 rounded-lg focus:shadow-[0_0_0_.25rem_rgba(10,173,10,.25)] focus:ring-green-600 focus:ring-0 focus:border-green-600 block p-2 px-3 disabled:opacity-50 disabled:pointer-events-none w-full text-base fakePassword"
+													id="formSigninPassword" placeholder="*****" required name="password" autocomplete="off">
+												<span>
+													<i class="ti ti-eye-off passwordToggler"></i>
+												</span>
+												<div class="invalid-feedback">Please enter password.</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="flex flex-col gap-4">
+									<div class="flex justify-between w-full">
+										<!-- form check -->
+										
+						
+									</div>
+									<!-- btn -->
+									<div class="w-full grid">
+										<button type="submit"
+											class="btn inline-flex items-center gap-x-2 bg-green-600 text-white border-green-600 disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-300">
+											Sign In
+										</button>
+									</div>
+								</div>
+							</div>
+					
+						</form>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+
+<!-- buy now template button
+Remove if you do not want.
+-->
+
+
+	<!-- section -->
+	<!-- Libs JS -->
+<script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/libs/simplebar/dist/simplebar.min.js"></script>
+
+<!-- Theme JS -->
+
+<script src="../assets/js/theme.min.js"></script>
+
+	<script src="../assets/js/vendors/validation.js"></script>
+	<script src="../assets/js/vendors/password.js"></script>
+</body>
+
+
+<!-- Mirrored from freshcart-tailwind.codescandy.com/signin.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Dec 2024 13:19:17 GMT -->
+</html>

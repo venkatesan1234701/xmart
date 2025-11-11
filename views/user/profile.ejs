@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Profile</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css"/>
+
+<!-- Cropper.js JS -->
+<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-light">
+
+  <!-- Navbar -->
+ <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
+  <div class="container d-flex justify-content-between align-items-center">
+  
+    <a class="navbar-brand text-primary fw-bold" href="/user/profile">Profile</a>
+
+    <ul class="navbar-nav flex-row gap-4 mb-0">
+      <li class="nav-item"><a class="nav-link" href="/user/orders">Order History</a></li>
+      <li class="nav-item"><a class="nav-link" href="/user/wallet">Wallet</a></li>
+      <li class="nav-item"><a class="nav-link" href="/user/add-address">Add Address</a></li>
+    </ul>
+
+    <div class="d-flex align-items-center">
+      <form id="logoutForm" action="/logout" method="POST" class="me-2 mb-0">
+        <button class="btn btn-outline-secondary">Logout</button>
+      </form>
+      <a class="btn btn-outline-primary" href="/">Home</a>
+    </div>
+  </div>
+</nav>
+
+  <!-- Profile Card -->
+  <div class="container">
+    <div class="card shadow mb-4">
+      <div class="card-body">
+        <h2 class="card-title text-center mb-4">User Profile</h2>
+        <div class="row align-items-center">
+
+          <!-- Profile Image Upload -->
+<div class="col-md-4 text-center mb-3">
+  <form id="profileForm" action="/user/profile/upload" method="POST" enctype="multipart/form-data">
+    <img src="<%= user.profile || '/images/default-user.png' %>" 
+         id="profilePreview"
+         alt="Profile" 
+         class="rounded-circle border border-primary shadow-sm mb-2" 
+         style="width:150px; height:150px; object-fit: cover; cursor:pointer;">
+
+    <input type="file" name="profile" id="profileUpload" class="d-none" accept="image/*" required>
+    <input type="hidden" name="croppedProfile" id="croppedImageInput">
+
+    <button type="submit" class="btn btn-success btn-sm mt-2">Save</button>
+  </form>
+</div>
+
+          <!-- User Info -->
+          <div class="col-md-8">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">First Name</label>
+                <input type="text" class="form-control" value="<%= user.firstName %>" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-control" value="<%= user.secondName %>" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" value="<%= user.email %>" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Phone</label>
+                <input type="text" class="form-control" value="<%= user.phone %>" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Referral Code</label>
+                <input type="text" class="form-control" value="<%= user.referralCode || 'Not Assigned' %>" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="text-center mt-4">
+          <a href="/user/edit-profile" class="btn btn-primary me-2">Edit Profile</a>
+          <a href="/forgot-password" class="btn btn-success">Change Password</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saved Addresses -->
+    <h4>Saved Addresses</h4>
+    <div class="row row-cols-1 row-cols-md-2 g-3" id="addresses-container">
+      <% addresses.forEach((address, index) => { %>
+        <div class="col" id="address-<%= address._id %>">
+          <div class="card shadow-sm p-3">
+            <p><strong>First Name:</strong> <%= address.firstName %></p>
+            <p><strong>Address:</strong> <%= address.addressLine1 %>
+              <%= address.addressLine2 ? ', ' + address.addressLine2 : '' %>,
+              <%= address.city %>, <%= address.state %>, <%= address.country %> - <%= address.zipCode %>
+            </p>
+            <p><strong>Type:</strong> <%= address.addressType %></p>
+            <div class="text-end">
+              <a href="/user/edit-address/<%= address._id %>" class="btn btn-warning btn-sm me-2">Edit</a>
+              <button class="btn btn-danger btn-sm" onclick="confirmDelete('<%= address._id %>')">Delete</button>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Instant Delete Script -->
+  <script>
+
+
+
+
+const profilePreview = document.getElementById('profilePreview');
+const profileUpload = document.getElementById('profileUpload');
+const croppedImageInput = document.getElementById('croppedImageInput');
+const profileForm = document.getElementById('profileForm');
+let cropper;
+
+// Click on image triggers file select
+profilePreview.addEventListener('click', () => profileUpload.click());
+
+// When file selected
+profileUpload.addEventListener('change', (e) => {
+  if (e.target.files && e.target.files.length > 0) {
+    const file = e.target.files[0];
+    const url = URL.createObjectURL(file);
+
+    // Create crop modal
+    const modal = document.createElement('div');
+    modal.innerHTML = `
+      <div class="modal-backdrop fade show"></div>
+      <div class="modal" tabindex="-1" style="display:block;">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Crop Your Image</h5>
+            </div>
+            <div class="modal-body text-center">
+              <img id="cropperImage" src="${url}" style="max-width:100%; max-height:70vh;">
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="cancelCrop" class="btn btn-secondary">Cancel</button>
+              <button type="button" id="cropImageBtn" class="btn btn-primary">Crop & Upload</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    const cropperImage = document.getElementById('cropperImage');
+    cropper = new Cropper(cropperImage, {
+      aspectRatio: 1,
+      viewMode: 1,
+      background: false,
+      movable: true,
+      zoomable: true,
+      cropBoxResizable: true,
+      minCropBoxWidth: 50,
+      minCropBoxHeight: 50,
+    });
+
+    // Cancel
+    document.getElementById('cancelCrop').addEventListener('click', () => {
+      cropper.destroy();
+      modal.remove();
+    });
+
+    // Crop & submit
+    document.getElementById('cropImageBtn').addEventListener('click', () => {
+      const canvas = cropper.getCroppedCanvas({ width: 200, height: 200 });
+      canvas.toBlob((blob) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          croppedImageInput.value = reader.result; // Base64
+          profileForm.submit(); // submit after crop
+        };
+      });
+      cropper.destroy();
+      modal.remove();
+    });
+  }
+});
+
+
+
+
+
+
+
+
+
+    function confirmDelete(addressId) {
+      const card = document.getElementById('address-' + addressId);
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "This address will be deleted!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch('/user/delete-address/' + addressId, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          }).then(() => {
+            card.remove(); // remove instantly
+            Swal.fire({
+              icon: 'success',
+              title: 'Deleted!',
+              text: 'Address has been deleted.',
+              timer: 1500,
+              showConfirmButton: false
+            });
+          }).catch(() => {
+            Swal.fire('Error', 'Failed to delete address', 'error');
+          });
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>

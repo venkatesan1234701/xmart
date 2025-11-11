@@ -1,0 +1,13 @@
+.disabled-link {
+  pointer-events: none; /* Disable clicks */
+  color: gray; /* Change color to indicate it's disabled */
+  text-decoration: none;
+  cursor: not-allowed;
+}
+
+.enabled-link {
+  pointer-events: auto;
+  color: blue; /* Active color for the link */
+  text-decoration: underline;
+  cursor: pointer;
+}

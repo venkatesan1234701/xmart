@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+<div id="addProductModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-start justify-center pt-32">
+  <div class="bg-white rounded-lg shadow-md w-full max-w-lg p-6 max-h-[90vh] flex flex-col overflow-hidden">
+    <div class="overflow-y-auto">
+      <h2 id="modalTitle" class="text-lg font-bold mb-4">Add Product</h2>
+      <form id="productForm" action="/admin/add-product" method="POST" enctype="multipart/form-data" class="space-y-3">
+        <!-- Category + Name + Size -->
+        <div class="flex gap-2 mb-3">
+          <div class="flex-1">
+            <label class="block text-sm font-medium mb-1">Category</label>
+            <select id="category" name="category" class="w-full border rounded px-3 py-2 text-sm">
+              <option value="">-- Select Category --</option>
+              <% categories.forEach(cat => { %>
+                <option value="<%= cat._id %>"><%= cat.name %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="flex-1">
+            <label class="block text-sm font-medium mb-1">Product Name</label>
+            <input id="productName" name="name" type="text" class="w-full border rounded px-3 py-2 text-sm" placeholder="Enter product name">
+          </div>
+          <div class="flex-1">
+            <label class="block text-sm font-medium mb-1">Size</label>
+            <input id="size" name="size" type="text" class="w-full border rounded px-3 py-2 text-sm" placeholder="Size (M,L,XL)">
+          </div>
+        </div>
+
+        <!-- Price, Quantity, Weight -->
+        <div class="flex gap-2 mb-3">
+          <div class="flex-1">
+            <label class="block text-sm font-medium mb-1">Price</label>
+            <input id="price" name="price" type="number" class="w-full border rounded px-3 py-2 text-sm" placeholder="Price">
+          </div>
+          <div class="flex-1">
+            <label class="block text-sm font-medium mb-1">Quantity</label>
+            <input id="quantity" name="quantity" type="number" class="w-full border rounded px-3 py-2 text-sm" placeholder="Qty">
+          </div>
+
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block text-sm font-medium mb-1">Description</label>
+          <textarea id="description" name="description" class="w-full border rounded px-3 py-2 text-sm" placeholder="Enter product description" rows="3"></textarea>
+        </div>
+
+        <!-- Upload Images -->
+   <div class="flex gap-3 items-end mb-3">
+  <% for(let i=0;i<3;i++){ %>
+    <div class="relative w-20 h-20">
+      <label class="w-full h-full flex items-center justify-center border-2 border-dashed rounded cursor-pointer overflow-hidden relative">
+        <span class="text-green-500 text-2xl absolute inset-0 flex items-center justify-center pointer-events-none" id="plus<%= i %>">+</span>
+        <img id="preview<%= i %>" class="rounded object-cover border hidden absolute inset-0 w-full h-full">
+        <span class="removeX hidden absolute top-1 right-1 text-white bg-red-600 rounded-full w-4 h-4 text-xs flex items-center justify-center cursor-pointer pointer-events-auto" data-preview="preview<%= i %>">×</span>
+        <input type="file" name="image<%= i %>" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer imageInput" data-preview="preview<%= i %>" accept="image/*">
+      </label>
+    </div>
+  <% } %>
+</div>
+
+
+        <p id="errorMsg" class="text-red-500 text-sm mb-2 hidden"></p>
+
+        <div class="flex justify-end gap-2 mt-2">
+          <button type="button" id="closeModal" class="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300">Cancel</button>
+          <button type="submit" class="px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700" id="saveBtn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

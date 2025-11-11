@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Processing Payment...</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    body { font-family: sans-serif; text-align: center; background: #f7f8fa; padding-top: 100px; }
+    .loader {
+      width: 60px; height: 60px;
+      border: 6px solid #ddd;
+      border-top-color: #10b981;
+      border-radius: 50%;
+      margin: auto;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    h2 { color: #333; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="loader"></div>
+  <h2>Processing your payment...</h2>
+
+  <script>
+  const options = {
+    key: "<%= key_id %>",
+    amount: "<%= order.amount %>",
+    currency: "INR",
+    name: "My Shop",
+    description: "Order Payment",
+    order_id: "<%= order.id %>",
+    handler: async function (response) {
+      const res = await fetch("/payment/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(response),
+      });
+      const html = await res.text();
+      document.open();
+      document.write(html);
+      document.close();
+    },
+    modal: {
+      ondismiss: async function () {
+        console.log("❌ User closed Razorpay popup — marking payment failed...");
+        const res = await fetch(`/payment/failed?order_id=<%= order.id %>`);
+        const html = await res.text();
+        document.open();
+        document.write(html);
+        document.close();
+      }
+    },
+    theme: { color: "#10b981" },
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+</script>
+
+
+</body>
+</html>

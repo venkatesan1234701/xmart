@@ -1,0 +1,16 @@
+let html = '';
+users.forEach(user => {
+  html += `<tr class="border-b">
+    <td class="py-3 px-6 text-left"><span class="text-gray-800">${user.firstName}</span></td>
+    <td class="py-3 px-6 text-left">${user.email}</td>
+    <td class="py-3 px-6 text-left">${user.phone || '-'}</td>
+    <td class="py-3 px-6 text-left">
+      <button class="px-3 py-1 rounded text-white ${user.isBlocked ? 'bg-green-500' : 'bg-red-500'}"
+        onclick="toggleBlock('${user._id}', this)">
+        ${user.isBlocked ? 'Unblock' : 'Block'}
+      </button>
+    </td>
+  </tr>`;
+});
+
+res.send(html);

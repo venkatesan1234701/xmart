@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="en">
+
+
+<!-- Mirrored from freshcart-tailwind.codescandy.com/dashboard/customers.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Dec 2024 13:19:40 GMT -->
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="shortcut icon" type="image/x-icon" href="../assets/images/favicon/favicon.ico" />
+
+<!-- Libs CSS -->
+<link rel="preconnect" href="https://fonts.googleapis.com/" />
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" />
+<link rel="stylesheet" href="../../cdn.jsdelivr.net/npm/%40tabler/icons-webfont%402.46.0/tabler-icons.min.css" />
+<link rel="stylesheet" href="../assets/libs/simplebar/dist/simplebar.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Theme CSS -->
+<link rel="stylesheet" href="../assets/css/theme.min.css">
+
+	<title>TailwindCSS Dashboard eCommerce HTML Template - FreshCart</title>
+</head>
+
+<body>
+	<!-- main -->
+	<div>
+		<!-- navbar -->
+
+
+
+		<div class="main-wrapper">
+			<!-- navbar vertical -->
+
+			
+			<!-- navbar -->
+
+
+			
+<nav class="w-full bg-white shadow-md fixed top-0 left-0 z-50">
+  <div class="flex items-center justify-between px-6 py-3">
+    <!-- Logo -->
+    <a href="" class="navbar-brand flex items-center">
+      <img src="../assets/images/logo/Xe mart.png" alt="Logo" class="h-10" />
+    </a>
+
+    <!-- Nav Items -->
+    <ul class="flex items-center gap-x-6" id="topNavbar">
+
+      <!-- Dashboard -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="dashboard">
+          <span class="nav-link-icon">
+            <!-- Dashboard Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+              <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+              <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+            </svg>
+          </span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <!-- Products -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="products">
+          <span class="nav-link-icon">
+            <!-- Products Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M17 17h-11v-14h-2" />
+              <path d="M6 5l14 1l-1 7h-13" />
+            </svg>
+          </span>
+          <span>Products</span>
+        </a>
+      </li>
+
+      <!-- Categories -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="categories">
+          <span class="nav-link-icon">
+            <!-- Categories Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 6l11 0" />
+              <path d="M9 12l11 0" />
+              <path d="M9 18l11 0" />
+              <path d="M5 6l0 .01" />
+              <path d="M5 12l0 .01" />
+              <path d="M5 18l0 .01" />
+            </svg>
+          </span>
+          <span>Categories</span>
+        </a>
+      </li>
+
+      <!-- Customers -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/customers">
+          <span class="nav-link-icon">
+            <!-- Customers Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+              <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+            </svg>
+          </span>
+          <span>Customers</span>
+        </a>
+      </li>
+
+      <!-- Reviews -->
+    
+	      <li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/orders">
+    <span class="nav-link-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+      </svg>
+    </span>
+    <span>Orders</span>
+  </a>
+</li>
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/coupons">
+    <span class="nav-link-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+      </svg>
+    </span>
+    <span>coupon</span>
+  </a>
+</li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/product-offer">
+    <span class="nav-link-icon">
+      <!-- Product Offer Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1v4" />
+        <path d="M6 7h12l-1 12H7L6 7z" />
+        <path d="M9 12h2v4H9zM13 12h2v4h-2z" />
+      </svg>
+    </span>
+    <span>Product Offer</span>
+  </a>
+</li>
+
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/category-offer">
+    <span class="nav-link-icon">
+      <!-- Category Offer Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M9 10h6v4H9z" />
+        <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+      </svg>
+    </span>
+    <span>Category Offer</span>
+  </a>
+</li>
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/sales-report">
+    <span class="nav-link-icon">
+      <!-- Sales Report Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3h14v14H3z" /> <!-- Square/Report icon -->
+        <path d="M3 7h14" />
+        <path d="M7 3v14" />
+      </svg>
+    </span>
+    <span>Sales Report</span>
+  </a>
+</li>
+
+
+      <!-- Logout -->
+      <li>
+        <a class="flex items-center gap-2 text-red-600 hover:text-red-800" href="/admin/logout">
+          <span class="nav-link-icon">
+            <!-- Logout Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+              <path d="M9 12h12l-3 -3m0 6l3 -3" />
+            </svg>
+          </span>
+          <span>Log Out</span>
+        </a>
+      </li>
+
+    </ul>
+  </div>
+</nav>
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar-vertical-nav offcanvas offcanvas-left navbar-offcanvac" tabindex="-1" id="offcanvasExample">
+	<div class="navbar-vertical">
+		<div class="px-4 py-5 flex justify-between items-center">
+			<a href="../index.html" class="navbar-brand">
+				<img src="../assets/images/logo/Xe mart.png" alt="" />
+			</a>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		</div>
+		<div class="navbar-vertical-content flex-grow-1" data-simplebar="">
+			<ul class="navbar-nav flex-col">
+				<li class="nav-item">
+					<a class="nav-link " href="dashboard">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-home"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+									<path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+									<path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Dashboard</span>
+						</div>
+					</a>
+				</li>
+				<li class="nav-item mt-6 mb-3">
+					<span class="nav-label">Store Managements</span>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link " href="products">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+									<path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+									<path d="M17 17h-11v-14h-2" />
+									<path d="M6 5l14 1l-1 7h-13" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Products</span>
+						</div>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link " href="categories.html">
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-list"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M9 6l11 0" />
+									<path d="M9 12l11 0" />
+									<path d="M9 18l11 0" />
+									<path d="M5 6l0 .01" />
+									<path d="M5 12l0 .01" />
+									<path d="M5 18l0 .01" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Categories</span>
+						</div>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a
+						class="nav-link  collapsed "
+						href="#"
+						data-bs-toggle="collapse"
+						data-bs-target="#navCategoriesOrders"
+						aria-expanded="false"
+						aria-controls="navCategoriesOrders"
+					>
+						<div class="flex items-center">
+							<span class="nav-link-icon">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-bag"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1 -2.966 2.544h-6.852a3 3 0 0 1 -2.965 -2.544l-1.255 -8.152a2 2 0 0 1 1.977 -2.304z" />
+									<path d="M9 11v-5a3 3 0 0 1 6 0v5" />
+								</svg>
+							</span>
+							<span class="nav-link-text">Orders</span>
+						</div>
+					</a>
+					<div id="navCategoriesOrders" class="collapse " data-bs-parent="#sideNavbar">
+						<ul class="nav flex-col">
+							<li class="nav-item">
+								<a class="nav-link " href="order-list.html">List</a>
+							</li>
+							<!-- Nav item -->
+							<li class="nav-item">
+								<a class="nav-link " href="order-single.html">Single</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+				
+								<li class="nav-item">
+  <a class="nav-link flex items-center" href="/admin/customers">
+    <span class="nav-link-icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="icon icon-tabler icons-tabler-outline icon-tabler-users"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+        <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+      </svg>
+    </span>
+    <span class="nav-link-text ms-2">Customers</span>
+  </a>
+</li>
+
+			
+				<!-- Nav item -->
+			
+				
+
+				
+		
+				
+			
+
+				
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+
+			<!-- main -->
+			<main class="main-content-wrapper">
+				<div class="container">
+					<div class="grid grid-cols-1 mb-8">
+						<!-- page header -->
+						<div class="md:flex justify-between items-center">
+							<div>
+								<h2 class="text-xl">Customers</h2>
+								<!-- breacrumb -->
+								<nav aria-label="breadcrumb">
+									<ol class="flex flex-wrap">
+										<li class="inline-block text-green-600">
+											<a href="#!">
+												Dashboard
+												<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+													viewBox="0 0 24 24" fill="none" stroke="currentColor"
+													stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+													class="icon icon-tabler icons-tabler-outline icon-tabler-slash inline-block mx-2">
+													<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+													<path d="M17 5l-10 14" />
+												</svg>
+											</a>
+										</li>
+
+										<li class="inline-block text-gray-500 active" aria-current="page">Customers</li>
+									</ol>
+								</nav>
+							</div>
+
+
+<form id="searchForm" class="flex mb-4">
+  <input
+    id="searchInput"
+    name="search"
+    class="border border-gray-300 text-gray-900 rounded-lg block p-2 px-3 w-full text-base"
+    type="search"
+    placeholder="Search Customers"
+    autocomplete="off" 
+    aria-label="Search" />
+    
+  <button type="submit" class="ml-2 px-4 py-2 bg-green-600 text-white rounded-lg">
+    Search
+  </button>
+</form>
+
+
+							<!-- button -->
+							<!-- <div class="mt-3 lg:mt-0">
+								<a href="create-customers.html"
+									class="btn inline-flex items-center gap-x-2 bg-green-600 text-white border-green-600 disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-100">
+									Add New Customer
+								</a>
+							</div> -->
+						</div>
+					</div>
+					<!-- row -->
+					<div class="grid grid-cols-1">
+						<!-- card -->
+						<div class="card h-full card-lg">
+							<div class="px-6 py-6">
+								<div class="grid grid-cols-12 justify-between gap-2">
+									<div class="lg:col-span-3 md:col-span-6 col-span-12">
+										<!-- form -->
+
+
+
+<!-- <div id="searchResults"></div> -->
+
+
+
+									</div>
+								</div>
+							</div>
+							<!-- card body -->
+
+
+<!-- <div class="card-body p-0">
+  <div class="relative overflow-x-auto">
+    <form id="searchForm" class="flex mb-4 w-full">
+      <input
+        id="searchInput"
+        name="search"
+        class="border border-gray-300 text-gray-900 rounded-lg focus:shadow-[0_0_0_.25rem_rgba(10,173,10,.25)] focus:ring-green-600 focus:ring-0 focus:border-green-600 block p-2 px-3 w-full text-base"
+        type="search"
+        placeholder="Search Customers"
+        aria-label="Search" />
+      <button type="submit" class="ml-2 px-4 py-2 bg-green-600 text-white rounded-lg">Search</button>
+    </form> -->
+
+    <table class="text-left w-full whitespace-nowrap table-with-checkbox table-hover">
+      <thead class="bg-gray-200 text-gray-700">
+        <tr class="border-transparent !border-b-0">
+          <!-- <th scope="col" class="px-6 py-3"></th> -->
+          <th scope="col" class="px-6 py-3">Name</th>
+          <th scope="col" class="px-6 py-3">Email</th>
+          <th scope="col" class="px-6 py-3">Phone</th>
+          <th scope="col" class="px-6 py-3">Block / Unblock</th>
+        </tr>
+      </thead>
+      <tbody id="searchResults">
+        <% users.forEach(user => { %>
+          <tr class="border-b">
+            <!-- <td class="py-3 px-6"></td> -->
+            <td class="py-3 px-6 text-gray-800"><%= user.firstName %></td>
+            <td class="py-3 px-6"><%= user.email %></td>
+            <td class="py-3 px-6"><%= user.phone || '-' %></td>
+            <td class="py-3 px-6">
+              <button class="px-3 py-1 rounded text-white <%= user.isBlocked ? 'bg-green-500' : 'bg-red-500' %>"
+                      onclick="toggleBlock('<%= user._id %>', this)">
+                <%= user.isBlocked ? 'Unblock' : 'Block' %>
+              </button>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- Pagination -->
+
+
+
+<div class="flex justify-between items-center mt-4">
+  <span>
+    Showing <%= (currentPage-1)*8 + 1 %> to <%= Math.min(currentPage*8, totalCustomers) %> of <%= totalCustomers %> entries
+  </span>
+
+  <nav class="flex gap-2">
+    <!-- Previous Button -->
+    <button 
+      class="px-3 py-1 rounded border <%= currentPage === 1 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-green-500 text-white hover:bg-green-600' %>" 
+      <%= currentPage === 1 ? 'disabled' : '' %> 
+      onclick="window.location.href='?page=<%= currentPage-1 %>'">
+      Previous
+    </button>
+
+    <!-- Page Numbers -->
+    <% for(let i=1; i<=totalPages; i++) { %>
+      <button 
+        class="px-3 py-1 rounded border <%= currentPage === i ? 'bg-green-700 text-white' : 'bg-green-200 text-green-700 hover:bg-green-300' %>"
+        onclick="window.location.href='?page=<%= i %>'">
+        <%= i %>
+      </button>
+    <% } %>
+
+    <!-- Next Button -->
+    <button 
+      class="px-3 py-1 rounded border <%= currentPage === totalPages ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-green-500 text-white hover:bg-green-600' %>" 
+      <%= currentPage === totalPages ? 'disabled' : '' %> 
+      onclick="window.location.href='?page=<%= currentPage+1 %>'">
+      Next
+    </button>
+  </nav>
+</div>
+
+
+
+
+
+
+
+
+
+
+						</div>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+	<!--offcanvas-->
+
+	</div>
+	<!-- Libs JS -->
+<script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/libs/simplebar/dist/simplebar.min.js"></script>
+
+<!-- Theme JS -->
+
+
+
+
+
+
+
+<script>
+const form = document.getElementById("searchForm");
+const searchInput = document.getElementById("searchInput");
+const resultsTbody = document.getElementById("searchResults");
+let timeout;
+
+// ===== Form Submit =====
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  performSearch(searchInput.value.trim());
+});
+
+// ===== Live Search (Typing) =====
+searchInput.addEventListener("input", () => {
+  clearTimeout(timeout);
+  const query = searchInput.value.trim();
+  timeout = setTimeout(() => performSearch(query), 300); // debounce
+});
+
+// ===== Reusable Search Function =====
+async function performSearch(query) {
+  if (query.length === 0) {
+    window.location.reload(); // reset to full list
+    return;
+  }
+
+  try {
+    const res = await fetch(`/admin/customers/search?search=${encodeURIComponent(query)}`);
+    const data = await res.json();
+
+    if (data.success && data.users.length > 0) {
+      let html = "";
+      data.users.forEach(user => {
+        html += `
+          <tr class="border-b">
+            <td class="py-3 px-6 text-left"><span class="text-gray-800">${user.firstName}</span></td>
+            <td class="py-3 px-6 text-left">${user.email}</td>
+            <td class="py-3 px-6 text-left">${user.phone || '-'}</td>
+            <td class="py-3 px-6 text-left">
+              <button class="px-3 py-1 rounded text-white ${user.isBlocked ? 'bg-green-500' : 'bg-red-500'}"
+                      onclick="toggleBlock('${user._id}', this)">
+                ${user.isBlocked ? 'Unblock' : 'Block'}
+              </button>
+            </td>
+          </tr>`;
+      });
+      resultsTbody.innerHTML = html;
+    } else {
+      resultsTbody.innerHTML = "";
+      Swal.fire({
+        icon: "error",
+        title: "User not found",
+        text: `No customers matched "${query}"`,
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    Swal.fire({
+      icon: "error",
+      title: "Server error",
+      text: "Please try again later."
+    });
+  }
+}
+
+// ===== Toggle Block/Unblock with Confirmation =====
+async function toggleBlock(userId, btn) {
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: btn.textContent === "Block" ? "You are about to block this user." : "You are about to unblock this user.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    cancelButtonText: "Cancel"
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    const res = await fetch(`/admin/users/block/${userId}`, { method: "PUT" });
+    const data = await res.json();
+
+    if (data.success) {
+      if (data.isBlocked) {
+        btn.textContent = "Unblock";
+        btn.classList.remove("bg-red-500");
+        btn.classList.add("bg-green-500");
+        Swal.fire({ icon: "success", title: "User blocked!", timer: 1500, showConfirmButton: false });
+      } else {
+        btn.textContent = "Block";
+        btn.classList.remove("bg-green-500");
+        btn.classList.add("bg-red-500");
+        Swal.fire({ icon: "success", title: "User unblocked!", timer: 1500, showConfirmButton: false });
+      }
+    } else {
+      Swal.fire("Error", data.message || "Something went wrong", "error");
+    }
+  } catch (err) {
+    console.error(err);
+    Swal.fire("Error", "Server error occurred.", "error");
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+<script src="../assets/js/theme.min.js"></script>
+
+</body>
+
+
+<!-- Mirrored from freshcart-tailwind.codescandy.com/dashboard/customers.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Dec 2024 13:19:42 GMT -->
+</html>

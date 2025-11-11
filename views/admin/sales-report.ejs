@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sales Report</title>
+
+  <!-- CSS Libraries -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+  <link rel="stylesheet" href="../assets/css/theme.min.css">
+
+  <style>
+    * {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f6f8fd 0%, #ffffff 100%);
+      color: #2d3748;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1rem;
+      margin-top: 60px; /* Adjust based on navbar height */
+    }
+
+    .row.mb-4 {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      padding: 2rem;
+      flex: 1;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card.border-primary { border-left: 4px solid #4299e1; }
+    .card.border-success { border-left: 4px solid #48bb78; }
+
+    .card-title {
+      color: #718096;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+
+    .card-text.display-6 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: #2d3748;
+    }
+
+    .filter-section {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .filter-section .date-filter-container,
+    .filter-section .time-filter-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .date-input-group, .time-select-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .form-control, .form-select {
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.75rem;
+      font-size: 0.875rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #4299e1;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+      outline: none;
+    }
+
+    .btn {
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      min-width: 120px;
+      text-align: center;
+    }
+
+    .btn-success { background: #48bb78; color: white; border: none; }
+    .btn-success:hover { background: #38a169; }
+    .btn-info { background: #4299e1; color: white; border: none; }
+    .btn-info:hover { background: #3182ce; }
+    .btn-outline-secondary { background: #e53e3e; color: white; border: none; }
+    .btn-outline-secondary:hover { background: #c53030; }
+    .btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+    .table-responsive {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      overflow-x: auto;
+      margin-top: 2rem;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+
+    .table th {
+      background: #2d3748;
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .table td {
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      color: #4a5568;
+    }
+
+    .table tbody tr:hover { background: #f7fafc; }
+
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    @media (max-width: 768px) {
+      .row.mb-4 { flex-direction: column; }
+      .filter-section { padding: 1rem; }
+      .table-responsive { margin: 1rem -0.5rem; border-radius: 0; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+<nav class="w-full bg-white shadow-md fixed top-0 left-0 z-50">
+  <div class="flex items-center justify-between px-6 py-3">
+    <!-- Logo -->
+    <a href="" class="navbar-brand flex items-center">
+      <img src="../assets/images/logo/Xe mart.png" alt="Logo" class="h-10" />
+    </a>
+
+    <!-- Nav Items -->
+    <ul class="flex items-center gap-x-6" id="topNavbar">
+
+      <!-- Dashboard -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="dashboard">
+          <span class="nav-link-icon">
+            <!-- Dashboard Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+              <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+              <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+            </svg>
+          </span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <!-- Products -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="products">
+          <span class="nav-link-icon">
+            <!-- Products Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M17 17h-11v-14h-2" />
+              <path d="M6 5l14 1l-1 7h-13" />
+            </svg>
+          </span>
+          <span>Products</span>
+        </a>
+      </li>
+
+      <!-- Categories -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="categories">
+          <span class="nav-link-icon">
+            <!-- Categories Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 6l11 0" />
+              <path d="M9 12l11 0" />
+              <path d="M9 18l11 0" />
+              <path d="M5 6l0 .01" />
+              <path d="M5 12l0 .01" />
+              <path d="M5 18l0 .01" />
+            </svg>
+          </span>
+          <span>Categories</span>
+        </a>
+      </li>
+
+      <!-- Customers -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/customers">
+          <span class="nav-link-icon">
+            <!-- Customers Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+              <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+            </svg>
+          </span>
+          <span>Customers</span>
+        </a>
+      </li>
+
+      <!-- Reviews -->
+
+
+
+      <li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/orders">
+    <span class="nav-link-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+      </svg>
+    </span>
+    <span>Orders</span>
+  </a>
+</li>
+
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/coupons">
+    <span class="nav-link-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+      </svg>
+    </span>
+    <span>coupon</span>
+  </a>
+</li>
+
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/product-offer">
+    <span class="nav-link-icon">
+      <!-- Product Offer Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1v4" />
+        <path d="M6 7h12l-1 12H7L6 7z" />
+        <path d="M9 12h2v4H9zM13 12h2v4h-2z" />
+      </svg>
+    </span>
+    <span>Product Offer</span>
+  </a>
+</li>
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/category-offer">
+    <span class="nav-link-icon">
+      <!-- Category Offer Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M9 10h6v4H9z" />
+        <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+      </svg>
+    </span>
+    <span>Category Offer</span>
+  </a>
+</li>
+
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/sales-report">
+    <span class="nav-link-icon">
+      <!-- Sales Report Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3h14v14H3z" /> <!-- Square/Report icon -->
+        <path d="M3 7h14" />
+        <path d="M7 3v14" />
+      </svg>
+    </span>
+    <span>Sales Report</span>
+  </a>
+</li>
+
+
+      <!-- Logout -->
+      <li>
+        <a class="flex items-center gap-2 text-red-600 hover:text-red-800" href="/admin/logout">
+          <span class="nav-link-icon">
+            <!-- Logout Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+              <path d="M9 12h12l-3 -3m0 6l3 -3" />
+            </svg>
+          </span>
+          <span>Log Out</span>
+        </a>
+      </li>
+
+    </ul>
+  </div>
+</nav>
+
+
+  <!-- Main Content -->
+  <div class="container" style="margin-top: 100px;">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card border-primary" style="padding: 1.5rem;">
+        <div class="card-body text-center">
+          <h5 class="card-title">Overall Order Amount</h5>
+          <p class="card-text display-6" style="font-size: 2rem;">₹<%=totalOrderRevenue%></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+  <div class="card border-success" style="padding: 1.5rem;">
+    <div class="card-body text-center">
+      <h5 class="card-title">Discount</h5>
+      <p class="card-text display-6" style="font-size: 2rem;">₹<%= totalDiscount %></p>
+    </div>
+  </div>
+</div>
+
+  </div>
+
+  <div class="toast-container"></div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+ <form id="date-wise-filter">
+  <div class="date-filter-container">
+    <div class="date-input-group">
+      <label for="from">From</label>
+      <input type="date" class="form-control" id="startDate" name="from">
+    </div>
+    <div class="date-input-group">
+      <label for="to">To</label>
+      <input type="date" class="form-control" id="endDate" name="to">
+    </div>
+    <div class="date-input-group" style="flex: 0.5;">
+      <label>&nbsp;</label>
+      <button class="btn btn-success">Apply Date</button>
+    </div>
+  </div>
+</form>
+
+    <div class="time-filter-container">
+  <form id="plan-view" class="time-select-group">
+   <label for="timePeriod">Time Period</label>
+  <select id="timePeriod" class="form-select" name="timePeriod">
+    <option value="" disabled selected>Select</option>
+    <option value="week">Week</option>
+    <option value="month">Month</option>
+    <option value="year">Year</option>
+  </select>
+</form>
+      <div class="button-group">
+         <div style="margin-top: 10px;">
+  <button id="filterBtn" class="btn btn-success" disabled>Filter</button>
+</div>
+        <!-- <button id="filterBtn" type="submit" class="btn btn-success" disabled>Filter</button> -->
+        <button class="btn btn-outline-secondary" onclick="clearFilter()">Clear Filters</button>
+        <button class="btn btn-info" id="download-pdf">Download (PDF)</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>S.No</th>
+        <th>Name</th>
+        <th>Delivery Date</th>
+        <th>Product Name</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th>Payment Method</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% orders.forEach((order, i) => { %>
+        <tr data-order-date="<%= order.orderDate %>" style="display:none;">
+          <td><%= i + 1 %></td>
+          <td><%= order.userName %></td>
+          <td><%= order.orderDate %></td>
+          <td><%= order.productName %></td>
+          <td><%= order.quantity %></td>
+          <td>₹<%= order.grandTotal %></td>
+          <td><%= order.paymentMethod %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<p id="no-data" style="display:none; text-align:center; font-weight:bold;">No orders found for this period</p>
+
+</div>
+
+
+  <!-- JS Libraries -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+
+    
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const select = document.getElementById("timePeriod");
+  const filterBtn = document.getElementById("filterBtn");
+  const noDataMsg = document.getElementById("no-data");
+  const rows = document.querySelectorAll("table tbody tr");
+
+  // Hide all rows initially
+  rows.forEach(row => (row.style.display = "none"));
+
+  // Enable button when an option is selected
+  select.addEventListener("change", () => {
+    filterBtn.disabled = !select.value;
+  });
+
+  // Button click event (no form now)
+  filterBtn.addEventListener("click", () => {
+    const period = select.value;
+    if (!period) return;
+
+    const now = new Date();
+    let startDate = new Date();
+
+    if (period === "week") {
+      startDate.setDate(now.getDate() - 7);
+    } else if (period === "month") {
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    } else if (period === "year") {
+      startDate = new Date(now.getFullYear(), 0, 1);
+    }
+
+    let visibleCount = 0;
+    noDataMsg.style.display = "none";
+
+    rows.forEach(row => {
+      const dateStr = row.getAttribute("data-order-date");
+      if (!dateStr) return;
+
+      const orderDate = new Date(dateStr);
+      const localDate = new Date(orderDate.getUTCFullYear(), orderDate.getUTCMonth(), orderDate.getUTCDate());
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      if (localDate >= startDate && localDate <= today) {
+        row.style.display = "";
+        visibleCount++;
+      } else {
+        row.style.display = "none";
+      }
+    });
+
+    if (visibleCount === 0) {
+      noDataMsg.style.display = "block";
+    }
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+document.getElementById("date-wise-filter").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const startDate = new Date(document.getElementById("startDate").value);
+  const endDate = new Date(document.getElementById("endDate").value);
+  const rows = document.querySelectorAll("table tbody tr");
+  const noDataMsg = document.getElementById("no-data");
+  let visibleCount = 0;
+
+  // hide all first
+  rows.forEach(row => row.style.display = "none");
+  noDataMsg.style.display = "none";
+
+  // only show if both dates are selected
+  if (!isNaN(startDate) && !isNaN(endDate)) {
+    rows.forEach(row => {
+      const orderDate = new Date(row.getAttribute("data-order-date"));
+      if (orderDate >= startDate && orderDate <= endDate) {
+        row.style.display = "";
+        visibleCount++;
+      }
+    });
+  }
+
+  if (visibleCount === 0) {
+    noDataMsg.style.display = "block";
+  }
+});
+
+document.getElementById("download-pdf").addEventListener("click", function () {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFontSize(18);
+    doc.text("Sales Report", 14, 22);
+
+    // Extract table headers
+    const table = document.querySelector("table");
+    const headers = Array.from(table.querySelectorAll("thead tr th")).map(th => th.innerText);
+
+    // Extract table rows
+    const rows = Array.from(table.querySelectorAll("tbody tr")).map(tr => {
+      return Array.from(tr.querySelectorAll("td")).map(td => td.innerText);
+    });
+
+    // Add table to PDF
+    doc.autoTable({
+      head: [headers],
+      body: rows,
+      startY: 30,
+      theme: 'grid',
+      headStyles: { fillColor: [0, 150, 136], textColor: 255 },
+      bodyStyles: { fontSize: 10 }
+    });
+
+    // Save PDF
+    doc.save("sales_report.pdf");
+  });
+
+
+
+
+
+const dateForm = document.getElementById("date-wise-filter");
+const startDateInput = document.getElementById("startDate");
+const endDateInput = document.getElementById("endDate");
+const tableBody = document.querySelector("tbody");
+
+// Store original rows to show all later
+const allRows = Array.from(tableBody.querySelectorAll("tr"));
+
+dateForm.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+  const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+
+  // Clear table
+  tableBody.innerHTML = "";
+
+  // Filter and show rows
+  const filteredRows = allRows.filter(row => {
+    const orderDate = new Date(row.getAttribute("data-order-date"));
+    if(startDate && endDate) {
+      return orderDate >= startDate && orderDate <= endDate;
+    }
+    return true; // If no dates selected, show all
+  });
+
+  // Append filtered rows
+  filteredRows.forEach((row, index) => {
+    // Update serial number
+    row.cells[0].innerText = index + 1;
+    tableBody.appendChild(row);
+  });
+});
+
+
+
+
+
+    // Date Picker min/max
+    let startDate = document.getElementById("startDate");
+    let endDate = document.getElementById("endDate");
+
+    startDate.addEventListener("change", () => endDate.setAttribute("min", startDate.value));
+    endDate.addEventListener("change", () => startDate.setAttribute("max", endDate.value));
+
+    function clearFilter() { location.reload(); }
+
+    async function downloadPdf(report) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(22);
+      doc.text("Sales Report", 80, 15);
+
+      const salesData = report;
+      doc.autoTable({
+        startY: 25,
+        head: [salesData[0]],
+        body: salesData.slice(1),
+        theme: "grid",
+        headStyles: { fillColor: [0, 150, 136], textColor: 255, fontSize: 12 },
+        bodyStyles: { fontSize: 10, cellPadding: 4 },
+        margin: { top: 20 }
+      });
+
+      doc.save("sales_report.pdf");
+    }
+  </script>
+</body>
+</html>

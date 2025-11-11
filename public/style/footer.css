@@ -1,0 +1,9 @@
+.footer-background {
+  background-color: rgb(236 240 239);
+}
+
+.footer-conatain {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

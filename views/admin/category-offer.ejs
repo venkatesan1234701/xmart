@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Category Offer Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="../assets/css/theme.min.css">
+
+  <style>
+
+    .btn.btn-primary.btn-sm {
+  background: linear-gradient(135deg, #1976d2, #1565c0);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(21, 101, 192, 0.4);
+  transition: all 0.25s ease-in-out;
+}
+
+.btn.btn-primary.btn-sm:hover {
+  background: linear-gradient(135deg, #2196f3, #0d47a1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(33, 150, 243, 0.5);
+}
+
+.btn.btn-primary.btn-sm:active {
+  transform: scale(0.97);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn.btn-primary.btn-sm:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
+}
+
+    /* Make sure your CSS file is loaded AFTER Bootstrap */
+.btn.btn-danger.btn-sm {
+  background: linear-gradient(135deg, #e53935, #d32f2f);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(227, 50, 50, 0.4);
+  transition: all 0.25s ease-in-out;
+}
+
+.btn.btn-danger.btn-sm:hover {
+  background: linear-gradient(135deg, #f44336, #c62828);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(244, 67, 54, 0.5);
+}
+
+.btn.btn-danger.btn-sm:active {
+  transform: scale(0.97);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn.btn-danger.btn-sm:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.3);
+}
+
+
+    
+    .btn-success {
+      background: linear-gradient(135deg, #16a34a, #22c55e);
+      color: white; font-weight: 600; border: none; border-radius: 8px;
+      padding: 8px 20px; transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
+    }
+    .btn-success:hover {
+      background: linear-gradient(135deg, #15803d, #16a34a);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(22, 163, 74, 0.4);
+    }
+    .btn-edit, .btn-delete {
+      border-radius: 6px; padding: 5px 12px; transition: all 0.3s ease;
+      background-color: white; font-weight: 500;
+    }
+    .btn-edit { color: #0d6efd; border: 1px solid #0d6efd; }
+    .btn-edit:hover { background-color: #0d6efd; color: white; }
+    .btn-delete { color: #dc3545; border: 1px solid #dc3545; }
+    .btn-delete:hover { background-color: #dc3545; color: white; }
+  </style>
+</head>
+<body class="bg-light">
+
+<!-- ✅ You can reuse your full navbar here -->
+<nav class="w-full bg-white shadow-md fixed top-0 left-0 z-50">
+  <div class="flex items-center justify-between px-6 py-3">
+    <!-- Logo -->
+    <a href="" class="navbar-brand flex items-center">
+      <img src="../assets/images/logo/Xe mart.png" alt="Logo" class="h-10" />
+    </a>
+
+    <!-- Nav Items -->
+    <ul class="flex items-center gap-x-6" id="topNavbar">
+
+      <!-- Dashboard -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="dashboard">
+          <span class="nav-link-icon">
+            <!-- Dashboard Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+              <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+              <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+            </svg>
+          </span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <!-- Products -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="products">
+          <span class="nav-link-icon">
+            <!-- Products Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M17 17h-11v-14h-2" />
+              <path d="M6 5l14 1l-1 7h-13" />
+            </svg>
+          </span>
+          <span>Products</span>
+        </a>
+      </li>
+
+      <!-- Categories -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="categories">
+          <span class="nav-link-icon">
+            <!-- Categories Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 6l11 0" />
+              <path d="M9 12l11 0" />
+              <path d="M9 18l11 0" />
+              <path d="M5 6l0 .01" />
+              <path d="M5 12l0 .01" />
+              <path d="M5 18l0 .01" />
+            </svg>
+          </span>
+          <span>Categories</span>
+        </a>
+      </li>
+
+      <!-- Customers -->
+      <li>
+        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/customers">
+          <span class="nav-link-icon">
+            <!-- Customers Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+              <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+            </svg>
+          </span>
+          <span>Customers</span>
+        </a>
+      </li>
+
+      <!-- Reviews -->
+
+
+
+      <li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/orders">
+    <span class="nav-link-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+      </svg>
+    </span>
+    <span>Orders</span>
+  </a>
+</li>
+
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/coupons">
+    <span class="nav-link-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+      </svg>
+    </span>
+    <span>coupon</span>
+  </a>
+</li>
+
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/product-offer">
+    <span class="nav-link-icon">
+      <!-- Product Offer Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1v4" />
+        <path d="M6 7h12l-1 12H7L6 7z" />
+        <path d="M9 12h2v4H9zM13 12h2v4h-2z" />
+      </svg>
+    </span>
+    <span>Product Offer</span>
+  </a>
+</li>
+
+
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/category-offer">
+    <span class="nav-link-icon">
+      <!-- Category Offer Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M9 10h6v4H9z" />
+        <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+      </svg>
+    </span>
+    <span>Category Offer</span>
+  </a>
+</li>
+
+
+<li>
+  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/sales-report">
+    <span class="nav-link-icon">
+      <!-- Sales Report Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+        fill="none" stroke="currentColor" stroke-width="2" 
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3h14v14H3z" /> <!-- Square/Report icon -->
+        <path d="M3 7h14" />
+        <path d="M7 3v14" />
+      </svg>
+    </span>
+    <span>Sales Report</span>
+  </a>
+</li>
+
+
+
+
+      <!-- Logout -->
+      <li>
+        <a class="flex items-center gap-2 text-red-600 hover:text-red-800" href="/admin/logout">
+          <span class="nav-link-icon">
+            <!-- Logout Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+              fill="none" stroke="currentColor" stroke-width="2" 
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+              <path d="M9 12h12l-3 -3m0 6l3 -3" />
+            </svg>
+          </span>
+          <span>Log Out</span>
+        </a>
+      </li>
+
+    </ul>
+  </div>
+</nav>
+
+
+<main class="container pt-5 mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-semibold text-dark">Category Offers</h2>
+    <button class="btn btn-success" id="openModalBtn">+ Add Offer</button>
+  </div>
+
+
+  <form action="" method="get" class="flex items-center gap-2 mb-3">
+  <input
+    name="search"
+    id="category-search"
+    value="<%= search || '' %>"
+    type="search"
+    placeholder="Search Category Offer..."
+    autocomplete="off"
+    class="border border-gray-300 text-gray-900 rounded-md focus:ring-green-600 focus:ring-1 block p-1.5 px-2 w-1/4 text-sm"
+  />
+  <button
+    type="submit"
+    class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm rounded-md flex items-center justify-center"
+  >
+    🔍 Search
+  </button>
+</form>
+
+
+  <!-- Table -->
+  <div class="table-responsive bg-white shadow-sm rounded p-3">
+    <table class="table table-bordered table-hover align-middle text-center">
+      <thead class="table-light">
+        <tr>
+          <th>S.No</th>
+          <th>Category</th>
+          <th>Offer %</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Status</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (!offers || offers.length === 0) { %>
+          <tr><td colspan="8" class="text-secondary py-4">No Category Offers Found</td></tr>
+        <% } else { %>
+          <% offers.forEach((o, i) => { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td><%= o.category?.name || '-' %></td>
+              <td><%= o.offerPercentage %>%</td>
+              <td><%= o.startDate?.toISOString().split('T')[0] || '-' %></td>
+              <td><%= o.endDate?.toISOString().split('T')[0] || '-' %></td>
+            <td>
+  <span class="badge 
+    <% if (o.status === 'list') { %> bg-success 
+    <% } else if (o.status === 'unlist') { %> bg-danger 
+    <% } else { %> bg-warning text-dark <% } %>">
+    <%= o.status %>
+  </span>
+</td>
+
+            <td>
+  <button class="btn btn-primary btn-sm"
+          onclick='openEditModalFromButton(this)'
+          data-offer='<%- JSON.stringify(o) %>'>
+    Edit
+  </button>
+</td>
+
+
+<td>
+  <button class="btn btn-danger btn-sm" onclick="deleteOffer('<%= o._id %>')">
+    Delete
+  </button>
+</td>
+
+
+
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal fade" id="offerModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content p-3">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Category Offer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="offerForm" class="row g-3">
+          <input type="hidden" id="offerId">
+
+          <div class="col-12">
+            <label>Category</label>
+            <select class="form-select" id="categorySelect" >
+              <option value="">Choose...</option>
+              <% categories.forEach(c => { %>
+                <option value="<%= c._id %>"><%= c.name %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="col-12">
+            <label>Offer %</label>
+            <input type="number" id="offerPercentage" class="form-control" min="1" max="100" >
+          </div>
+
+          <div class="col-12">
+            <label>Start Date</label>
+            <input type="date" id="startDate" class="form-control" >
+          </div>
+
+          <div class="col-12">
+            <label>End Date</label>
+            <input type="date" id="endDate" class="form-control" >
+          </div>
+
+          <div class="col-12">
+            <label>Status</label>
+            <select id="currentStatus" class="form-select">
+              <option value="list">List</option>
+              <option value="unlist">Unlist</option>
+            </select>
+          </div>
+
+          <div class="col-12 d-flex justify-content-end gap-2 mt-2">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center mt-3">
+    <% for(let i = 1; i <= totalPages; i++) { %>
+      <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+      </li>
+    <% } %>
+  </ul>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- <script>
+
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  const offerForm = document.getElementById('offerForm');
+
+  offerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const categoryId = document.getElementById('categorySelect').value;
+    const offerPercentage = document.getElementById('offerPercentage').value;
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const status = document.getElementById('currentStatus').value;
+
+    if (!categoryId || !offerPercentage || !startDate || !endDate) {
+      alert('Please fill in all fields.');
+      return;
+    }
+
+    const data = {
+      categoryId,
+      offerPercentage,
+      startDate,
+      endDate,
+      isListed: status === 'list',
+    };
+
+    try {
+      const response = await fetch('/admin/category-offer/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert('✅ Offer added successfully!');
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('offerModal'));
+        modal.hide();
+        // Reload page to see new offer
+        window.location.reload();
+      } else {
+        alert(`❌ ${result.message || 'Something went wrong'}`);
+      }
+    } catch (err) {
+      console.error('Error adding offer:', err);
+      alert('⚠️ Server error. Please try again later.');
+    }
+  });
+});
+const modalEl = document.getElementById("offerModal");
+const offerModal = new bootstrap.Modal(modalEl);
+const form = document.getElementById("offerForm");
+
+// Open modal for Add
+document.getElementById("openModalBtn").addEventListener("click", () => {
+  form.reset();
+  document.getElementById("offerId").value = "";
+  document.querySelector(".modal-title").innerText = "Add Category Offer";
+  offerModal.show();
+});
+
+// Submit (Add / Edit)
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const id = document.getElementById("offerId").value;
+  const categoryId = document.getElementById("categorySelect").value;
+  const offerPercentage = Number(document.getElementById("offerPercentage").value);
+  const startDate = document.getElementById("startDate").value;
+  const endDate = document.getElementById("endDate").value;
+  const status = document.getElementById("currentStatus").value;
+
+  if (!categoryId || !offerPercentage || !startDate || !endDate) {
+    return Swal.fire("Validation Error", "All fields are required", "warning");
+  }
+
+  if (new Date(endDate) <= new Date(startDate)) {
+    return Swal.fire("Validation Error", "End date must be after start date", "warning");
+  }
+
+  const payload = {
+    categoryId,
+    offerPercentage,
+    startDate,
+    endDate,
+    isListed: status === "list"
+  };
+  if (id) payload.categoryOfferId = id;
+
+  const url = id ? '/admin/categoryOffers/updateOffer' : '/admin/categoryOffers/addOffer';
+  const method = id ? 'PUT' : 'POST';
+
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (res.ok) Swal.fire("Success", data.message, "success").then(() => location.reload());
+    else Swal.fire("Error", data.error || "Something went wrong", "error");
+  } catch (err) {
+    Swal.fire("Error", "Server request failed", "error");
+  }
+});
+
+// Edit modal
+function openEditModalFromButton(btn) {
+  const offer = JSON.parse(btn.dataset.offer);
+  document.getElementById("offerId").value = offer._id;
+  document.getElementById("categorySelect").value = offer.category;
+  document.getElementById("offerPercentage").value = offer.offerPercentage;
+  document.getElementById("startDate").value = offer.startDate.split("T")[0];
+  document.getElementById("endDate").value = offer.endDate.split("T")[0];
+  document.getElementById("currentStatus").value = offer.isListed ? "list" : "unlist";
+  document.querySelector(".modal-title").innerText = "Edit Category Offer";
+  offerModal.show();
+}
+
+// Delete
+async function deleteOffer(offerId) {
+  const confirmDelete = await Swal.fire({
+    title: "Are you sure?",
+    text: "This offer will be deleted permanently.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete it!"
+  });
+  if (!confirmDelete.isConfirmed) return;
+  try {
+    const res = await fetch(`/admin/categoryOffers/delete/${offerId}`, { method: "DELETE" });
+    const data = await res.json();
+    if (res.ok) Swal.fire("Deleted!", data.message, "success").then(() => location.reload());
+    else Swal.fire("Error", data.error || "Unable to delete", "error");
+  } catch (err) {
+    Swal.fire("Error", "Server request failed", "error");
+  }
+}
+
+
+  async function deleteOffer(id) {
+    // SweetAlert confirmation popup
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await fetch(`/admin/category-offer/delete/${id}`, {
+            method: 'DELETE'
+          });
+          const data = await res.json();
+
+          if (res.ok) {
+            Swal.fire({
+              title: 'Deleted!',
+              text: data.message,
+              icon: 'success',
+              timer: 1500,
+              showConfirmButton: false
+            });
+            setTimeout(() => location.reload(), 1500);
+          } else {
+            Swal.fire('Error', data.message || 'Something went wrong', 'error');
+          }
+        } catch (err) {
+          console.error('Error deleting offer:', err);
+          Swal.fire('Error', 'Server request failed', 'error');
+        }
+      }
+    });
+  }
+
+
+</script> -->
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const offerForm = document.getElementById("offerForm");
+  const modalEl = document.getElementById("offerModal");
+  const offerModal = new bootstrap.Modal(modalEl);
+  const openModalBtn = document.getElementById("openModalBtn");
+
+  // 🟢 Open Add Modal
+  if (openModalBtn) {
+    openModalBtn.addEventListener("click", () => {
+      offerForm.reset();
+      document.getElementById("offerId").value = "";
+      document.querySelector(".modal-title").innerText = "Add Category Offer";
+      document.getElementById("currentStatus").value = "list"; // default
+      offerModal.show();
+    });
+  }
+
+  // 🟢 Handle Add / Edit Submit
+  offerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const id = document.getElementById("offerId").value;
+    const categoryId = document.getElementById("categorySelect").value;
+    const offerPercentage = Number(document.getElementById("offerPercentage").value);
+    const startDate = document.getElementById("startDate").value;
+    const endDate = document.getElementById("endDate").value;
+    const status = document.getElementById("currentStatus").value;
+
+    if (!categoryId || !offerPercentage || !startDate || !endDate) {
+      return Swal.fire("Validation Error", "All fields are required", "warning");
+    }
+
+    if (new Date(endDate) <= new Date(startDate)) {
+      return Swal.fire("Validation Error", "End date must be after start date", "warning");
+    }
+
+    const payload = {
+      categoryId,
+      offerPercentage,
+      startDate,
+      endDate,
+      isListed: status === "list",
+    };
+
+    const url = id
+      ? `/admin/category-offer/update/${id}`
+      : `/admin/category-offer/add`;
+    const method = id ? "PUT" : "POST";
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        Swal.fire("Success", data.message || "Offer saved successfully!", "success")
+          .then(() => location.reload());
+      } else {
+        Swal.fire("Error", data.message || "Something went wrong", "error");
+      }
+    } catch (err) {
+      console.error("Error adding/editing offer:", err);
+      Swal.fire("Error", "Server request failed", "error");
+    }
+  });
+});
+
+// 🟡 Open Edit Modal (from button)
+function openEditModalFromButton(btn) {
+  const offer = JSON.parse(btn.dataset.offer);
+  document.getElementById("offerId").value = offer._id;
+  document.getElementById("categorySelect").value = offer.category._id || offer.category;
+  document.getElementById("offerPercentage").value = offer.offerPercentage;
+  document.getElementById("startDate").value = offer.startDate.split("T")[0];
+  document.getElementById("endDate").value = offer.endDate.split("T")[0];
+  document.getElementById("currentStatus").value = offer.isListed ? "list" : "unlist";
+  document.querySelector(".modal-title").innerText = "Edit Category Offer";
+  const modalEl = document.getElementById("offerModal");
+  const offerModal = new bootstrap.Modal(modalEl);
+  offerModal.show();
+}
+
+// 🔴 Delete Offer with SweetAlert
+async function deleteOffer(id) {
+  const confirmDelete = await Swal.fire({
+    title: "Are you sure?",
+    text: "This offer will be permanently deleted.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "Cancel",
+  });
+
+  if (!confirmDelete.isConfirmed) return;
+
+  try {
+    const res = await fetch(`/admin/category-offer/delete/${id}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      Swal.fire({
+        title: "Deleted!",
+        text: data.message,
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+      setTimeout(() => location.reload(), 1500);
+    } else {
+      Swal.fire("Error", data.message || "Something went wrong", "error");
+    }
+  } catch (err) {
+    console.error("Error deleting offer:", err);
+    Swal.fire("Error", "Server request failed", "error");
+  }
+}
+</script>
+
+
+</body>
+</html>
