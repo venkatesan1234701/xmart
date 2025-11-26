@@ -590,21 +590,21 @@
 						<label for="fullName" class="mb-2 block text-gray-800">Name</label>
 						<input type="text"
 							class="form-control border border-gray-300 text-gray-900 rounded-lg focus:shadow-[0_0_0_.25rem_rgba(10,173,10,.25)] focus:ring-green-600 focus:ring-0 focus:border-green-600 block p-2 px-3 disabled:opacity-50 disabled:pointer-events-none w-full text-base"
-							id="fullName" placeholder="Enter Your Name" required />
+							id="fullName" placeholder="Enter Your Name"  />
 						<div class="invalid-feedback">Please enter name.</div>
 					</div>
 					<div class="mb-3">
 						<label for="email" class="mb-2 block text-gray-800">Email address</label>
 						<input type="email"
 							class="form-control border border-gray-300 text-gray-900 rounded-lg focus:shadow-[0_0_0_.25rem_rgba(10,173,10,.25)] focus:ring-green-600 focus:ring-0 focus:border-green-600 block p-2 px-3 disabled:opacity-50 disabled:pointer-events-none w-full text-base"
-							id="email" placeholder="Enter Email address" autocomplete="email" required />
+							id="email" placeholder="Enter Email address" autocomplete="email"  />
 						<div class="invalid-feedback">Please enter email.</div>
 					</div>
 					<div class="mb-5">
 						<label for="password" class="mb-2 block text-gray-800">Password</label>
 						<input type="password"
 							class="form-control border border-gray-300 text-gray-900 rounded-lg focus:shadow-[0_0_0_.25rem_rgba(10,173,10,.25)] focus:ring-green-600 focus:ring-0 focus:border-green-600 block p-2 px-3 disabled:opacity-50 disabled:pointer-events-none w-full text-base"
-							id="password" placeholder="Enter Password" required />
+							id="password" placeholder="Enter Password"  />
 						<div class="invalid-feedback">Please enter password.</div>
 						<span class="block mt-1 text-sm text-gray-500">
 							By Signup, you agree to our
@@ -1048,7 +1048,7 @@
 </div> -->
 
 
-<form action="/user/checkout" method="POST">
+<form action="/user/checkout" method="POST" id="checkoutForm">
 
   <!-- Address Selection -->
   <div class="my-6">
@@ -1066,7 +1066,7 @@
                   name="selectedAddress"
                   value="<%= address._id %>"
                   <%= index === 0 ? "checked" : "" %>
-                  required
+                  
                 />
                 <label class="text-gray-800 inline-block"><%= address.addressType %></label>
               </div>
@@ -1105,7 +1105,7 @@
 
    <!-- Razorpay -->
 <div class="card p-4 mb-3 flex gap-3 items-start">
-  <input type="radio" name="paymentMethod" value="Razorpay" id="razorpay" required
+  <input type="radio" name="paymentMethod" value="Razorpay" id="razorpay" 
     class="w-4 h-4 text-green-600 border-gray-300 rounded-full" />
   <label for="razorpay" class="flex flex-col">
     <span class="font-semibold">Pay with Razorpay</span>
@@ -1113,15 +1113,6 @@
   </label>
 </div>
 
-<!-- Cash on Delivery -->
-<!-- <div class="card p-4 mb-3 flex gap-3 items-start">
-  <input type="radio" name="paymentMethod" value="Cash on Delivery" id="cod"
-    class="w-4 h-4 text-green-600 border-gray-300 rounded-full" />
-  <label for="cod" class="flex flex-col">
-    <span class="font-semibold">Cash on Delivery</span>
-    <span class="text-sm text-gray-500">Pay when you receive your order.</span>
-  </label>
-</div> -->
 <div class="card p-4 mb-3 flex gap-3 items-start">
   <input 
     type="radio" 
@@ -1143,16 +1134,6 @@
   </label>
 </div>
 
-
-<!-- Wallet -->
-<!-- <div class="card p-4 mb-3 flex gap-3 items-start">
-  <input type="radio" name="paymentMethod" value="Wallet" id="wallet"
-    class="w-4 h-4 text-green-600 border-gray-300 rounded-full" />
-  <label for="wallet" class="flex flex-col">
-    <span class="font-semibold">Wallet</span>
-    <span class="text-sm text-gray-500">Use your store wallet balance.</span>
-  </label>
-</div> -->
 <div class="card p-4 mb-3 flex gap-3 items-start">
   <input
     type="radio"
@@ -1515,13 +1496,13 @@
 						<div class="w-full">
 							<input type="text"
 								class="border border-gray-300 text-gray-900 rounded-lg focus:shadow-[0_0_0_.25rem_rgba(10,173,10,.25)] focus:ring-green-600 focus:ring-0 focus:border-green-600 block p-2 px-3 disabled:opacity-50 disabled:pointer-events-none w-full text-base"
-								placeholder="First name" aria-label="First name" required="" />
+								placeholder="First name" aria-label="First name"  />
 						</div>
 
 						<div class="w-full">
 							<input type="text"
 								class="border border-gray-300 text-gray-900 rounded-lg focus:shadow-[0_0_0_.25rem_rgba(10,173,10,.25)] focus:ring-green-600 focus:ring-0 focus:border-green-600 block p-2 px-3 disabled:opacity-50 disabled:pointer-events-none w-full text-base"
-								placeholder="Last name" aria-label="Last name" required="" />
+								placeholder="Last name" aria-label="Last name"+/>
 						</div>
 
 						<div class="w-full">
@@ -1823,8 +1804,10 @@
 <!-- buy now template button
 Remove if you do not want.
 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="assets/js/vendors/language.js"></script>
 	<!-- Libs JS -->
 <script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -1836,7 +1819,34 @@ Remove if you do not want.
 <script>
 
 
+document.querySelector("form#checkoutForm").addEventListener("submit", function(e) {
+    e.preventDefault();
 
+    // Check address
+    const addressSelected = document.querySelector('input[name="selectedAddress"]:checked');
+    if (!addressSelected) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Select an address',
+        text: 'Please select a delivery address before placing the order.'
+      });
+      return;
+    }
+
+    // Check payment
+    const paymentSelected = document.querySelector('input[name="paymentMethod"]:checked');
+    if (!paymentSelected) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Select a payment method',
+        text: 'Please select a payment method before placing the order.'
+      });
+      return;
+    }
+
+    // All good, submit the form
+    this.submit();
+  });
 
  document.addEventListener("DOMContentLoaded", () => {
     const total = parseFloat(document.getElementById("grandTotalValue")?.textContent || "0");

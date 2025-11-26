@@ -474,6 +474,92 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const rows = document.querySelectorAll("table tbody tr");
+  const noDataMsg = document.getElementById("no-data");
+
+  // -----------------------------
+  // WEEK / MONTH / YEAR FILTER
+  // -----------------------------
+  const select = document.getElementById("timePeriod");
+  const filterBtn = document.getElementById("filterBtn");
+
+  select.addEventListener("change", () => {
+    filterBtn.disabled = !select.value;
+  });
+
+  filterBtn.addEventListener("click", () => {
+    const period = select.value;
+    if (!period) return;
+
+    const now = new Date();
+    let startDate = new Date();
+
+    if (period === "week") startDate.setDate(now.getDate() - 7);
+    if (period === "month") startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    if (period === "year") startDate = new Date(now.getFullYear(), 0, 1);
+
+    let count = 0;
+    rows.forEach(row => {
+      const orderDate = new Date(row.dataset.orderDate);
+
+      if (orderDate >= startDate && orderDate <= now) {
+        row.style.display = "";
+        count++;
+      } else {
+        row.style.display = "none";
+      }
+    });
+
+    noDataMsg.style.display = count === 0 ? "block" : "none";
+  });
+
+  // -----------------------------
+  // DATE RANGE FILTER
+  // -----------------------------
+  document.getElementById("date-wise-filter").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const startDateInput = document.getElementById("startDate").value;
+    const endDateInput = document.getElementById("endDate").value;
+
+    const rows = document.querySelectorAll("table tbody tr");
+    const noDataMsg = document.getElementById("no-data");
+
+    if (!startDateInput || !endDateInput) {
+        alert("Please select both FROM and TO dates");
+        return;
+    }
+
+    const startDate = new Date(startDateInput);
+    const endDate = new Date(endDateInput);
+
+    // end date last second (23:59:59)
+    endDate.setHours(23, 59, 59, 999);
+
+    let visibleCount = 0;
+    noDataMsg.style.display = "none";
+
+    rows.forEach(row => {
+        const orderDateStr = row.getAttribute("data-order-date");
+        const orderDate = new Date(orderDateStr);
+
+        // MAIN LOGIC ✅
+        if (orderDate >= startDate && orderDate <= endDate) {
+            row.style.display = "";
+            visibleCount++;
+        } else {
+            row.style.display = "none";
+        }
+    });
+
+    if (visibleCount === 0) {
+        noDataMsg.style.display = "block";
+    }
+});
+
+});
 
     
 
@@ -572,36 +658,83 @@ document.getElementById("date-wise-filter").addEventListener("submit", function(
   }
 });
 
+
 document.getElementById("download-pdf").addEventListener("click", function () {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
 
-    // Title
-    doc.setFontSize(18);
-    doc.text("Sales Report", 14, 22);
+  // --- COMPANY INFO ---
+  const companyName = "Xmart";
+  const companyEmail = "hello@xmart.com";
 
-    // Extract table headers
-    const table = document.querySelector("table");
-    const headers = Array.from(table.querySelectorAll("thead tr th")).map(th => th.innerText);
+  doc.setFontSize(16);
+  doc.setTextColor(0, 0, 0);
+  // Company name left
+  doc.text(companyName, 14, 20);
+  // Email right
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const emailTextWidth = doc.getTextWidth(companyEmail);
+  doc.text(companyEmail, pageWidth - 14 - emailTextWidth, 20);
 
-    // Extract table rows
-    const rows = Array.from(table.querySelectorAll("tbody tr")).map(tr => {
-      return Array.from(tr.querySelectorAll("td")).map(td => td.innerText);
-    });
+  // --- TITLE ---
+  doc.setFontSize(18);
+  doc.setTextColor(0, 0, 0);
+  // doc.text("Sales Report", 14, 30);
 
-    // Add table to PDF
-    doc.autoTable({
-      head: [headers],
-      body: rows,
-      startY: 30,
-      theme: 'grid',
-      headStyles: { fillColor: [0, 150, 136], textColor: 255 },
-      bodyStyles: { fontSize: 10 }
-    });
+  // Extract table headers
+  const table = document.querySelector("table");
+  const headers = Array.from(table.querySelectorAll("thead tr th")).map(th => th.innerText);
 
-    // Save PDF
-    doc.save("sales_report.pdf");
+  // Extract table rows
+  const rows = Array.from(table.querySelectorAll("tbody tr")).map(tr => {
+    return Array.from(tr.querySelectorAll("td")).map(td => td.innerText);
   });
+
+  // Add table to PDF
+  doc.autoTable({
+    head: [headers],
+    body: rows,
+    startY: 40, // shifted below header
+    theme: 'grid',
+    headStyles: { fillColor: [0, 150, 136], textColor: 255 },
+    bodyStyles: { fontSize: 10 }
+  });
+
+  // Save PDF
+  doc.save("sales_report.pdf");
+});
+
+
+// document.getElementById("download-pdf").addEventListener("click", function () {
+//     const { jsPDF } = window.jspdf;
+//     const doc = new jsPDF();
+
+//     // Title
+//     doc.setFontSize(18);
+//     doc.text("Sales Report", 14, 22);
+
+//     // Extract table headers
+//     const table = document.querySelector("table");
+//     const headers = Array.from(table.querySelectorAll("thead tr th")).map(th => th.innerText);
+
+//     // Extract table rows
+//     const rows = Array.from(table.querySelectorAll("tbody tr")).map(tr => {
+//       return Array.from(tr.querySelectorAll("td")).map(td => td.innerText);
+//     });
+
+//     // Add table to PDF
+//     doc.autoTable({
+//       head: [headers],
+//       body: rows,
+//       startY: 30,
+//       theme: 'grid',
+//       headStyles: { fillColor: [0, 150, 136], textColor: 255 },
+//       bodyStyles: { fontSize: 10 }
+//     });
+
+//     // Save PDF
+//     doc.save("sales_report.pdf");
+//   });
 
 
 

@@ -10,13 +10,47 @@ const razorpayInstance = new Razorpay({
 
 
 
+// const getWalletPage = async (req, res) => {
+//   try {
+//     const userId = req.session.user?.id;
+//     if (!userId) return res.redirect("/signin");
+
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = 6; 
+//     const skip = (page - 1) * limit;
+
+//     let wallet = await Wallet.findOne({ userId });
+//     if (!wallet) {
+//       wallet = await Wallet.create({ userId });
+//     }
+
+//     const totalTransactions = wallet.transactions.length;
+
+//     const paginatedTransactions = wallet.transactions
+//       .sort((a, b) => b.createdAt - a.createdAt) 
+//       .slice(skip, skip + limit);
+
+//     const totalPages = Math.ceil(totalTransactions / limit);
+
+//     res.render("user/wallet", {
+//       wallet,
+//       transactions: paginatedTransactions,
+//       currentPage: page,
+//       totalPages,
+//     });
+//   } catch (err) {
+//     console.error(" Wallet page error:", err);
+//     res.status(500).send("Server Error");
+//   }
+// };
+
 const getWalletPage = async (req, res) => {
   try {
     const userId = req.session.user?.id;
     if (!userId) return res.redirect("/signin");
 
     const page = parseInt(req.query.page) || 1;
-    const limit = 6; 
+    const limit = 10; 
     const skip = (page - 1) * limit;
 
     let wallet = await Wallet.findOne({ userId });
@@ -24,11 +58,12 @@ const getWalletPage = async (req, res) => {
       wallet = await Wallet.create({ userId });
     }
 
-    const totalTransactions = wallet.transactions.length;
+    const sortedTransactions = wallet.transactions
+      .sort((a, b) => b.createdAt - a.createdAt);
 
-    const paginatedTransactions = wallet.transactions
-      .sort((a, b) => b.createdAt - a.createdAt) 
-      .slice(skip, skip + limit);
+    const totalTransactions = sortedTransactions.length;
+
+    const paginatedTransactions = sortedTransactions.slice(skip, skip + limit);
 
     const totalPages = Math.ceil(totalTransactions / limit);
 
@@ -37,13 +72,14 @@ const getWalletPage = async (req, res) => {
       transactions: paginatedTransactions,
       currentPage: page,
       totalPages,
+      totalTransactions
     });
+
   } catch (err) {
-    console.error(" Wallet page error:", err);
+    console.error("Wallet page error:", err);
     res.status(500).send("Server Error");
   }
 };
-
 
 
 

@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema(
     googleId: { type: String, unique: true, sparse: true },
     isBlocked: { type: Boolean, default: false },
     referredBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      referralCode: { type: String, unique: true, required: true },
     isVerified: { type: Boolean, default: false },
   },
   { timestamps: true }

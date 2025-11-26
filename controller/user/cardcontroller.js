@@ -2,7 +2,9 @@ const mongoose = require("mongoose");
 const Cart = require("../../models/card");
 const Product = require("../../models/productModel");
 const Wishlist = require("../../models/wishlistModel");
-const Coupon = require("../../models/couponSchema ")
+// const Coupon = require("../../models/couponSchema ")
+const Coupon = require("../../models/couponSchema ");
+
 
 const applyCoupon = async (req, res) => {
   try {
@@ -86,93 +88,10 @@ const applyCoupon = async (req, res) => {
 
 
 
-const getCartPage = async (req, res) => {
-  try {
-    const user = req.session.user;
-    if (!user) return res.redirect("/login");
-
-    const cart = await Cart.findOne({ userId: user.id }).populate({
-      path: "products.productId",
-      model: "Product",
-      select: "name productPic prices sizes",
-    });
-
-    const cartItems =
-      cart && cart.products && cart.products.length > 0
-        ? cart.products.map((item) => ({
-            name: item.productId?.name || "Unknown Product",
-            image: item.productId?.productPic?.[0] || "/assets/images/default.jpg",
-            size: item.selectedSize,
-            quantity: item.quantity,
-            price: item.pricePerUnit,
-            total: item.pricePerUnit * item.quantity,
-            id: item.productId?._id,
-          }))
-        : [];
-
-    const subtotal = cartItems.reduce((sum, item) => sum + (item.total || 0), 0);
-    const serviceFee = subtotal > 0 ? 50 : 0;
-
-    let grandTotal = subtotal + serviceFee;
-
-    let coupon = { name: null, discount: 0, isMax: false, maxPurchase: 0 };
-
-    if (cart?.coupon?.name) {
-      const appliedCoupon = await Coupon.findOne({
-        couponCode: cart.coupon.name,
-      });
-
-      const couponUsedByUser =
-        appliedCoupon &&
-        appliedCoupon.user &&
-        appliedCoupon.user.toString() === user.id;
-
-      if (!appliedCoupon || appliedCoupon.currentStatus === "expired" || couponUsedByUser) {
-        cart.coupon = { name: null, discount: 0, isMax: false, maxPurchase: 0 };
-        await cart.save();
-      } else {
-        coupon = cart.coupon;
-        grandTotal = subtotal + serviceFee - coupon.discount;
-      }
-    }
-
-    // ✅ Load all valid coupons
-    const coupons = await Coupon.find({ isListed: true, isDeleted: false });
-
-    const message =
-      req.flash && req.flash("message").length
-        ? req.flash("message")[0]
-        : { type: "", text: "" };
-
-    res.render("user/card", {
-      user,
-      cart: cart || { products: [], subtotal, grandTotal, coupon },
-      cartItems,
-      subtotal,
-      serviceFee,
-      grandTotal,
-      coupon,
-      coupons,
-      isEmpty: cartItems.length === 0,
-      message,
-    });
-
-  } catch (error) {
-    console.error("💥 Error loading cart page:", error);
-    res.status(500).send("Server Error - Cannot load cart page");
-  }
-};
-
-
-
-
-
 // const getCartPage = async (req, res) => {
 //   try {
 //     const user = req.session.user;
-//     if (!user) {
-//       return res.redirect("/login");
-//     }
+//     if (!user) return res.redirect("/login");
 
 //     const cart = await Cart.findOne({ userId: user.id }).populate({
 //       path: "products.productId",
@@ -219,8 +138,9 @@ const getCartPage = async (req, res) => {
 //       }
 //     }
 
-//     // ✅ FIX: Define coupons here
-//     const coupons = await Coupon.find({ isListed: true, isDeleted: false });
+//     const coupons = await Coupon.find({ isListed: true }); // FIXED
+
+//     // const coupons = await Coupon.find({ isListed: true, isDeleted: false });
 
 //     const message =
 //       req.flash && req.flash("message").length
@@ -235,13 +155,198 @@ const getCartPage = async (req, res) => {
 //       serviceFee,
 //       grandTotal,
 //       coupon,
-//       coupons, // ✅ now defined correctly
+//       coupons,
 //       isEmpty: cartItems.length === 0,
 //       message,
 //     });
 
 //   } catch (error) {
-//     console.error("💥 Error loading cart page:", error);
+//     console.error(" Error loading cart page:", error);
+//     res.status(500).send("Server Error - Cannot load cart page");
+//   }
+// };
+
+
+const getCartPage = async (req, res) => {
+  try {
+    const user = req.session.user;
+    if (!user) return res.redirect("/signin");
+
+    let cart = await Cart.findOne({ userId: user.id }).populate({
+      path: "products.productId",
+      model: "Product",
+      select: "name productPic prices sizes",
+    })
+
+    if (!cart) {
+      cart = new Cart({
+        userId: user.id,
+        products: [],
+        subtotal: 0,
+        grandTotal: 0,
+        coupon: {
+          name: null,
+          discount: 0,
+          isMax: false,
+          maxPurchase: 0,
+        },
+      });
+      await cart.save();
+    }
+
+    const cartItems =
+      cart.products.length > 0
+        ? cart.products.map((item) => ({
+            name: item.productId?.name || "Unknown Product",
+            image: item.productId?.productPic?.[0] || "/assets/images/default.jpg",
+            size: item.selectedSize,
+            quantity: item.quantity,
+            price: item.pricePerUnit,
+            total: item.pricePerUnit * item.quantity,
+            id: item.productId?._id,
+          }))
+        : [];
+
+    const subtotal = cartItems.reduce((sum, item) => sum + (item.total || 0), 0);
+    const serviceFee = subtotal > 0 ? 50 : 0;
+    const grandTotal = subtotal + serviceFee;
+
+    cart.coupon = {
+      name: null,
+      discount: 0,
+      isMax: false,
+      maxPurchase: 0,
+    };
+
+    await cart.save();
+
+    const now = new Date();
+
+    const coupons = await Coupon.find({
+      isListed: true,
+      currentStatus: "active",
+      couponStartDate: { $lte: now },
+      couponExpiryDate: { $gte: now },
+    });
+
+    const message =
+      req.flash && req.flash("message").length
+        ? req.flash("message")[0]
+        : { type: "", text: "" };
+
+    res.render("user/card", {
+      user,
+      cart,
+      cartItems,
+      subtotal,
+      serviceFee,
+      grandTotal,
+      coupon: cart.coupon,
+      coupons,
+      isEmpty: cartItems.length === 0,
+      message,
+    });
+
+  } catch (error) {
+    console.error("Error loading cart page:", error);
+    res.status(500).send("Server Error - Cannot load cart page");
+  }
+}
+
+
+
+/////////////////////////////////////////////                           its currct get card page 
+
+
+
+// const getCartPage = async (req, res) => {
+//   try {
+//     const user = req.session.user;
+//     if (!user) return res.redirect("/login");
+
+//     const cart = await Cart.findOne({ userId: user.id }).populate({
+//       path: "products.productId",
+//       model: "Product",
+//       select: "name productPic prices sizes",
+//     });
+
+//     const cartItems =
+//       cart && cart.products && cart.products.length > 0
+//         ? cart.products.map((item) => ({
+//             name: item.productId?.name || "Unknown Product",
+//             image: item.productId?.productPic?.[0] || "/assets/images/default.jpg",
+//             size: item.selectedSize,
+//             quantity: item.quantity,
+//             price: item.pricePerUnit,
+//             total: item.pricePerUnit * item.quantity,
+//             id: item.productId?._id,
+//           }))
+//         : [];
+
+//     const subtotal = cartItems.reduce((sum, item) => sum + (item.total || 0), 0);
+//     const serviceFee = subtotal > 0 ? 50 : 0;
+
+//     let grandTotal = subtotal + serviceFee;
+
+//     let coupon = { name: null, discount: 0, isMax: false, maxPurchase: 0 };
+
+//     if (cart?.coupon?.name) {
+//       const appliedCoupon = await Coupon.findOne({
+//         couponCode: cart.coupon.name,
+//       });
+
+//       const couponUsedByUser =
+//         appliedCoupon &&
+//         appliedCoupon.user &&
+//         appliedCoupon.user.toString() === user.id;
+
+//       if (
+//         !appliedCoupon ||
+//         appliedCoupon.currentStatus === "expired" ||
+//         couponUsedByUser
+//       ) {
+//         cart.coupon = {
+//           name: null,
+//           discount: 0,
+//           isMax: false,
+//           maxPurchase: 0,
+//         };
+//         await cart.save();
+//       } else {
+//         coupon = cart.coupon;
+//         grandTotal = subtotal + serviceFee - coupon.discount;
+//       }
+//     }
+
+//     const now = new Date();
+
+//     const coupons = await Coupon.find({
+//       isListed: true,
+//       currentStatus: "active",
+//       couponStartDate: { $lte: now },
+//       couponExpiryDate: { $gte: now },
+//     });
+
+//     const message =
+//       req.flash && req.flash("message").length
+//         ? req.flash("message")[0]
+//         : { type: "", text: "" };
+
+//     res.render("user/card", {
+//       user,
+//       cart: cart || { products: [], subtotal, grandTotal, coupon },
+//       cartItems,
+//       subtotal,
+//       serviceFee,
+//       grandTotal,
+//       coupon,
+//       coupons,
+//       isEmpty: cartItems.length === 0,
+//       message,
+//     });
+
+//   } catch (error) {
+//     console.error(" Error loading cart page:", error);
 //     res.status(500).send("Server Error - Cannot load cart page");
 //   }
 // };
@@ -264,7 +369,7 @@ const moveToCart = async (req, res) => {
     const userId = req.session.user.id;
 
     if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
-      console.log("⚠️ Invalid Product ID received:", productId);
+      console.log(" Invalid Product ID received:", productId);
       return res.status(400).json({
         success: false,
         message: "Invalid product ID",
@@ -273,7 +378,7 @@ const moveToCart = async (req, res) => {
 
     const product = await Product.findById(productId);
     if (!product) {
-      console.log("⚠️ Product not found:", productId);
+      console.log(" Product not found:", productId);
       return res.status(404).json({ success: false, message: "Product not found" });
     }
 
@@ -341,7 +446,7 @@ const moveToCart = async (req, res) => {
   success: true,
   message: "Product moved to cart successfully",
   redirectUrl: "/user/card",
-});
+})
 
   } catch (err) {
     console.error(" MoveToCart Error:", err);
@@ -351,6 +456,121 @@ const moveToCart = async (req, res) => {
     });
   }
 };
+
+// const updateCartQuantity = async (req, res) => {
+//   try {
+//     const user = req.session.user;
+//     if (!user || !user.id) {
+//       return res.status(401).json({ success: false, message: "User not logged in" });
+//     }
+
+//     const { productId, selectedSize, action } = req.body;
+//     if (!productId || !selectedSize || !action) {
+//       return res.status(400).json({ success: false, message: "Missing data" });
+//     }
+
+//     const cart = await Cart.findOne({ userId: user.id });
+//     if (!cart) {
+//       return res.status(404).json({ success: false, message: "Cart not found" });
+//     }
+
+//     const cartItem = cart.products.find(
+//       (p) => p.productId.toString() === productId && p.selectedSize === selectedSize
+//     );
+//     if (!cartItem) {
+//       return res.status(404).json({ success: false, message: "Product not in cart" });
+//     }
+
+//     const productDoc = await Product.findById(productId);
+//     if (!productDoc) {
+//       return res.status(404).json({ success: false, message: "Product not found" });
+//     }
+
+//     const sizeIndex = productDoc.sizes.indexOf(selectedSize);
+//     const availableQty = productDoc.quantities[sizeIndex];
+
+//     if (action === "increase") {
+//       if (cartItem.quantity >= 8) {
+//         return res.status(400).json({ success: false, message: "Max limit 8 reached per product" });
+//       }
+//       if (cartItem.quantity + 1 > availableQty) {
+//         return res.status(400).json({ success: false, message: `Only ${availableQty} items available` });
+//       }
+//       cartItem.quantity += 1;
+//     }
+
+//     if (action === "decrease") {
+//       if (cartItem.quantity <= 1) {
+//         return res.status(400).json({ success: false, message: "Min limit 1 reached" });
+//       }
+//       cartItem.quantity -= 1;
+//     }
+
+//     cart.subtotal = cart.products.reduce(
+//       (sum, p) => sum + p.pricePerUnit * p.quantity,
+//       0
+//     );
+//     cart.grandTotal = cart.subtotal + cart.shippingCost;
+
+//     await cart.save();
+
+//     res.json({
+//       success: true,
+//       message: "Quantity updated successfully",
+//       availableQty,
+//       cart,
+//     });
+
+//   } catch (err) {
+//     console.error("Quantity update error:", err);
+//     res.status(500).json({ success: false, message: "Server error" });
+//   }
+// };
+
+
+
+const checkLatestStock = async (req, res) => {
+  try {
+    const user = req.session.user;
+    if (!user || !user.id) {
+      return res.json({ success: false });
+    }
+
+    const cart = await Cart.findOne({ userId: user.id });
+    if (!cart) {
+      return res.json({ success: false });
+    }
+
+    let forceUpdate = false;
+
+    for (let item of cart.products) {
+
+      const productDoc = await Product.findById(item.productId);
+      if (!productDoc) continue;
+
+      const sizeIndex = productDoc.sizes.indexOf(item.selectedSize);
+      const latestStock = productDoc.quantities[sizeIndex];
+
+      if (item.quantity > latestStock) {
+        item.quantity = latestStock;
+        forceUpdate = true;
+      }
+    }
+
+    await cart.save();
+
+    return res.json({
+      success: true,
+      forceUpdate
+    });
+
+  } catch (err) {
+    console.log("Stock check error:", err);
+    res.json({ success: false });
+  }
+};
+
+
 
 const updateCartQuantity = async (req, res) => {
   try {
@@ -384,19 +604,40 @@ const updateCartQuantity = async (req, res) => {
     const sizeIndex = productDoc.sizes.indexOf(selectedSize);
     const availableQty = productDoc.quantities[sizeIndex];
 
+    if (cartItem.quantity > availableQty) {
+      cartItem.quantity = availableQty;
+      await cart.save();
+
+      return res.status(200).json({
+        success: false,
+        forceUpdate: true,
+        message: `Stock updated by admin. Only ${availableQty} available now.`,
+        newQty: availableQty
+      });
+    }
+
     if (action === "increase") {
       if (cartItem.quantity >= 8) {
-        return res.status(400).json({ success: false, message: "Max limit 8 reached per product" });
+        return res.status(400).json({
+          success: false,
+          message: "Max limit 8 reached per product"
+        });
       }
       if (cartItem.quantity + 1 > availableQty) {
-        return res.status(400).json({ success: false, message: `Only ${availableQty} items available` });
+        return res.status(400).json({
+          success: false,
+          message: `Only ${availableQty} items available`
+        });
       }
       cartItem.quantity += 1;
     }
 
     if (action === "decrease") {
       if (cartItem.quantity <= 1) {
-        return res.status(400).json({ success: false, message: "Min limit 1 reached" });
+        return res.status(400).json({
+          success: false,
+          message: "Min quantity is 1"
+        });
       }
       cartItem.quantity -= 1;
     }
@@ -409,20 +650,20 @@ const updateCartQuantity = async (req, res) => {
 
     await cart.save();
 
-    res.json({
+    return res.json({
       success: true,
-      message: "Quantity updated successfully",
-      availableQty,
-      cart,
+      updatedQty: cartItem.quantity,
+      availableQty
     });
 
   } catch (err) {
     console.error("Quantity update error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    return res.status(500).json({
+      success: false,
+      message: "Server error occurred"
+    });
   }
-};
-
-
+}
 
 
 
@@ -461,10 +702,55 @@ const removeFromCart = async (req, res) => {
 
 
 
+const validateBeforeCheckout = async (req, res) => {
+  try {
+    const user = req.session.user;
+    if (!user || !user.id) {
+      return res.json({ success: false, message: "Please login to continue" });
+    }
+
+    const cart = await Cart.findOne({ userId: user.id });
+    if (!cart || cart.products.length === 0) {
+      return res.json({ success: false, message: "Your cart is empty" });
+    }
+
+    for (let item of cart.products) {
+
+      const product = await Product.findById(item.productId);
+      if (!product) {
+        return res.json({ success: false, message: "Some product no longer exists" });
+      }
+
+      const sizeIndex = product.sizes.indexOf(item.selectedSize);
+      const availableQty = product.quantities[sizeIndex];
+
+      if (item.quantity > availableQty) {
+        return res.json({
+          success: false,
+          message: `Stock updated! Only ${availableQty} items available for ${product.productName}`
+        });
+      }
+    }
+
+    return res.json({ success: true });
+
+  } catch (err) {
+    console.error("Checkout Validate Error:", err);
+    return res.json({
+      success: false,
+      message: "Server Error"
+    });
+  }
+};
+
+
+
 module.exports = { 
   getCartPage ,
   updateCartQuantity,
   removeFromCart,
   moveToCart,
-  applyCoupon
+  applyCoupon,
+  checkLatestStock,
+  validateBeforeCheckout
 };

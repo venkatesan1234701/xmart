@@ -100,30 +100,35 @@ const getOrdersSummary = async (req, res) => {
 
 
 
+
+
+
+
+
 // const getDashboard = async (req, res) => {
 //   try {
-//     const totalOrders = await Order.countDocuments();
+//     const totalOrders = await Order.countDocuments({ orderStatus: "Delivered" });
 
 //     const now = new Date();
 //     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 //     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
 
-//     const validOrdersThisMonth = await Order.find({
+//     const deliveredOrdersThisMonth = await Order.find({
 //       createdAt: { $gte: startOfMonth, $lte: endOfMonth },
-//       orderStatus: { $nin: ["Cancelled", "Returned"] },
+//       orderStatus: "Delivered",
 //       "paymentDetails.status": "Completed",
-//     }).lean()
+//     }).lean();
 
-//     const totalEarnings = validOrdersThisMonth.reduce((sum, order) => {
-//       return sum + (order.grandTotal || 0)
-//     }, 0)
+//     const totalEarnings = deliveredOrdersThisMonth.reduce((sum, order) => {
+//       return sum + (order.grandTotal || 0);
+//     }, 0);
 
 //     const ordersByStatus = {
 //       Delivered: await Order.countDocuments({ orderStatus: "Delivered" }),
 //       Pending: await Order.countDocuments({ orderStatus: "Pending" }),
 //       Cancelled: await Order.countDocuments({ orderStatus: "Cancelled" }),
 //       Returned: await Order.countDocuments({ orderStatus: "Returned" }),
-//     }
+//     };
 
 //     const totalUsers = await User.countDocuments();
 
@@ -133,7 +138,7 @@ const getOrdersSummary = async (req, res) => {
 //     for (let d = new Date(startOfMonth); d <= endOfMonth; d.setDate(d.getDate() + 1)) {
 //       const day = new Date(d);
 //       labels.push(`${day.getDate()}/${day.getMonth() + 1}`);
-//       const dayRevenue = validOrdersThisMonth
+//       const dayRevenue = deliveredOrdersThisMonth
 //         .filter(o => o.createdAt.toDateString() === day.toDateString())
 //         .reduce((sum, o) => sum + (o.grandTotal || 0), 0);
 //       revenuePerDay.push(dayRevenue);
@@ -148,13 +153,10 @@ const getOrdersSummary = async (req, res) => {
 //       revenuePerDay
 //     });
 //   } catch (err) {
-//     console.error("Error loading dashboard:", err);
+//     console.error("Error loading dashboard:", err)
 //     res.status(500).send("Server Error");
 //   }
 // }
-
-
-
 
 const getDashboard = async (req, res) => {
   try {
@@ -170,6 +172,7 @@ const getDashboard = async (req, res) => {
       "paymentDetails.status": "Completed",
     }).lean();
 
+    // ⭐ MONTHLY EARNINGS
     const totalEarnings = deliveredOrdersThisMonth.reduce((sum, order) => {
       return sum + (order.grandTotal || 0);
     }, 0);
@@ -186,103 +189,37 @@ const getDashboard = async (req, res) => {
     const labels = [];
     const revenuePerDay = [];
 
+    // ⭐ DAILY REVENUE CHART
     for (let d = new Date(startOfMonth); d <= endOfMonth; d.setDate(d.getDate() + 1)) {
       const day = new Date(d);
       labels.push(`${day.getDate()}/${day.getMonth() + 1}`);
+      
       const dayRevenue = deliveredOrdersThisMonth
         .filter(o => o.createdAt.toDateString() === day.toDateString())
         .reduce((sum, o) => sum + (o.grandTotal || 0), 0);
+      
       revenuePerDay.push(dayRevenue);
     }
 
+    // ⭐ SEND TO DASHBOARD VIEW
     res.render("admin/dashboard", {
       totalOrders,
-      totalEarnings,
+      totalEarnings,   // MONTHLY EARNINGS
       ordersByStatus,
       totalUsers,
       labels,
       revenuePerDay
     });
+
   } catch (err) {
-    console.error("Error loading dashboard:", err)
+    console.error("Error loading dashboard:", err);
     res.status(500).send("Server Error");
   }
-}
+};
 
 
 
 
-
-
-// const getDashboard = async (req, res) => {
-//   try {
-//     // ------------------------
-//     // ✅ Total Users & Orders
-//     // ------------------------
-//     const totalUsers = await User.countDocuments();
-//     const totalOrders = await Order.countDocuments();
-
-//     // ------------------------
-//     // ✅ Current Month Date Range
-//     // ------------------------
-//     const now = new Date();
-//     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-//     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
-
-//     // ------------------------
-//     // ✅ Delivered & Pending Orders This Month
-//     // ------------------------
-//     const monthlyOrders = await Order.find({
-//       createdAt: { $gte: startOfMonth, $lte: endOfMonth },
-//       orderStatus: { $in: ['Delivered', 'Pending'] }, // Only Delivered & Pending
-//     }).lean();
-
-//     // ------------------------
-//     // ✅ Revenue Per Day for Chart
-//     // ------------------------
-//     const labels = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-//     const revenuePerDay = Array(7).fill(0);
-
-//     // ------------------------
-//     // ✅ Monthly Delivered Orders & Total Earnings
-//     // ------------------------
-//     const deliveredOrders = monthlyOrders.filter(o => o.orderStatus === 'Delivered');
-//     let totalEarnings = 0;
-
-//     deliveredOrders.forEach(order => {
-//       const day = order.createdAt.getDay();
-//       const orderTotal = order.products.reduce((sum, p) => sum + (p.totalPrice || 0), 0);
-//       revenuePerDay[day] += orderTotal;
-//       totalEarnings += orderTotal;
-//     });
-
-//     // ------------------------
-//     // ✅ Orders Count by Status (All Orders)
-//     // ------------------------
-//     const ordersByStatus = {
-//       Delivered: await Order.countDocuments({ orderStatus: 'Delivered' }),
-//       Pending: await Order.countDocuments({ orderStatus: 'Pending' }),
-//       Cancelled: await Order.countDocuments({ orderStatus: 'Cancelled' }),
-//       Returned: await Order.countDocuments({ orderStatus: 'Returned' }),
-//     };
-
-//     // ------------------------
-//     // ✅ Render Dashboard with All Data
-//     // ------------------------
-//     res.render('admin/dashboard', {
-//       totalUsers,
-//       totalOrders,
-//       totalEarnings,
-//       ordersByStatus,
-//       labels,
-//       revenuePerDay
-//     });
-
-//   } catch (err) {
-//     console.error('Error loading dashboard:', err);
-//     res.status(500).send('Server Error');
-//   }
-// };
 
 
 
@@ -314,46 +251,6 @@ async function renderProductsPage(req, res) {
 
 
 
-// const getSalesReport = async (req, res) => {
-//   try {
-//     // Fetch all orders with user info
-//     const orders = await Order.find()
-//       .populate("userId", "firstName")
-//       .lean();
-
-//     const flattenedOrders = [];
-//     let totalOrderRevenue = 0;
-//     let totalDiscount = 0;
-
-//     orders.forEach(order => {
-//       order.products.forEach(product => {
-//         flattenedOrders.push({
-//           userName: order.userId?.firstName || "Unknown",
-//           orderDate: order.createdAt.toISOString().split("T")[0],
-//           productName: product.name,
-//           quantity: product.quantity,
-//           grandTotal: order.grandTotal,
-//           paymentMethod: order.paymentDetails.method,
-//           discount: product.discount || 0 // if you store discount per product
-//         });
-//       });
-//       totalOrderRevenue += order.grandTotal;
-//       totalDiscount += order.products.reduce((sum, p) => sum + (p.discount || 0), 0); // total discount
-//     });
-
-//     res.render("admin/sales-report", {
-//       orders: flattenedOrders,
-//       totalOrderRevenue,
-//       totalDiscount
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send("Server Error");
-//   }
-// };
-
-
-
 
 
 const getSalesReport = async (req, res) => {
@@ -376,9 +273,7 @@ const getSalesReport = async (req, res) => {
         const productPrice = product.productId?.prices[sizeIndex] || 0;
 
         const totalMRP = productPrice * product.quantity;
-
         const paidAmount = product.totalPrice;
-
         const productDiscount = Math.max(totalMRP - paidAmount, 0);
 
         const discountWithCoupon = productDiscount + (orderCoupon / order.products.length);
@@ -389,7 +284,7 @@ const getSalesReport = async (req, res) => {
         flattenedOrders.push({
           userName: order.userId?.firstName || "Unknown",
           orderDate: new Date(order.createdAt).toISOString().split("T")[0],
-          productName: product.productId?.name || product.name,
+          productName: product.productId?.name || "",
           quantity: product.quantity,
           productMRP: totalMRP,
           productPaid: paidAmount,
@@ -400,10 +295,8 @@ const getSalesReport = async (req, res) => {
       });
     });
 
-    const lastSixProducts = flattenedOrders.slice(-6);
-
     res.render("admin/sales-report", {
-      orders: lastSixProducts,
+      orders: flattenedOrders, 
       totalDiscount,
       totalOrderRevenue
     });
@@ -412,7 +305,11 @@ const getSalesReport = async (req, res) => {
     console.error(err);
     res.status(500).send("Server Error");
   }
-}
+};
+
+
+
+
 
 
 const renderCustomers = async (req, res, next) => {

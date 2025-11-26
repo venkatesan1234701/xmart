@@ -10,6 +10,7 @@ const checkoutController = require('../../controller/user/checkout')
 // const WishlistCotroller = require('../../controller/user/wishlistController')
 const WishlistCotroller= require('../../controller/user/wishlistController')
 const walletController = require('../../controller/user/walletController')
+const mailcontroller = require('../../controller/user/mailcontroller')
 
 // const orderController = require('../../controller/user/orderController')
 const upload = require("../../config/multer");
@@ -17,11 +18,17 @@ const {Authenticated} = require('../../middleware/Userblock')
 const {isAuthenticated} = require('../../middleware/userAuth')
 // const Wishlist = require('../../models/Wishlist')
 
+// router.get('/change-mail', mailcontroller.renderChangeMail);
+
+
+
+
+
 router.get('/',authController.gethomepage)
 router.get('/signin', authController.getSigninPage)
 router.post("/logout", authController.logout)
 router.post('/signin', authController.postSignin)
-router.post('/resend-verification', authController.resendVerification)
+router.post('/resend-verification',isAuthenticated, authController.resendVerification)
 
 router.get('/signup', authController.getSignupPage)
 router.post('/signup', authController.postSignup)
@@ -41,6 +48,10 @@ router.get('/auth/google/callback', passport.authenticate('google', { failureRed
   res.redirect('/')
 })
 
+
+router.post("/check-referral",authController.checkReferral)
+
+
 router.get('/shop',shopcontroller.getShopPage)
 router.get("/product/:id",shopcontroller.getSingleProductPage)
 
@@ -58,6 +69,9 @@ router.get('/cart/get', isAuthenticated, shopcontroller.getCartTotals);
 
 router.get("/card", Authenticated, cardController.getCartPage);
 router.post('/cart/update-quantity',cardController. updateCartQuantity)
+router.get("/cart/check-stock",cardController.checkLatestStock);
+router.get('/cart/validate-before-checkout',cardController.validateBeforeCheckout);
+
 router.post("/move-to-cart",cardController. moveToCart)
 
 // router.get('/remove-from-cart/:productId',cardController. removeFromCart);
@@ -87,6 +101,8 @@ router.put("/orders/:orderId/return-item",checkoutController.returnOrderItem)
 // Example in Express
 router.delete('/cart/remove/:productId/:selectedSize',cardController. removeFromCart);
 
+
+
 router.get("/profile", shopcontroller.getProfilePage);
 router.get("/edit-profile", shopcontroller.getEditProfile);
 router.post("/edit-profile", shopcontroller.updateProfile);
@@ -100,6 +116,13 @@ router.post("/edit-address/:id",addresscontroller. postEditAddress);
 
 // router.get('/orders', orderController.getOrdersPage)
 
+
+router.get("/change-mail", mailcontroller.renderChangeMail);
+router.post("/send-otp", mailcontroller.sendOtp);
+router.post("/verify-mailotp", mailcontroller.verifyOtp);
+
+// router.post("/send-otp", mailcontroller.sendOtp);
+// router.post("/verify-mailotp", mailcontroller.verifyOtp);
 
 
 router.get('/search-products',shopcontroller.searchProducts)

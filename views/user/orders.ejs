@@ -266,6 +266,8 @@
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -351,204 +353,201 @@
   });
 
 
-document.getElementById("downloadInvoiceBtn").addEventListener("click", function() {
-  // Select only the modal content
-  const modalContent = document.querySelector("#orderDetailsModal .modal-content");
+// document.getElementById("downloadInvoiceBtn").addEventListener("click", function () {
+//   const { jsPDF } = window.jspdf;
+//   const doc = new jsPDF();
 
-  const opt = {
-    margin: 0.5,
-    filename: 'invoice.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-  };
+//   // --- COMPANY INFO ---
+//   const companyName = "Xmart";
+//   const companyAddress = "From: Olivia Wilson\n123 Anywhere St., Any City";
+//   const companyEmail = "hello@xmart.com";
 
-  // Generate and save the PDF
-  html2pdf().set(opt).from(modalContent).save();
-});
+//   doc.setFontSize(16);
+//   doc.setTextColor(0, 0, 0);
+//   doc.text("Invoice", 14, 20);
 
+//   doc.setFontSize(10);
+//   doc.setTextColor(100, 100, 100);
+//   doc.text(companyName, 14, 30);
+//   doc.text(companyAddress, 14, 35);
+//   doc.text(`Email: ${companyEmail}`, 14, 45);
 
+//   // --- ORDER INFO ---
+//   const orderId = document.getElementById("modalOrderId")?.innerText || "N/A";
+//   const paymentMethod = document.getElementById("modalPayment")?.innerText || "N/A";
+//   const status = document.getElementById("modalStatus")?.innerText || "N/A";
+//   const total = document.getElementById("modalTotal")?.innerText || "0";
+//   const date = document.getElementById("modalDate")?.innerText || "N/A";
 
+//   doc.setTextColor(0, 0, 0);
+//   doc.text(`Order ID: ${orderId}`, 140, 30);
+//   doc.text(`Order Date: ${date}`, 140, 35);
+//   doc.text(`Payment Method: ${paymentMethod}`, 140, 40);
+//   doc.text(`Status: ${status}`, 140, 45);
+//   doc.text(`Total: ₹${total}`, 140, 50);
 
+//   // --- PRODUCTS ---
+//   const productsMap = {};
+//   document.querySelectorAll("#modalProducts div").forEach(item => {
+//     const name = item.querySelector("strong")?.innerText || "Unknown";
+//     const qtyMatch = item.innerText.match(/Qty:\s*(\d+)/);
+//     const qty = qtyMatch ? parseInt(qtyMatch[1]) : 1;
+//     const pStatus = item.dataset.status || "Delivery";
 
-// document.addEventListener("DOMContentLoaded", () => {
-//   const orders = JSON.parse(document.getElementById("orderData")?.textContent || "[]");
-//   const modal = new bootstrap.Modal(document.getElementById("orderDetailsModal"));
-//   let currentOrder = null;
-
-//   // 🟢 Handle "Details" button click
-//   document.querySelectorAll(".details-btn").forEach(btn => {
-//     btn.addEventListener("click", () => {
-//       const order = orders[btn.dataset.orderIndex];
-//       currentOrder = order;
-//       showOrderDetails(order);
-//       modal.show();
-//     });
-//   });
-
-//   // 🧾 Show order details inside modal
-//   function showOrderDetails(order) {
-//     document.getElementById("modalOrderId").innerText = order.orderId;
-//     document.getElementById("modalPayment").innerText = order.paymentMethod || "N/A";
-//     document.getElementById("modalStatus").innerText = order.orderStatus;
-//     document.getElementById("modalTotal").innerText = order.grandTotal;
-//     document.getElementById("modalDate").innerText = new Date(order.createdAt).toLocaleString();
-
-//     // 🏠 Shipping address
-//     const addr = order.shippingAddress;
-//     document.getElementById("modalAddress").innerHTML = addr
-//       ? `${addr.firstName || ""} ${addr.lastName || ""}<br>${addr.addressLine1 || ""}<br>${addr.city || ""}, ${addr.state || ""} - ${addr.zipCode || ""}`
-//       : "No address available.";
-
-//     // 🛒 Product list
-//     const productsContainer = document.getElementById("modalProducts");
-//     productsContainer.innerHTML = "";
-
-//     order.products.forEach(item => {
-//       const prod = item.productId || {};
-//       const img = prod.productPic?.[0] || prod.images?.[0] || prod.image || "/images/default-product.jpg";
-
-//       let actionBtns = "";
-
-//       // ✅ Show Return button only if Delivered
-//       if (order.orderStatus === "Delivered") {
-//         if (item.itemStatus === "Returned") {
-//           actionBtns = `<span class="badge bg-secondary">Returned</span>`;
-//         } else {
-//           actionBtns = `
-//             <button class="btn btn-sm btn-outline-warning"
-//               onclick="returnProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
-//               Return
-//             </button>`;
-//         }
-//       }
-
-//       // ❌ If Cancelled → show only Cancelled badge (no buttons)
-//       else if (order.orderStatus === "Cancelled") {
-//         actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
-//       }
-
-//       // 🟠 For other statuses (Pending, Processing, Shipped)
-//       else {
-//         if (item.itemStatus === "Cancelled") {
-//           actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
-//         } else {
-//           actionBtns = `
-//             <button class="btn btn-sm btn-outline-danger"
-//               onclick="cancelProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
-//               Cancel
-//             </button>`;
-//           // 🚫 No Return button here anymore!
-//         }
-//       }
-
-//       const productHtml = `
-//         <div class="d-flex align-items-center justify-content-between border p-2 rounded mb-2">
-//           <div class="d-flex align-items-center gap-3">
-//             <img src="${img}" width="60" height="60" class="rounded border" style="object-fit:cover;">
-//             <div>
-//               <p class="fw-semibold mb-1">${prod.name || "Product"}</p>
-//               <small class="text-muted">Size: ${item.selectedSize || "-"} | Qty: ${item.quantity}</small><br>
-//               <small class="text-muted">₹${item.totalPrice}</small>
-//             </div>
-//           </div>
-//           <div>${actionBtns}</div>
-//         </div>`;
-//       productsContainer.insertAdjacentHTML("beforeend", productHtml);
-//     });
-
-//     // 🧩 Hide Cancel Order button if Delivered or Cancelled
-//     const cancelOrderBtn = document.getElementById("cancelOrderBtn");
-//     if (order.orderStatus === "Delivered" || order.orderStatus === "Cancelled") {
-//       cancelOrderBtn.style.display = "none";
+//     if (productsMap[name]) {
+//       productsMap[name].qty += qty;
+//       if (!productsMap[name].status.includes(pStatus)) productsMap[name].status += ", " + pStatus;
 //     } else {
-//       cancelOrderBtn.style.display = "inline-block";
-//     }
-//   }
-
-//   // ❌ Cancel entire order
-//   document.getElementById("cancelOrderBtn").addEventListener("click", async () => {
-//     if (!currentOrder?._id) return;
-
-//     const confirm = await Swal.fire({
-//       title: "Cancel this entire order?",
-//       text: "Once cancelled, this cannot be undone.",
-//       icon: "warning",
-//       showCancelButton: true,
-//       confirmButtonText: "Yes, cancel it",
-//       cancelButtonText: "No, keep it"
-//     });
-//     if (!confirm.isConfirmed) return;
-
-//     try {
-//       const res = await fetch(`/user/orders/${currentOrder._id}/cancel`, {
-//         method: "PUT",
-//         headers: { "Content-Type": "application/json" },
-//       });
-
-//       if (res.ok) {
-//         await Swal.fire("✅ Cancelled!", "Your order has been cancelled successfully.", "success");
-//         location.reload();
-//       } else {
-//         const data = await res.json();
-//         Swal.fire("❌ Error", data.message || "Failed to cancel order.", "error");
-//       }
-//     } catch (error) {
-//       console.error("Cancel Order Error:", error);
-//       Swal.fire("❌ Error", "Something went wrong while cancelling.", "error");
+//       productsMap[name] = { qty, status: pStatus };
 //     }
 //   });
+
+//   const tableBody = Object.entries(productsMap).map(([name, data], idx) => [
+//     idx + 1,
+//     name,
+//     data.qty,
+//     data.status,
+//     "" // Total column left blank
+//   ]);
+
+//   doc.autoTable({
+//     startY: 60,
+//     head: [['#', 'Product', 'Qty', 'Status']],
+//     body: tableBody,
+//     theme: 'grid',
+//     headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+//     styles: { fontSize: 10, cellPadding: 5 },
+//     margin: { left: 14, right: 14 }
+//   });
+
+//   // --- SHIPPING ADDRESS ---
+//   const address = document.getElementById("modalAddress")?.innerText || "N/A";
+//   const startY = doc.lastAutoTable.finalY + 10;
+//   doc.setFontSize(10);
+//   doc.text("🏠 Shipping Address:", 14, startY);
+//   address.split("\n").forEach((line, i) => doc.text(line.trim(), 14, startY + 7 + i * 6));
+
+//   // --- SUMMARY ---
+//   const summaryStartY = startY + 30;
+//   doc.text(`Amount to Pay: ₹${total}`, 140, summaryStartY);
+//   doc.text(`Payment Method: ${paymentMethod}`, 140, summaryStartY + 7);
+//   doc.text(`Status: ${status}`, 140, summaryStartY + 14);
+
+//   // --- FOOTER ---
+//   doc.setFontSize(8);
+//   doc.setTextColor(150, 150, 150);
+//   doc.text("Thank you for shopping with Xmart!", 14, doc.internal.pageSize.height - 10);
+//   doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 140, doc.internal.pageSize.height - 10);
+
+//   doc.save(`Invoice_${orderId.replace(/[^a-zA-Z0-9]/g, "")}_${Date.now()}.pdf`);
 // });
 
-// // ✅ Cancel specific product
-// async function cancelProduct(orderId, productId, size) {
-//   const confirm = await Swal.fire({
-//     title: "Cancel this product?",
-//     icon: "warning",
-//     showCancelButton: true,
-//     confirmButtonText: "Yes, cancel it"
-//   });
-//   if (!confirm.isConfirmed) return;
 
-//   const res = await fetch(`/user/orders/${orderId}/cancel-item`, {
-//     method: "PUT",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ productId, selectedSize: size })
-//   });
 
-//   const data = await res.json();
-//   if (res.ok) {
-//     await Swal.fire("✅ Cancelled!", data.message, "success");
-//     location.reload();
-//   } else {
-//     Swal.fire("❌ Error", data.message || "Failed to cancel product.", "error");
-//   }
-// }
+document.getElementById("downloadInvoiceBtn").addEventListener("click", function () {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
 
-// // ✅ Return specific product
-// async function returnProduct(orderId, productId, size) {
-//   const confirm = await Swal.fire({
-//     title: "Return this product?",
-//     icon: "warning",
-//     showCancelButton: true,
-//     confirmButtonText: "Yes, return it"
-//   });
-//   if (!confirm.isConfirmed) return;
+  // --- COMPANY INFO ---
+  const companyName = "Xmart";
+  const companyAddress = "From: Olivia Wilson\n123 Anywhere St., Any City";
+  const companyEmail = "hello@xmart.com";
 
-//   const res = await fetch(`/user/orders/${orderId}/return-item`, {
-//     method: "PUT",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ productId, selectedSize: size })
-//   });
+  doc.setFontSize(16);
+  doc.setTextColor(0, 0, 0);
+  doc.text("Invoice", 14, 20);
 
-//   const data = await res.json();
-//   if (res.ok) {
-//     await Swal.fire("✅ Returned!", data.message, "success");
-//     location.reload();
-//   } else {
-//     Swal.fire("❌ Error", data.message || "Failed to return product.", "error");
-//   }
-// }
+  doc.setFontSize(10);
+  doc.setTextColor(100, 100, 100);
+  doc.text(companyName, 14, 30);
+  doc.text(companyAddress, 14, 35);
+  doc.text(`Email: ${companyEmail}`, 14, 45);
+
+  // --- ORDER INFO ---
+  const orderId = document.getElementById("modalOrderId")?.innerText || "N/A";
+  const paymentMethod = document.getElementById("modalPayment")?.innerText || "N/A";
+  const status = document.getElementById("modalStatus")?.innerText || "N/A";
+  const total = parseFloat(document.getElementById("modalTotal")?.innerText) || 0;
+  const date = document.getElementById("modalDate")?.innerText || "N/A";
+
+  doc.setTextColor(0, 0, 0);
+  doc.text(`Order ID: ${orderId}`, 140, 30);
+  doc.text(`Order Date: ${date}`, 140, 35);
+  doc.text(`Payment Method: ${paymentMethod}`, 140, 40);
+  doc.text(`Status: ${status}`, 140, 45);
+  doc.text(`Total: ₹${total}`, 140, 50);
+
+  // --- PRODUCTS ---
+  const productsMap = {};
+  document.querySelectorAll("#modalProducts > div").forEach(item => {
+    const nameTag = item.querySelector("strong") || item.querySelector(".product-name");
+    const productName = nameTag?.innerText.trim() || "Unknown Product";
+
+    const qtyMatch = item.innerText.match(/Qty:\s*(\d+)/);
+    const qty = qtyMatch ? parseInt(qtyMatch[1]) : 1;
+
+    const statusValue = item.dataset.status || "Delivery";
+
+    const totalMatch = item.innerText.match(/Total:\s*₹?(\d+(\.\d+)?)/);
+    const productTotal = totalMatch ? parseFloat(totalMatch[1]) : 0;
+
+    if (!productsMap[productName]) {
+      productsMap[productName] = {
+        qty,
+        status: statusValue,
+        total: productTotal
+      };
+    } else {
+      productsMap[productName].qty += qty;
+      productsMap[productName].total += productTotal;
+      const stArr = productsMap[productName].status.split(",").map(s => s.trim());
+      if (!stArr.includes(statusValue)) stArr.push(statusValue);
+      productsMap[productName].status = stArr.join(", ");
+    }
+  });
+
+  const tableBody = Object.entries(productsMap).map(([name, data], idx) => [
+    idx + 1,
+    name,
+    data.qty,
+    data.status,
+    `₹${data.total}`
+  ]);
+
+  doc.autoTable({
+    startY: 60,
+    head: [['#', 'Product', 'Qty', 'Status']],
+    body: tableBody,
+    theme: 'grid',
+    headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+    styles: { fontSize: 10, cellPadding: 5 },
+    margin: { left: 14, right: 14 }
+  });
+
+  // --- GRAND TOTAL BELOW TABLE ---
+  const grandTotalY = doc.lastAutoTable.finalY + 10;
+  doc.setFontSize(12);
+  doc.setTextColor(0, 0, 0);
+  doc.text(`Grand Total: ₹${total}`, 150, grandTotalY, { align: "right" });
+
+  // --- SHIPPING ADDRESS ---
+  const address = document.getElementById("modalAddress")?.innerText || "N/A";
+  const addressStartY = grandTotalY + 10;
+  doc.setFontSize(10);
+  doc.text("🏠 Shipping Address:", 14, addressStartY);
+  address.split("\n").forEach((line, i) => doc.text(line.trim(), 14, addressStartY + 7 + i * 6));
+
+  // --- FOOTER ---
+  const footerY = doc.internal.pageSize.height - 10;
+  doc.setFontSize(8);
+  doc.setTextColor(150, 150, 150);
+  doc.text("Thank you for shopping with Xmart!", 14, footerY);
+  doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 140, footerY);
+
+  // --- SAVE PDF ---
+  doc.save(`Invoice_${orderId.replace(/[^a-zA-Z0-9]/g, "")}_${Date.now()}.pdf`);
+});
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
