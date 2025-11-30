@@ -15,20 +15,16 @@ const wishlistSchema = new mongoose.Schema(
           required: true,
           ref: "Product",
         },
-
-        // If the product is a single item without variety
         isItem: {
           type: Boolean,
           required: true,
           default: true,
         },
-
-        // Optional variety details (for products with sizes)
         variety: {
           size: {
             type: String,
             enum: ["S", "M", "L"],
-            required: false, // ✅ Not required anymore
+            required: false, 
           },
           price: {
             type: Number,
@@ -50,7 +46,6 @@ const wishlistSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Ensure one product per user (avoid duplicates)
 wishlistSchema.index(
   { userId: 1, "products.productId": 1 },
   { unique: true, sparse: true }

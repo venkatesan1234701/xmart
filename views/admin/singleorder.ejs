@@ -102,7 +102,7 @@
   </div>
 
   <!-- 🛍️ Products -->
-  <div class="order-card mt-4">
+  <!-- <div class="order-card mt-4">
     <h5 class="border-bottom pb-2 mb-3">🛒 Ordered Products</h5>
     <div class="table-responsive">
       <table class="table table-bordered align-middle">
@@ -138,56 +138,6 @@
 
               <td class="text-center">
   <div class="flex items-center justify-center gap-2">
-<!-- <select 
-  id="status-<%= order._id %>" 
-  class="form-select border rounded px-2 py-1 text-sm"
-  <%= (order.orderStatus === "Delivered" || order.orderStatus === "Cancelled") ? "disabled" : "" %>>
-  
-  <% if (order.orderStatus === "Cancelled") { %>
-    <option value="Cancelled" selected>Cancelled</option>
-  <% } else { %>
-   
-    <option value="Pending" <%= order.orderStatus === "Pending" ? "selected" : "" %>>Pending</option>
-    <option value="Shipped" <%= order.orderStatus === "Shipped" ? "selected" : "" %>>Shipped</option>
-    <option value="Delivered" <%= order.orderStatus === "Delivered" ? "selected" : "" %>>Delivered</option>
-  <% } %>
-</select> -->
-
-<!-- <select 
-  id="status-<%= order._id %>" 
-  class="form-select border rounded px-2 py-1 text-sm"
-  onchange="updateOrderStatus('<%= order._id %>')"
-  <%= (order.orderStatus === 'Delivered' || order.orderStatus === 'Cancelled') ? 'disabled' : '' %>>
-  
-  <% if (order.orderStatus === 'Cancelled') { %>
-    <option value="Cancelled" selected>Cancelled</option>
-  <% } else { %>
-    <option value="Pending" <%= order.orderStatus === 'Pending' ? 'selected' : '' %>>Pending</option>
-    <option value="Shipped" <%= order.orderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
-    <option value="Delivered" <%= order.orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-  <% } %>
-</select> -->
-
-
-
-
-<!-- <select 
-  id="status-<%= order._id %>" 
-  class="form-select border rounded px-2 py-1 text-sm"
-  onchange="updateOrderStatus('<%= order._id %>')"
-  <%= (order.orderStatus === 'Delivered' || order.orderStatus === 'Cancelled') ? 'disabled' : '' %>>
-  
-  <% if (order.orderStatus === 'Cancelled') { %>
-    <option value="Cancelled" selected>Cancelled</option>
-  <% } else { %>
-    <option value="Pending" <%= order.orderStatus === 'Pending' ? 'selected' : '' %>>Pending</option>
-    <option value="Processing" <%= order.orderStatus === 'Processing' ? 'selected' : '' %>>Processing</option>
-    <option value="Shipped" <%= order.orderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
-    <option value="Delivered" <%= order.orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-  <% } %>
-</select> -->
-
-
 <select 
   id="status-<%= order._id %>" 
   class="form-select border rounded px-2 py-1 text-sm"
@@ -205,10 +155,6 @@
     <option value="Delivered" <%= order.orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
   <% } %>
 </select>
-
-
-
-
  <button 
   type="button" 
   class="save-btn"
@@ -241,7 +187,147 @@
         <p class="fw-bold text-success fs-5">Grand Total: ₹<%= order.grandTotal.toFixed(2) %></p>
       </div>
     </div>
+  </div> -->
+
+
+<div class="order-card mt-4">
+
+  <h5 class="border-bottom pb-2 mb-3">🛒 Ordered Products</h5>
+
+  <div class="table-responsive">
+    <table class="table table-bordered align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Product</th>
+          <th class="text-center">Qty</th>
+          <th class="text-center">Size</th>
+          <th class="text-end">Total</th>
+          <th class="text-center">Item Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% order.products.forEach(item => { %>
+          <tr>
+
+            <!-- PRODUCT -->
+            <td>
+              <div class="d-flex align-items-center gap-3">
+                <img 
+                  src="<%= item.image %>" 
+                  width="60" height="60"
+                  class="rounded border object-cover"
+                  onerror="this.onerror=null; this.src='/images/default-product.jpg';">
+                <span><%= item.name %></span>
+              </div>
+            </td>
+
+            <!-- QTY -->
+            <td class="text-center"><%= item.quantity %></td>
+
+            <!-- SIZE -->
+            <td class="text-center"><%= item.size || '-' %></td>
+
+            <!-- TOTAL -->
+            <td class="text-end fw-semibold">₹<%= item.totalPrice.toFixed(2) %></td>
+
+            <!-- ITEM STATUS -->
+            <td class="text-center">
+              <span class="badge bg-light text-dark px-3 py-2">
+                <% if (item.itemStatus) { %>
+                  <%= item.itemStatus %>
+                <% } else if (item.status) { %>
+                  <%= item.status %>
+                <% } else if (item.productStatus) { %>
+                  <%= item.productStatus %>
+                <% } else if (item.orderItemStatus) { %>
+                  <%= item.orderItemStatus %>
+                <% } else { %>
+                  No Status
+                <% } %>
+              </span>
+            </td>
+
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
   </div>
+
+  <!-- 🟦 Bottom Section Alignment FIXED -->
+  <div class="d-flex justify-content-between align-items-start flex-wrap mt-4 border-top pt-3">
+
+    <!-- LEFT SIDE -->
+    <div>
+      <h6>Payment Info</h6>
+      <span class="badge bg-light text-dark p-2">
+        <%= order.paymentDetails.method %>
+      </span>
+    </div>
+
+    <!-- RIGHT SIDE STATUS + BUTTON -->
+    <div class="d-flex align-items-center gap-2">
+
+      <select 
+        id="status-<%= order._id %>" 
+        class="form-select border rounded px-3 py-2 text-sm"
+        onchange="updateOrderStatus('<%= order._id %>')"
+        <%= (order.orderStatus === 'Delivered' || order.orderStatus === 'Cancelled' || order.orderStatus === 'Returned') ? 'disabled' : '' %>>
+        
+        <% if (order.orderStatus === 'Cancelled') { %>
+          <option value="Cancelled" selected>Cancelled</option>
+        <% } else if (order.orderStatus === 'Returned') { %>
+          <option value="Returned" selected>Returned</option>
+        <% } else { %>
+          <option value="Pending" <%= order.orderStatus === 'Pending' ? 'selected' : '' %>>Pending</option>
+          <option value="Processing" <%= order.orderStatus === 'Processing' ? 'selected' : '' %>>Processing</option>
+          <option value="Shipped" <%= order.orderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+          <option value="Delivered" <%= order.orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+        <% } %>
+      </select>
+
+      <button 
+        type="button" 
+        class="save-btn px-3 py-2"
+        onclick="confirmAndUpdate('<%= order._id %>')"
+        <%= (order.orderStatus === 'Delivered' || order.orderStatus === 'Cancelled') ? 'disabled' : '' %>>
+        Save
+      </button>
+
+    </div>
+  </div>
+
+  <!-- GRAND TOTAL BELOW RIGHT -->
+   
+
+
+  <%
+  let netTotal = 0;
+
+  order.products.forEach(item => {
+    if (item.itemStatus !== "Cancelled" && item.itemStatus !== "Returned") {
+      netTotal += item.totalPrice;
+    }
+  });
+%>
+<!-- 
+  <div class="d-flex justify-content-end mt-2">
+    <p class="fw-bold text-success fs-5">
+      Grand Total: ₹<%= order.grandTotal.toFixed(2) %>
+    </p>
+  </div> -->
+
+
+  <div class="d-flex justify-content-end mt-2">
+  <p class="fw-bold text-success fs-5">
+    Grand Total: ₹<%= netTotal.toFixed(2) %>
+  </p>
+</div>
+
+
+</div>
+
+
 </div>
 
 

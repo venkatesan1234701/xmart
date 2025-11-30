@@ -419,7 +419,10 @@ const getCheckoutPage = async (req, res) => {
 
     const couponDiscount = cart.coupon?.discount || 0;
 
-    const grandTotal = subtotal + shippingCost - couponDiscount;
+    // const grandTotal = subtotal + shippingCost - couponDiscount;
+
+    const grandTotal = subtotal + shippingCost;
+
 
     cart.subtotal = subtotal;
     cart.grandTotal = grandTotal;

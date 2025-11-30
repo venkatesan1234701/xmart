@@ -807,7 +807,7 @@
 								<div class="card-body lg:p-12">
 									<h1>Welcome back! XMART</h1>
 									<p class="mb-6">FreshCart is simple & clean design for developer and designer.</p>
-									<a href="#"
+									<a href="products"
 										class="btn inline-flex items-center gap-x-2 bg-green-600 text-white border-green-600 disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-100">
 										Create Product
 									</a>
@@ -988,11 +988,11 @@
   <div class="card h-full card-lg">
     <div class="card-body p-6">
       <h3 class="mb-3 text-md font-semibold">Total Orders</h3>
-      <select id="ordersFilter" class="text-base py-2 block w-full border-gray-300 rounded-lg focus:border-green-600 focus:ring focus:ring-green-600 mb-4">
+      <!-- <select id="ordersFilter" class="text-base py-2 block w-full border-gray-300 rounded-lg focus:border-green-600 focus:ring focus:ring-green-600 mb-4">
         <option value="week" selected>Week</option>
         <option value="month">Month</option>
         <option value="year">Year</option>
-      </select>
+      </select> -->
 
       <canvas id="ordersChart" class="h-64"></canvas>
 
@@ -1055,7 +1055,7 @@
 
 
 document.getElementById('revenueFilter').addEventListener('change', updateCharts);
-document.getElementById('ordersFilter').addEventListener('change', updateCharts);
+// document.getElementById('ordersFilter').addEventListener('change', updateCharts);
 
 async function updateCharts() {
   const timeframe = document.getElementById('revenueFilter').value;

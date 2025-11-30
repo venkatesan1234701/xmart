@@ -274,6 +274,23 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
+///////////////////////////////////////////////////            this only for dwonload 
+
+document.getElementById("orderDetailsModal").addEventListener("shown.bs.modal", function () {
+    const status = document.getElementById("modalStatus").innerText.trim();
+    const downloadBtn = document.getElementById("downloadInvoiceBtn");
+
+    if (status === "Cancelled") {
+        downloadBtn.style.display = "none";
+    } else {
+        downloadBtn.style.display = "inline-block";
+    }
+});
+
+///////////////////////////////////////////////////            
+
+
+
  document.addEventListener("DOMContentLoaded", () => {
      const orders = JSON.parse('<%- JSON.stringify(orders || []) %>');
 
@@ -281,7 +298,6 @@
       btn.addEventListener("click", async () => {
         const order = orders[index];
 
-        // 🧾 Fill modal with order details
         document.getElementById("modalOrderId").innerText = order.orderId;
         document.getElementById("modalPayment").innerText = order.paymentDetails.method || "N/A";
         document.getElementById("modalStatus").innerText = order.orderStatus;
@@ -290,14 +306,12 @@
 
         const repayBtn = document.getElementById("repayBtn");
 
-        // ✅ Show Repay button only if payment failed
         if (order.paymentDetails?.status === "Failed") {
           repayBtn.classList.remove("d-none");
         } else {
           repayBtn.classList.add("d-none");
         }
 
-        // ✅ Handle Repay button click
         repayBtn.onclick = async () => {
           try {
             const res = await fetch("/create-repay-order", {
@@ -309,7 +323,7 @@
             const data = await res.json();
 
             if (!data.success) {
-              alert("❌ Error creating repayment order!");
+              alert("Error creating repayment order!");
               return;
             }
 
@@ -326,7 +340,7 @@
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
                     ...response,
-                    oldOrderId: order.orderId, // ✅ Pass old failed order ID
+                    oldOrderId: order.orderId, 
                   }),
                 });
 
@@ -341,12 +355,11 @@
             const rzp = new Razorpay(options);
             rzp.open();
           } catch (err) {
-            console.error("❌ Repay failed:", err);
+            console.error(" Repay failed:", err);
             alert("Something went wrong while retrying payment.");
           }
         };
 
-        // ✅ Show modal
         new bootstrap.Modal(document.getElementById("orderDetailsModal")).show();
       });
     });
@@ -566,80 +579,171 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // 🧾 Show order details inside modal
-  function showOrderDetails(order) {
-    document.getElementById("modalOrderId").innerText = order.orderId;
-    document.getElementById("modalPayment").innerText = order.paymentMethod || "N/A";
-    document.getElementById("modalStatus").innerText = order.orderStatus;
-    document.getElementById("modalTotal").innerText = order.grandTotal;
-    document.getElementById("modalDate").innerText = new Date(order.createdAt).toLocaleString();
+//   function showOrderDetails(order) {
+//     document.getElementById("modalOrderId").innerText = order.orderId;
+//     document.getElementById("modalPayment").innerText = order.paymentMethod || "N/A";
+//     document.getElementById("modalStatus").innerText = order.orderStatus;
+//     document.getElementById("modalTotal").innerText = order.grandTotal;
+//     document.getElementById("modalDate").innerText = new Date(order.createdAt).toLocaleString();
 
-    // 🏠 Shipping address
-    const addr = order.shippingAddress;
-    document.getElementById("modalAddress").innerHTML = addr
-      ? `${addr.firstName || ""} ${addr.lastName || ""}<br>${addr.addressLine1 || ""}<br>${addr.city || ""}, ${addr.state || ""} - ${addr.zipCode || ""}`
-      : "No address available.";
+//     // 🏠 Shipping address
+//     const addr = order.shippingAddress;
+//     document.getElementById("modalAddress").innerHTML = addr
+//       ? `${addr.firstName || ""} ${addr.lastName || ""}<br>${addr.addressLine1 || ""}<br>${addr.city || ""}, ${addr.state || ""} - ${addr.zipCode || ""}`
+//       : "No address available.";
 
-    // 🛒 Product list
-    const productsContainer = document.getElementById("modalProducts");
-    productsContainer.innerHTML = "";
+//     // 🛒 Product list
+//     const productsContainer = document.getElementById("modalProducts");
+//     productsContainer.innerHTML = "";
 
-    order.products.forEach(item => {
-      const prod = item.productId || {};
-      const img = prod.productPic?.[0] || prod.images?.[0] || prod.image || "/images/default-product.jpg";
+//     order.products.forEach(item => {
+//       const prod = item.productId || {};
+//       const img = prod.productPic?.[0] || prod.images?.[0] || prod.image || "/images/default-product.jpg";
 
-      let actionBtns = "";
+//    order.products.forEach(item => {
+//   const prod = item.productId || {};
+//   const img = prod.productPic?.[0] || prod.images?.[0] || prod.image || "/images/default-product.jpg";
 
-      // ✅ Delivered → Return only if not already returned
-      if (order.orderStatus === "Delivered") {
-        actionBtns = item.itemStatus === "Returned"
-          ? `<span class="badge bg-secondary">Returned</span>`  // ✅ Hide Cancel
-          : `<button class="btn btn-sm btn-outline-warning"
-                onclick="returnProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
-                  Return
-             </button>`;
-      }
-      // ❌ Cancelled → only show Cancelled badge
-      else if (order.orderStatus === "Cancelled") {
-        actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
-      }
-      // 🟠 Other statuses (Pending, Processing, Shipped)
-      else {
-        if (item.itemStatus === "Cancelled") {
-          actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
-        } else if (item.itemStatus === "Returned") {
-          actionBtns = `<span class="badge bg-secondary">Returned</span>`;  // ✅ Hide Cancel
-        } else {
-          actionBtns = `<button class="btn btn-sm btn-outline-danger"
-                          onclick="cancelProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
-                            Cancel
-                       </button>`;
-        }
-      }
+//   let actionBtns = "";
 
-      const productHtml = `
-        <div class="d-flex align-items-center justify-content-between border p-2 rounded mb-2">
-          <div class="d-flex align-items-center gap-3">
-            <img src="${img}" width="60" height="60" class="rounded border" style="object-fit:cover;">
-            <div>
-              <p class="fw-semibold mb-1">${prod.name || "Product"}</p>
-              <small class="text-muted">Size: ${item.selectedSize || "-"} | Qty: ${item.quantity}</small><br>
-              <small class="text-muted">₹${item.totalPrice}</small>
-            </div>
-          </div>
-          <div>${actionBtns}</div>
-        </div>`;
-      productsContainer.insertAdjacentHTML("beforeend", productHtml);
-    });
+//   const itemStatus = item.itemStatus;      // item-level status
+//   const orderStatus = order.orderStatus;  // overall order status
 
-    // 🧩 Hide Cancel Order button if Delivered or Cancelled
-    const cancelOrderBtn = document.getElementById("cancelOrderBtn");
-    if (order.orderStatus === "Delivered" || order.orderStatus === "Cancelled") {
-      cancelOrderBtn.style.display = "none";
-    } else {
-      cancelOrderBtn.style.display = "inline-block";
+//   // 1️⃣ Already Returned → only Returned badge
+//   if (itemStatus === "Returned") {
+//     actionBtns = `<span class="badge bg-secondary">Returned</span>`;
+//   }
+
+//   // 2️⃣ Already Cancelled → only Cancelled badge
+//   else if (itemStatus === "Cancelled") {
+//     actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
+//   }
+
+//   // 3️⃣ Order Delivered → show Return button (only if item not returned/cancelled earlier)
+//   else if (orderStatus === "Delivered") {
+//     actionBtns = `
+//       <button class="btn btn-sm btn-outline-warning"
+//         onclick="returnProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
+//           Return
+//       </button>`;
+//   }
+
+//   // 4️⃣ Order not delivered → show Cancel button
+//   else {
+//     actionBtns = `
+//       <button class="btn btn-sm btn-outline-danger"
+//         onclick="cancelProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
+//           Cancel
+//       </button>`;
+//   }
+
+//   // ---- PRODUCT HTML UI ----
+//   const productHtml = `
+//     <div class="d-flex align-items-center justify-content-between border p-2 rounded mb-2">
+//       <div class="d-flex align-items-center gap-3">
+//         <img src="${img}" width="60" height="60" class="rounded border" style="object-fit:cover;">
+//         <div>
+//           <p class="fw-semibold mb-1">${prod.name || "Product"}</p>
+//           <small class="text-muted">Size: ${item.selectedSize || "-"} | Qty: ${item.quantity}</small><br>
+//           <small class="text-muted">₹${item.paidPrice ?? item.totalPrice}</small>
+//         </div>
+//       </div>
+//       <div>${actionBtns}</div>
+//     </div>`;
+
+//   productsContainer.insertAdjacentHTML("beforeend", productHtml);
+// });
+
+//     });
+
+//     // 🧩 Hide Cancel Order button if Delivered or Cancelled
+//     const cancelOrderBtn = document.getElementById("cancelOrderBtn");
+//     if (order.orderStatus === "Delivered" || order.orderStatus === "Cancelled") {
+//       cancelOrderBtn.style.display = "none";
+//     } else {
+//       cancelOrderBtn.style.display = "inline-block";
+//     }
+//   }
+
+
+function showOrderDetails(order) {
+  document.getElementById("modalOrderId").innerText = order.orderId;
+  document.getElementById("modalPayment").innerText = order.paymentMethod || "N/A";
+  document.getElementById("modalStatus").innerText = order.orderStatus;
+  document.getElementById("modalTotal").innerText = order.grandTotal;
+  document.getElementById("modalDate").innerText = new Date(order.createdAt).toLocaleString();
+
+  // Address
+  const addr = order.shippingAddress;
+  document.getElementById("modalAddress").innerHTML = addr
+    ? `${addr.firstName || ""} ${addr.lastName || ""}<br>${addr.addressLine1 || ""}<br>${addr.city || ""}, ${addr.state || ""} - ${addr.zipCode || ""}`
+    : "No address available.";
+
+  const productsContainer = document.getElementById("modalProducts");
+  productsContainer.innerHTML = "";
+
+  // 🚀 ONLY ONE LOOP — FIXED
+  order.products.forEach(item => {
+    const prod = item.productId || {};
+    const img = prod.productPic?.[0] || prod.images?.[0] || prod.image || "/images/default-product.jpg";
+
+    let actionBtns = "";
+    const itemStatus = item.itemStatus;
+    const orderStatus = order.orderStatus;
+
+    // ---------------------------
+    // 🚀 ITEM STATUS BASED BUTTONS
+    // ---------------------------
+
+    if (itemStatus === "Returned") {
+      actionBtns = `<span class="badge bg-secondary">Returned</span>`;
     }
-  }
+    else if (itemStatus === "Cancelled") {
+      actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
+    }
+    else if (orderStatus === "Delivered") {
+      actionBtns = `
+        <button class="btn btn-sm btn-outline-warning"
+          onclick="returnProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
+            Return
+        </button>`;
+    }
+    else {
+      actionBtns = `
+        <button class="btn btn-sm btn-outline-danger"
+          onclick="cancelProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
+            Cancel
+        </button>`;
+    }
 
+    // PRODUCT HTML
+    const productHtml = `
+      <div class="d-flex align-items-center justify-content-between border p-2 rounded mb-2">
+        <div class="d-flex align-items-center gap-3">
+          <img src="${img}" width="60" height="60" class="rounded border" style="object-fit:cover;">
+          <div>
+            <p class="fw-semibold mb-1">${prod.name || "Product"}</p>
+            <small class="text-muted">Size: ${item.selectedSize || "-"} | Qty: ${item.quantity}</small><br>
+            <small class="text-muted">₹${item.paidPrice ?? item.totalPrice}</small>
+          </div>
+        </div>
+        <div>${actionBtns}</div>
+      </div>`;
+
+    productsContainer.insertAdjacentHTML("beforeend", productHtml);
+  });
+
+  // Entire Order Cancel Button
+  const cancelOrderBtn = document.getElementById("cancelOrderBtn");
+  if (order.orderStatus === "Delivered" || order.orderStatus === "Cancelled") {
+    cancelOrderBtn.style.display = "none";
+  } else {
+    cancelOrderBtn.style.display = "inline-block";
+  }
+}
+
+
+  
   // ❌ Cancel entire order
   document.getElementById("cancelOrderBtn").addEventListener("click", async () => {
     if (!currentOrder?._id) return;

@@ -90,6 +90,7 @@ router.post("/wallet/verify", walletController.verifyWalletPayment);
 
 
 router.post('/apply-coupon',cardController.applyCoupon)
+router.post('/cancel-coupon',cardController.cancelCoupon);
 
 
 

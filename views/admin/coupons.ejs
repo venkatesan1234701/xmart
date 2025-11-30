@@ -459,7 +459,7 @@
   
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
- <script>
+ <!-- <script>
   const modalEl = document.getElementById("couponModal");
   const couponModal = new bootstrap.Modal(modalEl);
   const form = document.getElementById("couponForm");
@@ -479,7 +479,6 @@
   let editMode = false;
   let editingId = null;
 
-  // ➕ Open Add Coupon Modal
   document.getElementById("openModalBtn").onclick = () => {
     editMode = false;
     editingId = null;
@@ -488,7 +487,6 @@
     couponModal.show();
   };
 
-  // ✏️ Open Edit Coupon Modal
   async function openEditModal(id) {
     try {
       const res = await fetch(`/admin/coupons/json/${id}`);
@@ -513,7 +511,6 @@
     }
   }
 
-  // 💾 Save / Update Coupon
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -560,7 +557,153 @@
     }
   });
 
-  // ❌ Delete Coupon
+ 
+  async function deleteCoupon(id) {
+    const confirmDelete = await Swal.fire({
+      title: "Are you sure?",
+      text: "This coupon will be deleted permanently.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!"
+    });
+
+    if (confirmDelete.isConfirmed) {
+      const res = await fetch(`/admin/coupons/delete/${id}`, { method: "DELETE" });
+      const result = await res.json();
+
+      if (result.message) {
+        Swal.fire("Deleted!", result.message, "success").then(() => location.reload());
+      } else {
+        Swal.fire("Error!", result.error || "Unable to delete", "error");
+      }
+    }
+  }
+</script> -->
+
+<script>
+  const modalEl = document.getElementById("couponModal");
+  const couponModal = new bootstrap.Modal(modalEl);
+  const form = document.getElementById("couponForm");
+
+  const startInput = document.getElementById("couponStartDate");
+  const expiryInput = document.getElementById("couponExpiryDate");
+
+  // Prevent past dates
+  const today = new Date().toISOString().split("T")[0];
+  startInput.setAttribute("min", today);
+  expiryInput.setAttribute("min", today);
+
+  startInput.addEventListener("change", function () {
+    expiryInput.setAttribute("min", this.value);
+  });
+
+  let editMode = false;
+  let editingId = null;
+
+  document.getElementById("openModalBtn").onclick = () => {
+    editMode = false;
+    editingId = null;
+    form.reset();
+    document.getElementById("couponModalLabel").innerText = "Add New Coupon";
+    couponModal.show();
+  };
+
+  async function openEditModal(id) {
+    try {
+      const res = await fetch(`/admin/coupons/json/${id}`);
+      if (!res.ok) throw new Error("Failed to fetch");
+      const coupon = await res.json();
+
+      editMode = true;
+      editingId = id;
+
+      document.getElementById("couponModalLabel").innerText = "Edit Coupon";
+      document.getElementById("couponCode").value = coupon.couponCode || "";
+      document.getElementById("discountPercentage").value = coupon.discountPercentage || "";
+      document.getElementById("minimumPurchase").value = coupon.minimumPurchase || "";
+      document.getElementById("maximumDiscount").value = coupon.maximumDiscount || "";
+      document.getElementById("couponStartDate").value = coupon.couponStartDate ? new Date(coupon.couponStartDate).toISOString().split("T")[0] : "";
+      document.getElementById("couponExpiryDate").value = coupon.couponExpiryDate ? new Date(coupon.couponExpiryDate).toISOString().split("T")[0] : "";
+      document.getElementById("currentStatus").value = coupon.currentStatus || "active";
+
+      couponModal.show();
+    } catch (err) {
+      Swal.fire("Error", "Failed to load coupon data", "error");
+    }
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const startDate = startInput.value;
+    const expiryDate = expiryInput.value;
+
+    if (!startDate || !expiryDate) {
+      return Swal.fire("Validation Error", "Please select both start and expiry dates", "warning");
+    }
+
+    if (expiryDate < startDate) {
+      return Swal.fire("Validation Error", "Expiry date cannot be before start date", "warning");
+    }
+
+    const data = {
+      couponCode: document.getElementById("couponCode").value.trim(),
+      discountPercentage: document.getElementById("discountPercentage").value.trim(),
+      minimumPurchase: document.getElementById("minimumPurchase").value.trim(),
+      maximumDiscount: document.getElementById("maximumDiscount").value.trim(),
+      couponStartDate: startDate,
+      couponExpiryDate: expiryDate,
+      currentStatus: document.getElementById("currentStatus").value,
+    };
+
+    if (!data.couponCode) {
+      return Swal.fire("Validation Error", "Coupon Code cannot be empty", "warning");
+    }
+
+    if (!data.discountPercentage) {
+      return Swal.fire("Validation Error", "Discount % is required", "warning");
+    }
+    if (data.discountPercentage < 1 || data.discountPercentage > 100) {
+      return Swal.fire("Validation Error", "Discount must be between 1% and 100%", "warning");
+    }
+
+    if (!data.minimumPurchase) {
+      return Swal.fire("Validation Error", "Minimum Purchase is required", "warning");
+    }
+    if (isNaN(data.minimumPurchase) || data.minimumPurchase < 0) {
+      return Swal.fire("Validation Error", "Minimum Purchase must be a valid number", "warning");
+    }
+
+    if (!data.maximumDiscount) {
+      return Swal.fire("Validation Error", "Maximum Discount is required", "warning");
+    }
+    if (isNaN(data.maximumDiscount) || data.maximumDiscount < 0) {
+      return Swal.fire("Validation Error", "Maximum Discount must be a valid number", "warning");
+    }
+  
+
+    const url = editMode ? `/admin/coupons/edit/${editingId}` : `/admin/coupons/add`;
+    const method = editMode ? "PUT" : "POST";
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        Swal.fire("Success", result.message || "Coupon saved!", "success").then(() => location.reload());
+      } else {
+        Swal.fire("Error", result.error || "Something went wrong", "error");
+      }
+    } catch (err) {
+      Swal.fire("Error", "Server request failed!", "error");
+    }
+  });
+
   async function deleteCoupon(id) {
     const confirmDelete = await Swal.fire({
       title: "Are you sure?",
@@ -582,5 +725,8 @@
     }
   }
 </script>
+
+
+
 </body>
 </html>

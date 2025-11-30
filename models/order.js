@@ -74,18 +74,36 @@ const OrderSchema = new mongoose.Schema(
         quantity: { type: Number, required: true },
         pricePerUnit: { type: Number, required: true },
         totalPrice: { type: Number, required: true },
+        // itemStatus: {
+        //   type: String,
+        //   enum: [
+        //     "Pending",
+        //     "Processing",
+        //     "Shipped",
+        //     "Delivered",
+        //     "Cancelled",
+        //     "Returning",
+        //     "Returned",
+        //   ],
+        //   default: "Pending",
+        // },
+
+
         itemStatus: {
-          type: String,
-          enum: [
-            "Pending",
-            "Shipped",
-            "Delivered",
-            "Cancelled",
-            "Returning",
-            "Returned",
-          ],
-          default: "Pending",
-        },
+  type: String,
+  enum: [
+    "Pending",
+    "Processing",
+    "Shipped",
+    "Delivered",
+    "Cancelled",
+    "Return Requested", 
+    "Returning",
+    "Returned"
+  ],
+  default: "Pending",
+},
+
       },
     ],
 

@@ -100,64 +100,6 @@ const getOrdersSummary = async (req, res) => {
 
 
 
-
-
-
-
-
-// const getDashboard = async (req, res) => {
-//   try {
-//     const totalOrders = await Order.countDocuments({ orderStatus: "Delivered" });
-
-//     const now = new Date();
-//     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-//     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
-
-//     const deliveredOrdersThisMonth = await Order.find({
-//       createdAt: { $gte: startOfMonth, $lte: endOfMonth },
-//       orderStatus: "Delivered",
-//       "paymentDetails.status": "Completed",
-//     }).lean();
-
-//     const totalEarnings = deliveredOrdersThisMonth.reduce((sum, order) => {
-//       return sum + (order.grandTotal || 0);
-//     }, 0);
-
-//     const ordersByStatus = {
-//       Delivered: await Order.countDocuments({ orderStatus: "Delivered" }),
-//       Pending: await Order.countDocuments({ orderStatus: "Pending" }),
-//       Cancelled: await Order.countDocuments({ orderStatus: "Cancelled" }),
-//       Returned: await Order.countDocuments({ orderStatus: "Returned" }),
-//     };
-
-//     const totalUsers = await User.countDocuments();
-
-//     const labels = [];
-//     const revenuePerDay = [];
-
-//     for (let d = new Date(startOfMonth); d <= endOfMonth; d.setDate(d.getDate() + 1)) {
-//       const day = new Date(d);
-//       labels.push(`${day.getDate()}/${day.getMonth() + 1}`);
-//       const dayRevenue = deliveredOrdersThisMonth
-//         .filter(o => o.createdAt.toDateString() === day.toDateString())
-//         .reduce((sum, o) => sum + (o.grandTotal || 0), 0);
-//       revenuePerDay.push(dayRevenue);
-//     }
-
-//     res.render("admin/dashboard", {
-//       totalOrders,
-//       totalEarnings,
-//       ordersByStatus,
-//       totalUsers,
-//       labels,
-//       revenuePerDay
-//     });
-//   } catch (err) {
-//     console.error("Error loading dashboard:", err)
-//     res.status(500).send("Server Error");
-//   }
-// }
-
 const getDashboard = async (req, res) => {
   try {
     const totalOrders = await Order.countDocuments({ orderStatus: "Delivered" });
@@ -170,12 +112,11 @@ const getDashboard = async (req, res) => {
       createdAt: { $gte: startOfMonth, $lte: endOfMonth },
       orderStatus: "Delivered",
       "paymentDetails.status": "Completed",
-    }).lean();
+    }).lean()
 
-    // ⭐ MONTHLY EARNINGS
     const totalEarnings = deliveredOrdersThisMonth.reduce((sum, order) => {
       return sum + (order.grandTotal || 0);
-    }, 0);
+    }, 0)
 
     const ordersByStatus = {
       Delivered: await Order.countDocuments({ orderStatus: "Delivered" }),
@@ -189,7 +130,6 @@ const getDashboard = async (req, res) => {
     const labels = [];
     const revenuePerDay = [];
 
-    // ⭐ DAILY REVENUE CHART
     for (let d = new Date(startOfMonth); d <= endOfMonth; d.setDate(d.getDate() + 1)) {
       const day = new Date(d);
       labels.push(`${day.getDate()}/${day.getMonth() + 1}`);
@@ -200,11 +140,9 @@ const getDashboard = async (req, res) => {
       
       revenuePerDay.push(dayRevenue);
     }
-
-    // ⭐ SEND TO DASHBOARD VIEW
     res.render("admin/dashboard", {
       totalOrders,
-      totalEarnings,   // MONTHLY EARNINGS
+      totalEarnings,
       ordersByStatus,
       totalUsers,
       labels,
@@ -253,6 +191,7 @@ async function renderProductsPage(req, res) {
 
 
 
+
 const getSalesReport = async (req, res) => {
   try {
     const orders = await Order.find({ orderStatus: "Delivered" })
@@ -265,40 +204,50 @@ const getSalesReport = async (req, res) => {
     let totalDiscount = 0;
     let totalOrderRevenue = 0;
 
+    const addedOrderIds = new Set();
+
     orders.forEach(order => {
-      const orderCoupon = order.couponDiscount || 0;
+      let totalMRP = 0;
 
       order.products.forEach(product => {
         const sizeIndex = ["S", "M", "L"].indexOf(product.selectedSize);
         const productPrice = product.productId?.prices[sizeIndex] || 0;
+        totalMRP += productPrice * product.quantity;
+      })
+      const orderDiscount = totalMRP - order.grandTotal;
+      totalDiscount += orderDiscount;
 
-        const totalMRP = productPrice * product.quantity;
-        const paidAmount = product.totalPrice;
-        const productDiscount = Math.max(totalMRP - paidAmount, 0);
-
-        const discountWithCoupon = productDiscount + (orderCoupon / order.products.length);
-
-        totalDiscount += discountWithCoupon;
-        totalOrderRevenue += paidAmount;
+      
+      if (!addedOrderIds.has(order._id.toString())) {
+        totalOrderRevenue += (order.grandTotal || 0);
+        addedOrderIds.add(order._id.toString());
+      }
+      order.products.forEach(product => {
+        const sizeIndex = ["S", "M", "L"].indexOf(product.selectedSize);
+        const productPrice = product.productId?.prices[sizeIndex] || 0;
+        const productMRP = productPrice * product.quantity;
 
         flattenedOrders.push({
           userName: order.userId?.firstName || "Unknown",
           orderDate: new Date(order.createdAt).toISOString().split("T")[0],
           productName: product.productId?.name || "",
           quantity: product.quantity,
-          productMRP: totalMRP,
-          productPaid: paidAmount,
-          discount: discountWithCoupon,
+          productMRP: productMRP,
+          productPaid: product.totalPrice,
           grandTotal: order.grandTotal,
+          discount: orderDiscount,  
           paymentMethod: order.paymentDetails.method
         });
       });
     });
 
+    const totalEarnings = totalOrderRevenue;
+
     res.render("admin/sales-report", {
-      orders: flattenedOrders, 
+      orders: flattenedOrders,
       totalDiscount,
-      totalOrderRevenue
+      totalOrderRevenue,
+      totalEarnings
     });
 
   } catch (err) {
@@ -306,7 +255,6 @@ const getSalesReport = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
-
 
 
 

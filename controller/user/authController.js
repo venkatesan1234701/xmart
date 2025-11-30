@@ -690,15 +690,70 @@ const postResetPassword = async (req, res) => {
 }
 
 
-
-
-
 const getSigninPage = (req, res) => {
-  res.render("user/signin", { user: req.session.user || null });
-}
+  if (req.session.user) {
+    return res.redirect("/");
+  }
+  res.render("user/signin", { user: null });
+};
+
+
+
+// const getSigninPage = (req, res) => {
+//   res.render("user/signin", { user: req.session.user || null });
+// }
+
+// const postSignin = async (req, res) => {
+//   try {
+//     const { email, password, returnUrl } = req.body; 
+
+//     if (!email || !password) {
+//       return res.json({ ok: false, msg: 'Please fill all fields' });
+//     }
+
+//     const user = await User.findOne({ email: email.toLowerCase() });
+//     if (!user) return res.json({ ok: false, msg: 'Invalid credentials' });
+
+//     if (user.isBlocked) {
+//       return res.json({
+//         ok: false,
+//         blocked: true,
+//         msg: 'Your account is blocked. Contact support.'
+//       });
+//     }
+
+//     const match = await bcrypt.compare(password, user.password);
+//     if (!match) return res.json({ ok: false, msg: 'Invalid credentials' });
+
+
+//     if (!user.isVerified) {
+//       return res.json({
+//         ok: false,
+//         verify: false,
+//         msg: 'Your account is not verified. Please verify your email.'
+//       });
+//     }
+
+//     req.session.user = {
+//       id: user._id.toString(),
+//       email: user.email,
+//       name: user.name || ''
+//     };
+
+//     return res.json({ ok: true, verify: true, redirect: returnUrl || req.session.returnUrl || '/' });
+
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ ok: false, msg: 'Server error' });
+//   }
+// }
 
 const postSignin = async (req, res) => {
   try {
+    if (req.session.user) {
+      return res.json({ ok: true, redirect: "/" });
+    }
+
     const { email, password, returnUrl } = req.body; 
 
     if (!email || !password) {
@@ -719,7 +774,6 @@ const postSignin = async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.json({ ok: false, msg: 'Invalid credentials' });
 
-
     if (!user.isVerified) {
       return res.json({
         ok: false,
@@ -734,14 +788,17 @@ const postSignin = async (req, res) => {
       name: user.name || ''
     };
 
-    return res.json({ ok: true, verify: true, redirect: returnUrl || req.session.returnUrl || '/' });
+    return res.json({
+      ok: true,
+      verify: true,
+      redirect: returnUrl || req.session.returnUrl || '/'
+    });
 
   } catch (err) {
     console.error(err);
     return res.status(500).json({ ok: false, msg: 'Server error' });
   }
 }
-
 
 
 const resendVerification = async (req, res) => {
@@ -752,9 +809,6 @@ const resendVerification = async (req, res) => {
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) return res.json({ ok: false, msg: 'User not found' });
     if (user.isVerified) return res.json({ ok: false, msg: 'Already verified' });
-
-    // TODO: send verification email
-    // sendVerificationEmail(user.email);
 
     return res.json({ ok: true, msg: 'Verification email sent. Check inbox/spam' });
 

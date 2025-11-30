@@ -65,6 +65,75 @@ const getAllOrders = async (req, res) => {
 
 
 
+// const getSingleOrder = async (req, res) => {
+//   try {
+//     if (!req.session.isAdminLogged) {
+//       return res.redirect("/admin/login");
+//     }
+
+//     const orderId = req.params.id;
+
+//     const order = await Order.findById(orderId)
+//       .populate("userId", "name email phone")
+//       .populate("products.productId", "name images productPic image")
+//       .lean();
+
+//     if (!order) {
+//       return res.status(404).render("admin/404", { message: "Order not found" });
+//     }
+
+//     const toNumber = (val) => (isNaN(Number(val)) ? 0 : Number(val));
+
+//     const formattedOrder = {
+//       ...order,
+//       createdDate: order.createdAt
+//         ? new Date(order.createdAt).toLocaleDateString()
+//         : "N/A",
+//       paymentDetails: {
+//         method: order.paymentDetails?.method || "N/A",
+//         status: order.paymentDetails?.status || "Pending",
+//       },
+//       subTotal: toNumber(order.subTotal),
+//       shippingCost: toNumber(order.shippingCost),
+//       grandTotal: toNumber(order.grandTotal),
+//       user: {
+//         name:
+//           order.shippingAddress?.firstName ||
+//           order.userId?.name ||
+//           "Unknown Customer",
+//         email: order.userId?.email || "N/A",
+//         phone: order.userId?.phone || "N/A",
+//       },
+//       shippingAddress: order.shippingAddress,
+//       products: order.products.map((item) => {
+//         let img =
+//           item.productId?.images?.[0] ||
+//           item.productId?.productPic?.[0] ||
+//           item.productId?.image ||
+//           "/images/default-product.jpg";
+
+//         return {
+//           name: item.productId?.name || item.name || "Unnamed Product",
+//           image: img,
+//           quantity: item.quantity,
+//           size: item.selectedSize,
+//           pricePerUnit: toNumber(item.pricePerUnit),
+//           totalPrice: toNumber(item.totalPrice),
+//           status: item.itemStatus,
+//         };
+//       }),
+//     };
+
+//     res.render("admin/singleorder", { order: formattedOrder });
+//   } catch (err) {
+//     console.error("Error loading single order:", err);
+//     res.status(500).render("admin/500", {
+//       message: "Server error while loading order details",
+//     });
+//   }
+// };
+
+
 const getSingleOrder = async (req, res) => {
   try {
     if (!req.session.isAdminLogged) {
@@ -96,6 +165,7 @@ const getSingleOrder = async (req, res) => {
       subTotal: toNumber(order.subTotal),
       shippingCost: toNumber(order.shippingCost),
       grandTotal: toNumber(order.grandTotal),
+
       user: {
         name:
           order.shippingAddress?.firstName ||
@@ -104,7 +174,9 @@ const getSingleOrder = async (req, res) => {
         email: order.userId?.email || "N/A",
         phone: order.userId?.phone || "N/A",
       },
+
       shippingAddress: order.shippingAddress,
+
       products: order.products.map((item) => {
         let img =
           item.productId?.images?.[0] ||
@@ -119,7 +191,7 @@ const getSingleOrder = async (req, res) => {
           size: item.selectedSize,
           pricePerUnit: toNumber(item.pricePerUnit),
           totalPrice: toNumber(item.totalPrice),
-          status: item.itemStatus,
+          itemStatus: item.itemStatus || "Pending", 
         };
       }),
     };
@@ -133,6 +205,53 @@ const getSingleOrder = async (req, res) => {
   }
 };
 
+
+// const updateOrderStatus = async (req, res) => {
+//   try {
+//     const { orderId } = req.params;
+//     const { status } = req.body;
+
+//     const validStatuses = [
+//       "Pending",
+//       "Processing",
+//       "Shipped",
+//       "Delivered",
+//       "Cancelled",
+//       "Returning",
+//       "Returned",
+//     ];
+
+//     if (!validStatuses.includes(status)) {
+//       return res.status(400).json({ success: false, message: "Invalid order status" });
+//     }
+
+//     const order = await Order.findById(orderId);
+//     if (!order) {
+//       return res.status(404).json({ success: false, message: "Order not found" });
+//     }
+//     order.orderStatus = status;
+
+//     if (status === "Delivered") {
+//       order.paymentDetails.status = "Completed";
+//     } else if (status === "Cancelled") {
+//       order.paymentDetails.status = "Cancelled";
+//     } else if (status === "Returned") {
+//       order.paymentDetails.status = "Refunded";
+//     }
+
+//     await order.save();
+
+//     return res.json({
+//       success: true,
+//       message: `Order status updated to '${status}' successfully`,
+//       updatedStatus: status,
+//       paymentStatus: order.paymentDetails.status,
+//     });
+//   } catch (err) {
+//     console.error("Error updating order status:", err);
+//     res.status(500).json({ success: false, message: "Server error while updating order status" });
+//   }
+// };
 
 
 
@@ -152,14 +271,28 @@ const updateOrderStatus = async (req, res) => {
     ];
 
     if (!validStatuses.includes(status)) {
-      return res.status(400).json({ success: false, message: "Invalid order status" });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order status",
+      });
     }
 
     const order = await Order.findById(orderId);
     if (!order) {
-      return res.status(404).json({ success: false, message: "Order not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
     }
+
     order.orderStatus = status;
+
+    order.products.forEach((item) => {
+      const itemLockedStatuses = ["Cancelled", "Delivered", "Returned"];
+
+      if (!itemLockedStatuses.includes(item.itemStatus)) {
+        item.itemStatus = status;
+      }
+    });
 
     if (status === "Delivered") {
       order.paymentDetails.status = "Completed";
@@ -173,13 +306,13 @@ const updateOrderStatus = async (req, res) => {
 
     return res.json({
       success: true,
-      message: `Order status updated to '${status}' successfully`,
-      updatedStatus: status,
-      paymentStatus: order.paymentDetails.status,
+      message: `Order updated to '${status}', product items updated conditionally`,
     });
   } catch (err) {
     console.error("Error updating order status:", err);
-    res.status(500).json({ success: false, message: "Server error while updating order status" });
+    res
+      .status(500)
+      .json({ success: false, message: "Server error updating status" });
   }
 };
 

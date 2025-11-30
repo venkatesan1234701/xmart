@@ -331,7 +331,7 @@
             <label>Product</label>
 
             <!-- Dropdown for Add -->
-            <select class="form-select" id="productSelect" required>
+            <select class="form-select" id="productSelect" >
               <option value="">Choose...</option>
               <% products.forEach(p => { %>
                 <option value="<%= p._id %>"><%= p.name %></option>
@@ -344,17 +344,17 @@
 
           <div class="col-12">
             <label>Offer %</label>
-            <input type="number" class="form-control" id="offerPercentage" min="1" max="100" required>
+            <input type="number" class="form-control" id="offerPercentage" min="1" max="100" >
           </div>
 
           <div class="col-12">
             <label>Start Date</label>
-            <input type="date" class="form-control" id="startDate" required>
+            <input type="date" class="form-control" id="startDate" >
           </div>
 
           <div class="col-12">
             <label>End Date</label>
-            <input type="date" class="form-control" id="endDate" required>
+            <input type="date" class="form-control" id="endDate" >
           </div>
 
           <div class="col-12">
@@ -387,135 +387,8 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<!-- 
-<script>
-// ------------------------
-// Bootstrap modal & form references
-// ------------------------
-const modalEl = document.getElementById("couponModal");
-const offerModal = new bootstrap.Modal(modalEl);
-const form = document.getElementById("offerForm");
 
-// ------------------------
-// Open Add Offer Modal
-// ------------------------
-document.getElementById("openModalBtn").addEventListener("click", () => {
-  document.getElementById("couponModalLabel").innerText = "Add Product Offer";
-  form.reset();
-  document.getElementById("productOfferId").value = "";
-  offerModal.show();
-});
-
-// ------------------------
-// Submit Add/Edit Offer
-// ------------------------
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const productId = document.getElementById("productSelect").value.trim();
-  const offerPercentage = Number(document.getElementById("offerPercentage").value);
-  const startDate = document.getElementById("startDate").value;
-  const endDate = document.getElementById("endDate").value;
-  const status = document.getElementById("currentStatus").value;
-  const id = document.getElementById("productOfferId").value;
-
-  // Front-end validation
-  if (!productId || !offerPercentage || !startDate || !endDate) {
-    return Swal.fire("Validation Error", "All fields are required", "warning");
-  }
-
-  if (new Date(endDate) <= new Date(startDate)) {
-    return Swal.fire("Validation Error", "End date must be after start date", "warning");
-  }
-
-  const payload = {
-    productId,
-    offerPercentage,
-    startDate,
-    endDate,
-    isListed: status === "list"
-  };
-
-  if (id) payload.productOfferId = id;
-
-  try {
-    const res = await fetch(id ? `/admin/productOffers/updateOffer` : `/admin/productOffers/addOffer`, {
-      method: id ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-    if (res.ok) {
-      Swal.fire("Success", data.message, "success").then(() => location.reload());
-    } else {
-      Swal.fire("Error", data.error || "Something went wrong", "error");
-    }
-  } catch (err) {
-    console.error(err);
-    Swal.fire("Error", "Server request failed", "error");
-  }
-});
-
-// ------------------------
-// Open Edit Modal from button
-// ------------------------
-function openEditModalFromButton(button) {
-  try {
-    const offer = JSON.parse(button.dataset.offer); // parse JSON
-    openEditModal(offer); // use your existing function
-  } catch (err) {
-    console.error("Failed to parse offer data:", err);
-    Swal.fire("Error", "Unable to open edit modal", "error");
-  }
-}
-
-
-// ------------------------
-// Open Edit Modal with offer object
-// ------------------------
-function openEditModal(offer) {
-  document.getElementById("couponModalLabel").innerText = "Edit Product Offer";
-  document.getElementById("productOfferId").value = offer._id;
-  document.getElementById("productSelect").value = offer.product;
-  document.getElementById("offerPercentage").value = offer.offerPercentage;
-  document.getElementById("startDate").value = offer.startDate.split("T")[0];
-  document.getElementById("endDate").value = offer.endDate.split("T")[0];
-  document.getElementById("currentStatus").value = offer.isListed ? "list" : "unlist";
-  offerModal.show();
-}
-
-// ------------------------
-// Delete Offer
-// ------------------------
-async function deleteOffer(offerId) {
-  const confirmDelete = await Swal.fire({
-    title: "Are you sure?",
-    text: "This offer will be deleted permanently.",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, delete it!"
-  });
-
-  if (!confirmDelete.isConfirmed) return;
-
-  try {
-    const res = await fetch(`/admin/productOffers/delete/${offerId}`, { method: "DELETE" });
-    const data = await res.json();
-
-    if (res.ok) {
-      Swal.fire("Deleted!", data.message, "success").then(() => location.reload());
-    } else {
-      Swal.fire("Error!", data.error || "Unable to delete", "error");
-    }
-  } catch (err) {
-    console.error(err);
-    Swal.fire("Error", "Server request failed", "error");
-  }
-}
-</script> -->
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const offerForm = document.getElementById("offerForm");
@@ -672,115 +545,163 @@ async function deleteProductOffer(id) {
     Swal.fire("Error", "Server request failed", "error");
   }
 }
-</script>
+</script> -->
 
-
-<!-- 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  
-// ------------------------
-// Bootstrap modal & form references
-// ------------------------
-const modalEl = document.getElementById("couponModal");
-const offerModal = new bootstrap.Modal(modalEl);
-const form = document.getElementById("offerForm");
+document.addEventListener("DOMContentLoaded", function () {
+  const offerForm = document.getElementById("offerForm");
+  const modalEl = document.getElementById("couponModal");
+  const offerModal = new bootstrap.Modal(modalEl);
+  const productSelect = document.getElementById("productSelect");
+  const productNameDisplay = document.getElementById("productNameDisplay");
+  const openModalBtn = document.getElementById("openModalBtn");
 
-// ------------------------
-// Open Add Offer Modal
-// ------------------------
-document.getElementById("openModalBtn").addEventListener("click", () => {
-  document.getElementById("couponModalLabel").innerText = "Add Product Offer";
-  form.reset();
-  document.getElementById("productOfferId").value = "";
-  offerModal.show();
-});
+  // 🟢 OPEN ADD MODAL
+  if (openModalBtn) {
+    openModalBtn.addEventListener("click", () => {
+      offerForm.reset();
+      document.getElementById("productOfferId").value = "";
+      document.querySelector(".modal-title").innerText = "Add Product Offer";
 
-// ------------------------
-// Submit Add/Edit Offer
-// ------------------------
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+      productSelect.classList.remove("d-none");
+      productSelect.removeAttribute("disabled");
+      productNameDisplay.classList.add("d-none");
+      productNameDisplay.innerText = "";
 
-  const productId = document.getElementById("productSelect").value.trim();
-  const offerPercentage = Number(document.getElementById("offerPercentage").value);
-  const startDate = document.getElementById("startDate").value;
-  const endDate = document.getElementById("endDate").value;
-  const status = document.getElementById("currentStatus").value;
-  const id = document.getElementById("productOfferId").value;
-
-  // Front-end validation
-  if (!productId || !offerPercentage || !startDate || !endDate) {
-    return Swal.fire("Validation Error", "All fields are required", "warning");
-  }
-
-  if (new Date(endDate) <= new Date(startDate)) {
-    return Swal.fire("Validation Error", "End date must be after start date", "warning");
-  }
-
-  const payload = {
-    productId,
-    offerPercentage,
-    startDate,
-    endDate,
-    isListed: status === "list"
-  };
-
-  if (id) payload.productOfferId = id;
-
-  try {
-    // Add or update offer
-    const res = await fetch(id ? `/admin/productOffers/updateOffer` : `/admin/productOffers/addOffer`, {
-      method: id ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      document.getElementById("currentStatus").value = "list";
+      offerModal.show();
     });
-
-    const data = await res.json();
-    if (res.ok) {
-      Swal.fire("Success", data.message, "success").then(() => location.reload());
-    } else {
-      Swal.fire("Error", data.error || "Something went wrong", "error");
-    }
-  } catch (err) {
-    console.error(err);
-    Swal.fire("Error", "Server request failed", "error");
   }
+
+  // 🟢 SUBMIT (Add / Edit)
+  offerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const id = document.getElementById("productOfferId").value;
+    const productId = document.getElementById("productSelect").value;
+    const offerPercentage = Number(document.getElementById("offerPercentage").value);
+    const startDate = document.getElementById("startDate").value;
+    const endDate = document.getElementById("endDate").value;
+    const status = document.getElementById("currentStatus").value;
+
+    // ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+    // ⭐ FIELD-WISE VALIDATION ADDED ⭐
+    // ⭐ NOTHING ELSE CHANGED ⭐
+
+    // Product validation (Only for ADD mode)
+    if (!id && !productId) {
+      return Swal.fire("Validation Error", "Please select a product", "warning");
+    }
+
+    // Offer % validation
+    if (!offerPercentage) {
+      return Swal.fire("Validation Error", "Offer percentage is required", "warning");
+    }
+    if (offerPercentage < 1 || offerPercentage > 100) {
+      return Swal.fire("Validation Error", "Offer % must be between 1 and 100", "warning");
+    }
+
+    // Start date
+    if (!startDate) {
+      return Swal.fire("Validation Error", "Start date is required", "warning");
+    }
+
+    // End date
+    if (!endDate) {
+      return Swal.fire("Validation Error", "End date is required", "warning");
+    }
+
+    // Date order check
+    if (new Date(endDate) <= new Date(startDate)) {
+      return Swal.fire("Validation Error", "End date must be after start date", "warning");
+    }
+
+    // Status validation
+    if (!status) {
+      return Swal.fire("Validation Error", "Please select a status", "warning");
+    }
+
+    // ⭐ END OF VALIDATION ⭐
+    // ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+
+
+    // prepare payload
+    const payload = {
+      offerPercentage,
+      startDate,
+      endDate,
+      isListed: status === "list",
+    };
+
+    if (!id) payload.productId = productId;
+    else payload.productOfferId = id;
+
+    const url = id
+      ? `/admin/productOffers/updateOffer`
+      : `/admin/productOffers/addOffer`;
+    const method = id ? "PUT" : "POST";
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        Swal.fire("Success", data.message || "Offer saved successfully!", "success")
+          .then(() => location.reload());
+      } else {
+        Swal.fire("Error", data.error || "Something went wrong", "error");
+      }
+    } catch (err) {
+      console.error("Error saving product offer:", err);
+      Swal.fire("Error", "Server request failed", "error");
+    }
+  });
 });
 
-// ------------------------
-// Open Edit Modal from button
-// ------------------------
-function openEditModalFromButton(button) {
+// 🟡 OPEN EDIT MODAL
+function openEditModalFromButton(btn) {
   try {
-    const offer = JSON.parse(button.dataset.offer); // parse JSON
-    openEditModal(offer);
+    const offer = JSON.parse(btn.dataset.offer);
+
+    document.getElementById("productOfferId").value = offer._id;
+    document.getElementById("offerPercentage").value = offer.offerPercentage;
+    document.getElementById("startDate").value = offer.startDate.split("T")[0];
+    document.getElementById("endDate").value = offer.endDate.split("T")[0];
+    document.getElementById("currentStatus").value = offer.isListed ? "list" : "unlist";
+    document.querySelector(".modal-title").innerText = "Edit Product Offer";
+
+    const productSelect = document.getElementById("productSelect");
+    const productNameDisplay = document.getElementById("productNameDisplay");
+
+    productSelect.classList.add("d-none");
+    productSelect.setAttribute("disabled", true);
+
+    productNameDisplay.classList.remove("d-none");
+    productNameDisplay.innerText =
+      offer.product?.name || offer.productName || "Unknown Product";
+
+    const modalEl = document.getElementById("couponModal");
+    const offerModal = new bootstrap.Modal(modalEl);
+    offerModal.show();
   } catch (err) {
-    console.error("Failed to parse offer data:", err);
+    console.error("Error opening edit modal:", err);
     Swal.fire("Error", "Unable to open edit modal", "error");
   }
 }
 
-// ------------------------
-// Open Edit Modal with offer object
-// ------------------------
-function openEditModal(offer) {
-  document.getElementById("couponModalLabel").innerText = "Edit Product Offer";
-  document.getElementById("productOfferId").value = offer._id;
-  document.getElementById("productSelect").value = offer.product;
-  document.getElementById("offerPercentage").value = offer.offerPercentage;
-  document.getElementById("startDate").value = offer.startDate.split("T")[0];
-  document.getElementById("endDate").value = offer.endDate.split("T")[0];
-  document.getElementById("currentStatus").value = offer.isListed ? "list" : "unlist";
-  offerModal.show();
-}
+async function deleteOffer(id) {
 
-// ------------------------
-// Delete Offer
-// ------------------------
-async function deleteOffer(offerId) {
+  console.log("Delete clicked:", id); // Debug to check button click
+
   const confirmDelete = await Swal.fire({
     title: "Are you sure?",
-    text: "This offer will be deleted permanently.",
+    text: "This product offer will be permanently deleted.",
     icon: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes, delete it!"
@@ -789,20 +710,30 @@ async function deleteOffer(offerId) {
   if (!confirmDelete.isConfirmed) return;
 
   try {
-    const res = await fetch(`/admin/productOffers/delete/${offerId}`, { method: "DELETE" });
+
+    const res = await fetch(`/admin/productOffers/delete/${id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" }
+    });
+
     const data = await res.json();
 
     if (res.ok) {
-      Swal.fire("Deleted!", data.message, "success").then(() => location.reload());
+      Swal.fire("Deleted!", data.message || "Offer deleted successfully!", "success")
+        .then(() => location.reload());
     } else {
-      Swal.fire("Error!", data.error || "Unable to delete", "error");
+      Swal.fire("Error", data.error || "Unable to delete offer", "error");
     }
+
   } catch (err) {
-    console.error(err);
+    console.error("Delete Offer Error:", err);
     Swal.fire("Error", "Server request failed", "error");
   }
 }
-</script> -->
+
+
+</script>
+
 
 
 </body>

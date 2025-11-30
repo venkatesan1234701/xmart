@@ -200,7 +200,6 @@ const deleteWishlistItem = async (req, res) => {
     wishlist.products = wishlist.products.filter((item) => {
       const sameProduct = item.productId.toString() === productId;
       const sameSize = item.variety?.size === variety;
-      // If size exists, match it; otherwise match only productId
       return !(sameProduct && (variety ? sameSize : true));
     });
 

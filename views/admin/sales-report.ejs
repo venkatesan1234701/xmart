@@ -371,7 +371,9 @@
       <div class="card border-primary" style="padding: 1.5rem;">
         <div class="card-body text-center">
           <h5 class="card-title">Overall Order Amount</h5>
-          <p class="card-text display-6" style="font-size: 2rem;">₹<%=totalOrderRevenue%></p>
+          <!-- <p class="card-text display-6" style="font-size: 2rem;">₹<%=totalOrderRevenue%></p> -->
+           
+           <p class="card-text display-6" style="font-size: 2rem;">₹<%= totalEarnings.toLocaleString('en-IN') %></p>
         </div>
       </div>
     </div>
@@ -421,15 +423,23 @@
          <div style="margin-top: 10px;">
   <button id="filterBtn" class="btn btn-success" disabled>Filter</button>
 </div>
-        <!-- <button id="filterBtn" type="submit" class="btn btn-success" disabled>Filter</button> -->
+        <!-- <button id="filterBtn" type="submit" class="btn btn-success" disabled>Filter</button> 
         <button class="btn btn-outline-secondary" onclick="clearFilter()">Clear Filters</button>
-        <button class="btn btn-info" id="download-pdf">Download (PDF)</button>
+        <button class="btn btn-info" id="download-pdf">Download (PDF)</button> -->
+
+      
+  <button class="btn btn-info" id="download-pdf">Download (PDF)</button>
+  <button class="btn btn-success" id="download-csv">Download (Excel - CSV)</button>
+  <button class="btn btn-outline-secondary" onclick="clearFilter()">Clear Filters</button>
+  <!-- XLSX (real .xlsx) -->
+  <button class="btn btn-primary" id="download-xlsx">Download (Excel - XLSX)</button>
+
       </div>
     </div>
   </div>
 
 
-  <div class="table-responsive">
+  <!-- <div class="table-responsive">
   <table class="table">
     <thead>
       <tr>
@@ -456,12 +466,51 @@
       <% }) %>
     </tbody>
   </table>
+</div> -->
+
+<div class="table-responsive">
+  <table class="table" id="ordersTable">
+    <thead>
+      <tr>
+        <th>S.No</th>
+        <th>Name</th>
+        <th>Delivery Date</th>
+        <th>Product Name</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th>Payment Method</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% orders.forEach((order, i) => { %>
+        <!-- add data-order-status attribute; remove inline display:none -->
+        <tr data-order-date="<%= order.orderDate %>" data-order-status="<%= order.orderStatus %>">
+          <td><%= i + 1 %></td>
+          <td><%= order.userName %></td>
+          <!-- <td><%= order.orderDate %></td> -->
+           <td><%= new Date(order.orderDate).toISOString().split("T")[0] %></td>
+
+          <td><%= order.productName %></td>
+          <td><%= order.quantity %></td>
+          <td>₹<%= order.grandTotal %></td>
+          <td><%= order.paymentMethod %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
 </div>
+
 
 <p id="no-data" style="display:none; text-align:center; font-weight:bold;">No orders found for this period</p>
 
 </div>
 
+<!-- jsPDF & autoTable (if you use your PDF code) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+<!-- SheetJS for XLSX export -->
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
   <!-- JS Libraries -->
    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -659,50 +708,50 @@ document.getElementById("date-wise-filter").addEventListener("submit", function(
 });
 
 
-document.getElementById("download-pdf").addEventListener("click", function () {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+// document.getElementById("download-pdf").addEventListener("click", function () {
+//   const { jsPDF } = window.jspdf;
+//   const doc = new jsPDF();
 
-  // --- COMPANY INFO ---
-  const companyName = "Xmart";
-  const companyEmail = "hello@xmart.com";
+//   // --- COMPANY INFO ---
+//   const companyName = "Xmart";
+//   const companyEmail = "hello@xmart.com";
 
-  doc.setFontSize(16);
-  doc.setTextColor(0, 0, 0);
-  // Company name left
-  doc.text(companyName, 14, 20);
-  // Email right
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const emailTextWidth = doc.getTextWidth(companyEmail);
-  doc.text(companyEmail, pageWidth - 14 - emailTextWidth, 20);
+//   doc.setFontSize(16);
+//   doc.setTextColor(0, 0, 0);
+//   // Company name left
+//   doc.text(companyName, 14, 20);
+//   // Email right
+//   const pageWidth = doc.internal.pageSize.getWidth();
+//   const emailTextWidth = doc.getTextWidth(companyEmail);
+//   doc.text(companyEmail, pageWidth - 14 - emailTextWidth, 20);
 
-  // --- TITLE ---
-  doc.setFontSize(18);
-  doc.setTextColor(0, 0, 0);
-  // doc.text("Sales Report", 14, 30);
+//   // --- TITLE ---
+//   doc.setFontSize(18);
+//   doc.setTextColor(0, 0, 0);
+//   // doc.text("Sales Report", 14, 30);
 
-  // Extract table headers
-  const table = document.querySelector("table");
-  const headers = Array.from(table.querySelectorAll("thead tr th")).map(th => th.innerText);
+//   // Extract table headers
+//   const table = document.querySelector("table");
+//   const headers = Array.from(table.querySelectorAll("thead tr th")).map(th => th.innerText);
 
-  // Extract table rows
-  const rows = Array.from(table.querySelectorAll("tbody tr")).map(tr => {
-    return Array.from(tr.querySelectorAll("td")).map(td => td.innerText);
-  });
+//   // Extract table rows
+//   const rows = Array.from(table.querySelectorAll("tbody tr")).map(tr => {
+//     return Array.from(tr.querySelectorAll("td")).map(td => td.innerText);
+//   });
 
-  // Add table to PDF
-  doc.autoTable({
-    head: [headers],
-    body: rows,
-    startY: 40, // shifted below header
-    theme: 'grid',
-    headStyles: { fillColor: [0, 150, 136], textColor: 255 },
-    bodyStyles: { fontSize: 10 }
-  });
+//   // Add table to PDF
+//   doc.autoTable({
+//     head: [headers],
+//     body: rows,
+//     startY: 40, // shifted below header
+//     theme: 'grid',
+//     headStyles: { fillColor: [0, 150, 136], textColor: 255 },
+//     bodyStyles: { fontSize: 10 }
+//   });
 
-  // Save PDF
-  doc.save("sales_report.pdf");
-});
+//   // Save PDF
+//   doc.save("sales_report.pdf");
+// });
 
 
 // document.getElementById("download-pdf").addEventListener("click", function () {
@@ -736,7 +785,132 @@ document.getElementById("download-pdf").addEventListener("click", function () {
 //     doc.save("sales_report.pdf");
 //   });
 
+document.addEventListener('DOMContentLoaded', function () {
+  const TABLE_ID = 'ordersTable';
+  const desiredStatus = 'Delivered'; // change if you want another status
 
+  // 1) Filter: show only rows with orderStatus === desiredStatus
+  function filterByStatus(status) {
+    const table = document.getElementById(TABLE_ID);
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+      const rowStatus = row.getAttribute('data-order-status') || '';
+      if (rowStatus.trim().toLowerCase() === status.trim().toLowerCase()) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  // Immediately filter to "Delivered"
+  filterByStatus(desiredStatus);
+
+  // Helpers to get visible table data (headers + rows)
+  function getVisibleTableData() {
+    const table = document.getElementById(TABLE_ID);
+    const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.innerText.trim());
+    const visibleRows = Array.from(table.querySelectorAll('tbody tr'))
+      .filter(tr => tr.style.display !== 'none');
+    const rows = visibleRows.map(tr => Array.from(tr.querySelectorAll('td')).map(td => td.innerText.trim()));
+    return { headers, rows };
+  }
+
+  // 2) CSV download
+  document.getElementById('download-csv').addEventListener('click', function () {
+    const { headers, rows } = getVisibleTableData();
+    if (rows.length === 0) {
+      alert('No rows to export.');
+      return;
+    }
+
+    // Build CSV (add BOM for Excel compatibility)
+    const BOM = '\uFEFF';
+    const escapeCell = (str) => {
+      if (str == null) return '';
+      // If contains comma/newline/quote -> wrap in quotes and escape quotes
+      str = String(str);
+      if (str.includes('"')) str = str.replace(/"/g, '""');
+      if (/[,"\n\r]/.test(str)) return `"${str}"`;
+      return str;
+    };
+
+    const csvLines = [];
+    csvLines.push(headers.map(escapeCell).join(','));
+    rows.forEach(row => {
+      csvLines.push(row.map(escapeCell).join(','));
+    });
+    const csvContent = BOM + csvLines.join('\r\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'orders_export.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  // 3) XLSX (SheetJS) download - produces .xlsx file
+  document.getElementById('download-xlsx').addEventListener('click', function () {
+    const { headers, rows } = getVisibleTableData();
+    if (rows.length === 0) {
+      alert('No rows to export.');
+      return;
+    }
+
+    // Build worksheet data (array of arrays)
+    const aoa = [headers, ...rows];
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+
+    // Optional: set column widths (auto-ish)
+    const colWidths = headers.map(h => ({ wch: Math.max(10, Math.ceil(h.length * 1.2)) }));
+    ws['!cols'] = colWidths;
+
+    XLSX.utils.book_append_sheet(wb, ws, 'Orders');
+    XLSX.writeFile(wb, 'orders_export.xlsx');
+  });
+
+  // 4) PDF download (your jsPDF + autoTable code updated to export only visible rows)
+  document.getElementById('download-pdf').addEventListener('click', function () {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // --- COMPANY INFO ---
+    const companyName = "Xmart";
+    const companyEmail = "hello@xmart.com";
+
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0);
+    doc.text(companyName, 14, 20);
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const emailTextWidth = doc.getTextWidth(companyEmail);
+    doc.text(companyEmail, pageWidth - 14 - emailTextWidth, 20);
+
+    // Table body from visible rows
+    const { headers, rows } = getVisibleTableData();
+    if (rows.length === 0) {
+      alert('No rows to export.');
+      return;
+    }
+
+    doc.autoTable({
+      head: [headers],
+      body: rows,
+      startY: 40,
+      theme: 'grid',
+      headStyles: { fillColor: [0, 150, 136], textColor: 255 },
+      bodyStyles: { fontSize: 10 }
+    });
+
+    doc.save("orders_report.pdf");
+  });
+
+});
 
 
 

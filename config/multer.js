@@ -2,7 +2,6 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// ===== Upload Directory =====
 const uploadDir = path.join(__dirname, "../public/uploads/products");
 
 if (!fs.existsSync(uploadDir)) {
@@ -20,7 +19,6 @@ const storage = multer.diskStorage({
   },
 });
 
-// ===== File Filter =====
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
     "image/jpeg",

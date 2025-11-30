@@ -39,9 +39,8 @@ const productOfferSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-});
+})
 
-// Avoid OverwriteModelError
 const ProductOffer = mongoose.models.ProductOffer || mongoose.model("ProductOffer", productOfferSchema);
 
 module.exports = ProductOffer;
