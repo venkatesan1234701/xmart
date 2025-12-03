@@ -41,22 +41,96 @@ async function renderSignInPage(req, res, next) {
 }
 
 
+// const getOrdersSummary = async (req, res) => {
+//   try {
+//     const timeframe = req.query.timeframe || 'week';
+//     const now = new Date();
+//     let startDate;
+
+//     if (timeframe === 'week') {
+//       const firstDayOfWeek = now.getDate() - now.getDay();
+//       startDate = new Date(now.getFullYear(), now.getMonth(), firstDayOfWeek);
+//     } else if (timeframe === 'month') {
+//       startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+//     } else if (timeframe === 'year') {
+//       startDate = new Date(now.getFullYear(), 0, 1);
+//     }
+
+//     const orders = await Order.find({ createdAt: { $gte: startDate, $lte: now } }).lean();
+
+//     const ordersByStatus = {
+//       Delivered: orders.filter(o => o.orderStatus === 'Delivered').length,
+//       Returned: orders.filter(o => o.orderStatus === 'Returned').length,
+//       Cancelled: orders.filter(o => o.orderStatus === 'Cancelled').length,
+//       Pending: orders.filter(o => o.orderStatus === 'Pending').length
+//     };
+
+//     const labels = [];
+//     const revenuePerDay = [];
+
+//     const current = new Date(startDate);
+//     current.setHours(0,0,0,0)
+
+//     while (current <= now) {
+//       const dayStart = new Date(current);
+//       const dayEnd = new Date(current);
+//       dayEnd.setHours(23,59,59,999);
+
+//       const dayOrders = orders.filter(o => {
+//         const created = new Date(o.createdAt);
+//         return created >= dayStart && created <= dayEnd;
+//       });
+
+//       const dayRevenue = dayOrders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
+
+//       labels.push(`${dayStart.getDate()}/${dayStart.getMonth() + 1}`);
+//       revenuePerDay.push(dayRevenue);
+
+//       current.setDate(current.getDate() + 1);
+//     }
+
+//     res.json({ labels, revenuePerDay, ordersByStatus });
+
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: 'Server error' });
+//   }
+// }
+
+
+
+
+
 const getOrdersSummary = async (req, res) => {
   try {
     const timeframe = req.query.timeframe || 'week';
+
     const now = new Date();
-    let startDate;
+    now.setHours(23, 59, 59, 999)
 
-    if (timeframe === 'week') {
-      const firstDayOfWeek = now.getDate() - now.getDay();
-      startDate = new Date(now.getFullYear(), now.getMonth(), firstDayOfWeek);
-    } else if (timeframe === 'month') {
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-    } else if (timeframe === 'year') {
-      startDate = new Date(now.getFullYear(), 0, 1);
+    let startDate = new Date();
+    startDate.setHours(0, 0, 0, 0)
+
+    if (req.query.start && req.query.end) {
+      startDate = new Date(req.query.start)
+      startDate.setHours(0, 0, 0, 0)
+
+      now.setTime(new Date(req.query.end).setHours(23, 59, 59, 999))
+    } 
+    else {
+      if (timeframe === "week") {
+        startDate.setDate(now.getDate() - 6);
+      } 
+      else if (timeframe === "month") {
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      } 
+      else if (timeframe === "year") {
+        startDate = new Date(now.getFullYear(), 0, 1);
+      }
     }
-
-    const orders = await Order.find({ createdAt: { $gte: startDate, $lte: now } }).lean();
+    const orders = await Order.find({
+      createdAt: { $gte: startDate, $lte: now }
+    }).lean()
 
     const ordersByStatus = {
       Delivered: orders.filter(o => o.orderStatus === 'Delivered').length,
@@ -68,34 +142,67 @@ const getOrdersSummary = async (req, res) => {
     const labels = [];
     const revenuePerDay = [];
 
-    const current = new Date(startDate);
-    current.setHours(0,0,0,0)
+    if (timeframe === "year" && !req.query.start) {
+      const monthNames = [
+        "Jan","Feb","Mar","Apr","May","Jun",
+        "Jul","Aug","Sep","Oct","Nov","Dec"
+      ];
 
-    while (current <= now) {
-      const dayStart = new Date(current);
-      const dayEnd = new Date(current);
-      dayEnd.setHours(23,59,59,999);
+      for (let m = 0; m < 12; m++) {
+        const monthStart = new Date(now.getFullYear(), m, 1);
+        const monthEnd = new Date(now.getFullYear(), m + 1, 0, 23, 59, 59);
 
-      const dayOrders = orders.filter(o => {
-        const created = new Date(o.createdAt);
-        return created >= dayStart && created <= dayEnd;
-      });
+        const monthOrders = orders.filter(o => {
+          const created = new Date(o.createdAt);
+          return created >= monthStart && created <= monthEnd;
+        });
 
-      const dayRevenue = dayOrders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
+        const monthRevenue = monthOrders.reduce(
+          (sum, o) => sum + (o.grandTotal || 0),
+          0
+        );
 
-      labels.push(`${dayStart.getDate()}/${dayStart.getMonth() + 1}`);
-      revenuePerDay.push(dayRevenue);
+        labels.push(monthNames[m]);
+        revenuePerDay.push(monthRevenue);
+      }
+    } 
+    else {
+      let current = new Date(startDate);
 
-      current.setDate(current.getDate() + 1);
+      while (current <= now) {
+        const dayStart = new Date(current);
+        const dayEnd = new Date(current);
+        dayEnd.setHours(23, 59, 59, 999);
+
+        const dayOrders = orders.filter(o => {
+          const created = new Date(o.createdAt);
+          return created >= dayStart && created <= dayEnd;
+        });
+
+        const dayRevenue = dayOrders.reduce(
+          (sum, o) => sum + (o.grandTotal || 0),
+          0
+        );
+
+        labels.push(`${dayStart.getDate()}/${dayStart.getMonth() + 1}`);
+        revenuePerDay.push(dayRevenue);
+
+        current.setDate(current.getDate() + 1);
+      }
     }
-
-    res.json({ labels, revenuePerDay, ordersByStatus });
+    res.json({
+      labels,
+      revenuePerDay,
+      ordersByStatus
+    });
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: "Server error" });
   }
 }
+
+
 
 
 
@@ -113,6 +220,9 @@ const getDashboard = async (req, res) => {
       orderStatus: "Delivered",
       "paymentDetails.status": "Completed",
     }).lean()
+
+    const lasttotal = await Order.find({ orderStatus: "Delivered",
+      "paymentDetails.status": "Completed",}).lean()
 
     const totalEarnings = deliveredOrdersThisMonth.reduce((sum, order) => {
       return sum + (order.grandTotal || 0);
@@ -146,7 +256,8 @@ const getDashboard = async (req, res) => {
       ordersByStatus,
       totalUsers,
       labels,
-      revenuePerDay
+      revenuePerDay,
+      lasttotal
     });
 
   } catch (err) {
@@ -186,6 +297,7 @@ async function renderProductsPage(req, res) {
     res.status(500).send("Server Error")
   }
 }
+
 
 
 

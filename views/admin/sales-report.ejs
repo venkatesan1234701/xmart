@@ -523,37 +523,84 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-document.addEventListener("DOMContentLoaded", () => {
 
+document.addEventListener("DOMContentLoaded", () => {
   const rows = document.querySelectorAll("table tbody tr");
   const noDataMsg = document.getElementById("no-data");
 
-  // -----------------------------
-  // WEEK / MONTH / YEAR FILTER
-  // -----------------------------
   const select = document.getElementById("timePeriod");
   const filterBtn = document.getElementById("filterBtn");
 
+  // Enable button
   select.addEventListener("change", () => {
     filterBtn.disabled = !select.value;
   });
 
+  // -------------------------
+  // WEEK / MONTH / YEAR FILTER
+  // -------------------------
   filterBtn.addEventListener("click", () => {
     const period = select.value;
     if (!period) return;
 
     const now = new Date();
-    let startDate = new Date();
+    let startDate, endDate;
 
-    if (period === "week") startDate.setDate(now.getDate() - 7);
-    if (period === "month") startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-    if (period === "year") startDate = new Date(now.getFullYear(), 0, 1);
+    if (period === "week") {
+      // Sunday to Saturday
+      const day = now.getDay(); // Sun = 0
+      startDate = new Date(now);
+      startDate.setDate(now.getDate() - day); // Sunday
+      endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 6); // Saturday
+    }
 
+    if (period === "month") {
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    }
+
+    if (period === "year") {
+      startDate = new Date(now.getFullYear(), 0, 1);
+      endDate = new Date(now.getFullYear(), 11, 31);
+    }
+
+    filterTable(startDate, endDate);
+  });
+
+  // -------------------------
+  // DATE RANGE FILTER
+  // -------------------------
+  document.getElementById("date-wise-filter").addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const startDateInput = document.getElementById("startDate").value;
+    const endDateInput = document.getElementById("endDate").value;
+
+    if (!startDateInput || !endDateInput) {
+      alert("Please select both FROM and TO dates");
+      return;
+    }
+
+    const startDate = new Date(startDateInput);
+    const endDate = new Date(endDateInput);
+    endDate.setHours(23, 59, 59, 999);
+
+    filterTable(startDate, endDate);
+  });
+
+  // -------------------------
+  // MAIN FILTER FUNCTION
+  // -------------------------
+  function filterTable(startDate, endDate) {
     let count = 0;
-    rows.forEach(row => {
-      const orderDate = new Date(row.dataset.orderDate);
+    noDataMsg.style.display = "none";
 
-      if (orderDate >= startDate && orderDate <= now) {
+    rows.forEach(row => {
+      const dateStr = row.getAttribute("data-order-date");
+      const orderDate = new Date(dateStr);
+
+      if (orderDate >= startDate && orderDate <= endDate) {
         row.style.display = "";
         count++;
       } else {
@@ -562,228 +609,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     noDataMsg.style.display = count === 0 ? "block" : "none";
-  });
-
-  // -----------------------------
-  // DATE RANGE FILTER
-  // -----------------------------
-  document.getElementById("date-wise-filter").addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const startDateInput = document.getElementById("startDate").value;
-    const endDateInput = document.getElementById("endDate").value;
-
-    const rows = document.querySelectorAll("table tbody tr");
-    const noDataMsg = document.getElementById("no-data");
-
-    if (!startDateInput || !endDateInput) {
-        alert("Please select both FROM and TO dates");
-        return;
-    }
-
-    const startDate = new Date(startDateInput);
-    const endDate = new Date(endDateInput);
-
-    // end date last second (23:59:59)
-    endDate.setHours(23, 59, 59, 999);
-
-    let visibleCount = 0;
-    noDataMsg.style.display = "none";
-
-    rows.forEach(row => {
-        const orderDateStr = row.getAttribute("data-order-date");
-        const orderDate = new Date(orderDateStr);
-
-        // MAIN LOGIC ✅
-        if (orderDate >= startDate && orderDate <= endDate) {
-            row.style.display = "";
-            visibleCount++;
-        } else {
-            row.style.display = "none";
-        }
-    });
-
-    if (visibleCount === 0) {
-        noDataMsg.style.display = "block";
-    }
-});
-
-});
-
-    
-
-
-document.addEventListener("DOMContentLoaded", () => {
-  const select = document.getElementById("timePeriod");
-  const filterBtn = document.getElementById("filterBtn");
-  const noDataMsg = document.getElementById("no-data");
-  const rows = document.querySelectorAll("table tbody tr");
-
-  // Hide all rows initially
-  rows.forEach(row => (row.style.display = "none"));
-
-  // Enable button when an option is selected
-  select.addEventListener("change", () => {
-    filterBtn.disabled = !select.value;
-  });
-
-  // Button click event (no form now)
-  filterBtn.addEventListener("click", () => {
-    const period = select.value;
-    if (!period) return;
-
-    const now = new Date();
-    let startDate = new Date();
-
-    if (period === "week") {
-      startDate.setDate(now.getDate() - 7);
-    } else if (period === "month") {
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-    } else if (period === "year") {
-      startDate = new Date(now.getFullYear(), 0, 1);
-    }
-
-    let visibleCount = 0;
-    noDataMsg.style.display = "none";
-
-    rows.forEach(row => {
-      const dateStr = row.getAttribute("data-order-date");
-      if (!dateStr) return;
-
-      const orderDate = new Date(dateStr);
-      const localDate = new Date(orderDate.getUTCFullYear(), orderDate.getUTCMonth(), orderDate.getUTCDate());
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-      if (localDate >= startDate && localDate <= today) {
-        row.style.display = "";
-        visibleCount++;
-      } else {
-        row.style.display = "none";
-      }
-    });
-
-    if (visibleCount === 0) {
-      noDataMsg.style.display = "block";
-    }
-  });
-});
-
-
-
-
-
-
-
-
-
-
-
-document.getElementById("date-wise-filter").addEventListener("submit", function(e) {
-  e.preventDefault();
-
-  const startDate = new Date(document.getElementById("startDate").value);
-  const endDate = new Date(document.getElementById("endDate").value);
-  const rows = document.querySelectorAll("table tbody tr");
-  const noDataMsg = document.getElementById("no-data");
-  let visibleCount = 0;
-
-  // hide all first
-  rows.forEach(row => row.style.display = "none");
-  noDataMsg.style.display = "none";
-
-  // only show if both dates are selected
-  if (!isNaN(startDate) && !isNaN(endDate)) {
-    rows.forEach(row => {
-      const orderDate = new Date(row.getAttribute("data-order-date"));
-      if (orderDate >= startDate && orderDate <= endDate) {
-        row.style.display = "";
-        visibleCount++;
-      }
-    });
-  }
-
-  if (visibleCount === 0) {
-    noDataMsg.style.display = "block";
   }
 });
 
 
-// document.getElementById("download-pdf").addEventListener("click", function () {
-//   const { jsPDF } = window.jspdf;
-//   const doc = new jsPDF();
-
-//   // --- COMPANY INFO ---
-//   const companyName = "Xmart";
-//   const companyEmail = "hello@xmart.com";
-
-//   doc.setFontSize(16);
-//   doc.setTextColor(0, 0, 0);
-//   // Company name left
-//   doc.text(companyName, 14, 20);
-//   // Email right
-//   const pageWidth = doc.internal.pageSize.getWidth();
-//   const emailTextWidth = doc.getTextWidth(companyEmail);
-//   doc.text(companyEmail, pageWidth - 14 - emailTextWidth, 20);
-
-//   // --- TITLE ---
-//   doc.setFontSize(18);
-//   doc.setTextColor(0, 0, 0);
-//   // doc.text("Sales Report", 14, 30);
-
-//   // Extract table headers
-//   const table = document.querySelector("table");
-//   const headers = Array.from(table.querySelectorAll("thead tr th")).map(th => th.innerText);
-
-//   // Extract table rows
-//   const rows = Array.from(table.querySelectorAll("tbody tr")).map(tr => {
-//     return Array.from(tr.querySelectorAll("td")).map(td => td.innerText);
-//   });
-
-//   // Add table to PDF
-//   doc.autoTable({
-//     head: [headers],
-//     body: rows,
-//     startY: 40, // shifted below header
-//     theme: 'grid',
-//     headStyles: { fillColor: [0, 150, 136], textColor: 255 },
-//     bodyStyles: { fontSize: 10 }
-//   });
-
-//   // Save PDF
-//   doc.save("sales_report.pdf");
-// });
-
-
-// document.getElementById("download-pdf").addEventListener("click", function () {
-//     const { jsPDF } = window.jspdf;
-//     const doc = new jsPDF();
-
-//     // Title
-//     doc.setFontSize(18);
-//     doc.text("Sales Report", 14, 22);
-
-//     // Extract table headers
-//     const table = document.querySelector("table");
-//     const headers = Array.from(table.querySelectorAll("thead tr th")).map(th => th.innerText);
-
-//     // Extract table rows
-//     const rows = Array.from(table.querySelectorAll("tbody tr")).map(tr => {
-//       return Array.from(tr.querySelectorAll("td")).map(td => td.innerText);
-//     });
-
-//     // Add table to PDF
-//     doc.autoTable({
-//       head: [headers],
-//       body: rows,
-//       startY: 30,
-//       theme: 'grid',
-//       headStyles: { fillColor: [0, 150, 136], textColor: 255 },
-//       bodyStyles: { fontSize: 10 }
-//     });
-
-//     // Save PDF
-//     doc.save("sales_report.pdf");
-//   });
 
 document.addEventListener('DOMContentLoaded', function () {
   const TABLE_ID = 'ordersTable';
@@ -817,41 +646,96 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // 2) CSV download
-  document.getElementById('download-csv').addEventListener('click', function () {
-    const { headers, rows } = getVisibleTableData();
-    if (rows.length === 0) {
-      alert('No rows to export.');
-      return;
-    }
+document.getElementById('download-csv').addEventListener('click', function () {
+  const { headers, rows } = getVisibleTableData();
+  if (rows.length === 0) {
+    alert('No rows to export.');
+    return;
+  }
 
-    // Build CSV (add BOM for Excel compatibility)
-    const BOM = '\uFEFF';
-    const escapeCell = (str) => {
-      if (str == null) return '';
-      // If contains comma/newline/quote -> wrap in quotes and escape quotes
-      str = String(str);
-      if (str.includes('"')) str = str.replace(/"/g, '""');
-      if (/[,"\n\r]/.test(str)) return `"${str}"`;
-      return str;
-    };
+  // COMPANY INFO
+  const companyName = "XEMAR";
+  const companyEmail = "hello@xemart.com";
 
-    const csvLines = [];
-    csvLines.push(headers.map(escapeCell).join(','));
-    rows.forEach(row => {
-      csvLines.push(row.map(escapeCell).join(','));
-    });
-    const csvContent = BOM + csvLines.join('\r\n');
+  // AUTO DETECT COLUMNS
+  let amountIndex = headers.findIndex(h =>
+    h.toLowerCase().includes("amount") ||
+    h.toLowerCase().includes("total") ||
+    h.toLowerCase().includes("price")
+  );
+  if (amountIndex === -1) amountIndex = headers.length - 1;
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'orders_export.csv';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+  let discountIndex = headers.findIndex(h =>
+    h.toLowerCase().includes("discount")
+  );
+  if (discountIndex === -1) discountIndex = null;
+
+  const cleanNum = (v) =>
+    parseFloat(String(v).replace(/[^0-9.-]/g, "")) || 0;
+
+  // TOTAL CALCULATIONS
+  let totalRevenue = 0;
+  let totalDiscount = 0;
+
+  rows.forEach(r => {
+    totalRevenue += cleanNum(r[amountIndex]);
+    if (discountIndex !== null) totalDiscount += cleanNum(r[discountIndex]);
   });
+
+  const totalOrders = rows.length;
+  const avgOrderValue = totalRevenue / totalOrders;
+
+  // CSV BUILDER
+  const BOM = "\uFEFF";
+  const escapeCell = (str) => {
+    if (str == null) return "";
+    str = String(str);
+    if (str.includes('"')) str = str.replace(/"/g, '""');
+    if (/[,"\n\r]/.test(str)) return `"${str}"`;
+    return str;
+  };
+
+  const today = new Date();
+  const generatedOn = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+
+  const csvLines = [];
+
+  // -----------------------------
+  // COMPANY DETAILS
+  // -----------------------------
+  csvLines.push(`${companyName} - SALES REPORT`);
+  csvLines.push(`Email: ${companyEmail}`);
+  csvLines.push(`Report Period: Auto Selected`);
+  csvLines.push(`Generated On: ${generatedOn}`);
+  csvLines.push("");
+
+  // -----------------------------
+  // SUMMARY
+  // -----------------------------
+  csvLines.push("SUMMARY");
+  csvLines.push(`Total Orders,${totalOrders}`);
+  csvLines.push(`Total Revenue,${totalRevenue.toFixed(2)}`);
+  csvLines.push(`Total Discount,${totalDiscount.toFixed(2)}`);
+  csvLines.push(`Avg Order Value,${avgOrderValue.toFixed(2)}`);
+  csvLines.push("");
+
+  // -----------------------------
+  // ORDER DETAILS
+  // -----------------------------
+  csvLines.push("ORDER DETAILS");
+  csvLines.push(headers.join(","));
+  rows.forEach(r => csvLines.push(r.map(escapeCell).join(",")));
+
+  const csvContent = BOM + csvLines.join("\r\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "sales_report.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+});
 
   // 3) XLSX (SheetJS) download - produces .xlsx file
   document.getElementById('download-xlsx').addEventListener('click', function () {
@@ -876,39 +760,124 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // 4) PDF download (your jsPDF + autoTable code updated to export only visible rows)
-  document.getElementById('download-pdf').addEventListener('click', function () {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+ 
+document.getElementById("download-pdf").addEventListener("click", function () {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
 
-    // --- COMPANY INFO ---
-    const companyName = "Xmart";
-    const companyEmail = "hello@xmart.com";
+  // Get table data
+  const { headers, rows } = getVisibleTableData();
+  if (rows.length === 0) {
+    alert("No rows to export.");
+    return;
+  }
 
-    doc.setFontSize(16);
-    doc.setTextColor(0, 0, 0);
-    doc.text(companyName, 14, 20);
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const emailTextWidth = doc.getTextWidth(companyEmail);
-    doc.text(companyEmail, pageWidth - 14 - emailTextWidth, 20);
+  // -----------------------------
+  // AUTO DETECT AMOUNT COLUMN
+  // -----------------------------
+  let amountIndex = headers.findIndex(h =>
+    h.toLowerCase().includes("amount") ||
+    h.toLowerCase().includes("price") ||
+    h.toLowerCase().includes("total")
+  );
 
-    // Table body from visible rows
-    const { headers, rows } = getVisibleTableData();
-    if (rows.length === 0) {
-      alert('No rows to export.');
-      return;
+  // Fallback if not found → last column
+  if (amountIndex === -1) amountIndex = headers.length - 1;
+
+  // AUTO DETECT DISCOUNT COLUMN
+  let discountIndex = headers.findIndex(h =>
+    h.toLowerCase().includes("discount")
+  );
+
+  if (discountIndex === -1) discountIndex = null;
+
+  // -----------------------------
+  // CALCULATE TOTAL REVENUE & DISCOUNT
+  // -----------------------------
+  let totalRevenue = 0;
+  let totalDiscount = 0;
+
+  rows.forEach(row => {
+    // Amount
+    let amt = parseFloat(String(row[amountIndex]).replace(/[^0-9.-]/g, ""));
+    if (!isNaN(amt)) totalRevenue += amt;
+
+    // Discount
+    if (discountIndex !== null) {
+      let disc = parseFloat(String(row[discountIndex]).replace(/[^0-9.-]/g, ""));
+      if (!isNaN(disc)) totalDiscount += disc;
     }
-
-    doc.autoTable({
-      head: [headers],
-      body: rows,
-      startY: 40,
-      theme: 'grid',
-      headStyles: { fillColor: [0, 150, 136], textColor: 255 },
-      bodyStyles: { fontSize: 10 }
-    });
-
-    doc.save("orders_report.pdf");
   });
+
+  const totalOrders = rows.length;
+  const avgOrderValue = totalRevenue / totalOrders;
+
+  // -----------------------------
+  // PDF HEADER
+  // -----------------------------
+  doc.setFontSize(26);
+  doc.text("XEMART - SALES REPORT", 14, 18);
+
+  doc.setFontSize(11);
+  doc.text("Report Period: Auto Selected", 14, 30);
+
+  const today = new Date();
+  const generatedOn = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+  doc.text("Generated On: " + generatedOn, pageWidth - 60, 30);
+
+  // -----------------------------
+  // SUMMARY SECTION
+  // -----------------------------
+  doc.setFontSize(13);
+  doc.setFont(undefined, "bold");
+  doc.text("SUMMARY", 14, 45);
+  doc.line(14, 48, pageWidth - 14, 48);
+
+  const summaryData = [
+    ["Total Orders", totalOrders],
+    ["Total Revenue", "₹" + totalRevenue.toFixed(2)],
+    ["Total Discount", "₹" + totalDiscount.toFixed(2)],
+    ["Avg. Order Value", "₹" + avgOrderValue.toFixed(2)],
+  ];
+
+  doc.autoTable({
+    body: summaryData,
+    startY: 53,
+    theme: "grid",
+    styles: { fontSize: 10 },
+    columnStyles: {
+      0: { fontStyle: "bold" }
+    }
+  });
+
+  // -----------------------------
+  // ORDER DETAILS TITLE
+  // -----------------------------
+  let finalY = doc.previousAutoTable.finalY + 10;
+  doc.setFontSize(13);
+  doc.setFont(undefined, "bold");
+  doc.text("ORDER DETAILS", 14, finalY);
+  doc.line(14, finalY + 3, pageWidth - 14, finalY + 3);
+
+  // -----------------------------
+  // MAIN TABLE
+  // -----------------------------
+  doc.autoTable({
+    head: [headers],
+    body: rows,
+    startY: finalY + 10,
+    theme: "grid",
+    headStyles: { fillColor: [0, 0, 0], textColor: 255, fontSize: 11 },
+    bodyStyles: { fontSize: 10 },
+  });
+
+  doc.save("sales_report.pdf");
+});
+
+
+
 
 });
 

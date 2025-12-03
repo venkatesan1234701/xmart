@@ -369,7 +369,7 @@ const paymentFailed = async (req, res) => {
         transactionId: null,
       },
       grandTotal,
-      orderStatus: "Cancelled",
+      orderStatus: "payment faild",
       products: cart.products.map((item) => ({
         productId: item.productId._id,
         name: item.productId.name,

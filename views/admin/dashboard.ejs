@@ -848,6 +848,39 @@
 </div>
 
 						</div>
+							<div class="lg:col-span-4 col-span-12">
+							<!-- card -->
+							<div class="card h-full card-lg">
+								<!-- card body -->
+								<div class="card-body p-6">
+									<!-- heading -->
+									<div class="flex justify-between items-center mb-6">
+										<div>
+											<h4 class="mb-0 text-md">Grand Total</h4>
+										</div>
+									    <div class="h-10 w-10 bg-red-100 text-red-800 rounded-full flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"
+          class="icon icon-tabler icon-tabler-outline icon-tabler-currency-dollar">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2" />
+          <path d="M12 3v3m0 12v3" />
+        </svg>
+      </div>
+									</div>
+									<!-- project number -->
+									<%
+  const ttt = lasttotal.reduce((a,b)=>a+(b.grandTotal||0),0);
+%>
+
+									<div class="leading-snug">
+										<h4>Overall Order Amount : <%= ttt %></h4>
+										
+									</div>
+								</div>
+							</div>
+						</div>
 						<div class="lg:col-span-4 col-span-12">
 							<!-- card -->
 							<div class="card h-full card-lg">
@@ -949,6 +982,7 @@
 								</div>
 							</div>
 						</div>
+						
 					</div>
 
 					<!-- row -->
@@ -968,15 +1002,38 @@
           </select>
         </div>
 
-        <div class="flex gap-2 mt-3">
-          <button id="downloadRevenue" class="px-3 py-1.5 bg-blue-600 text-white rounded-md">Download Revenue Chart</button>
-        </div>
+        <!-- <div class="flex gap-2 mt-3"> -->
+			
+          <!-- <button id="downloadRevenue" class="px-3 py-1.5 bg-blue-600 text-white rounded-md">Download Revenue Chart</button> -->
+        <!-- </div> -->
+<div class="relative inline-block text-left">
+  <button id="downloadMenuBtn" 
+    class="px-3 py-1.5 bg-blue-600 text-white rounded-md">
+    ⋮
+  </button>
+
+  <div id="downloadMenu" 
+       class="hidden absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md border z-50">
+    <button class="block px-4 py-2 w-full text-left hover:bg-gray-100" data-type="png">
+      Download PNG
+    </button>
+    <!-- <button class="block px-4 py-2 w-full text-left hover:bg-gray-100" data-type="pdf">
+      Download PDF
+    </button> -->
+  </div>
+</div>
 
         <!-- <form id="date-wise-filter" class="flex gap-2 mt-3">
           <input type="date" id="startDate" class="border rounded px-2 py-1" />
           <input type="date" id="endDate" class="border rounded px-2 py-1" />
           <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded">Apply</button>
         </form> -->
+		<form id="dateFilterForm" class="flex gap-2 mt-3">
+  <input type="date" id="startDate" class="border rounded px-2 py-1" />
+  <input type="date" id="endDate" class="border rounded px-2 py-1" />
+  <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded">Apply</button>
+</form>
+
 
         <canvas id="revenueChart" class="mt-6 h-64"></canvas>
       </div>
@@ -1051,11 +1108,72 @@
 
 <!-- Chart.js CDN -->
  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+
+
+
+<!-- <script>
+	
+const menuBtn = document.getElementById("downloadMenuBtn");
+const menu = document.getElementById("downloadMenu");
+
+// Toggle menu
+menuBtn.addEventListener("click", () => {
+  menu.classList.toggle("hidden");
+});
+
+// Hide menu when clicking outside
+document.addEventListener("click", (e) => {
+  if (!menu.contains(e.target) && !menuBtn.contains(e.target)) {
+    menu.classList.add("hidden");
+  }
+});
+
+// Handle download
+menu.querySelectorAll("button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const type = btn.dataset.type;
+
+    // -------------------------
+    // PNG DOWNLOAD
+    // -------------------------
+    if (type === "png") {
+      const link = document.createElement('a');
+      link.href = revenueChart.toBase64Image(); // Always PNG
+      link.download = 'RevenueChart.png';
+      link.click();
+    }
+
+    // -------------------------
+    // PDF DOWNLOAD
+    // -------------------------
+    if (type === "pdf") {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("landscape");
+
+      const img = revenueChart.toBase64Image(); // PNG image
+
+      pdf.setFontSize(18);
+      pdf.text("Revenue Chart", 14, 20);
+
+      pdf.addImage(
+        img,
+        "PNG",
+        10,
+        30,
+        270,
+        120
+      );
+
+      pdf.save("RevenueChart.pdf");
+    }
+
+    // Close menu
+    menu.classList.add("hidden");
+  });
+});
 
 
 document.getElementById('revenueFilter').addEventListener('change', updateCharts);
-// document.getElementById('ordersFilter').addEventListener('change', updateCharts);
 
 async function updateCharts() {
   const timeframe = document.getElementById('revenueFilter').value;
@@ -1064,15 +1182,12 @@ async function updateCharts() {
     const res = await fetch(`/admin/orders-summary?timeframe=${timeframe}`);
     const data = await res.json();
 
-    // Update revenue chart
+    // Revenue (daily or monthly)
     revenueChart.data.labels = data.labels;
     revenueChart.data.datasets[0].data = data.revenuePerDay;
     revenueChart.update();
 
-    // Update orders chart
-    const totalOrders = data.ordersByStatus.Delivered + data.ordersByStatus.Returned +
-                        data.ordersByStatus.Cancelled + data.ordersByStatus.Pending;
-
+    // Orders chart
     ordersChart.data.datasets[0].data = [
       data.ordersByStatus.Delivered,
       data.ordersByStatus.Returned,
@@ -1080,19 +1195,12 @@ async function updateCharts() {
       data.ordersByStatus.Pending
     ];
 
-    // Update center text
-    ordersChart.options.plugins.centerText = {
-      display: true,
-      text: totalOrders
-    };
-
     ordersChart.update();
 
   } catch (err) {
-    console.error('Error fetching data:', err);
+    console.error("Error Updating Chart:", err);
   }
 }
-
 
 
 
@@ -1199,8 +1307,234 @@ async function updateCharts() {
       ordersChart.update();
     });
   }
-</script> 
+document.getElementById('dateFilterForm')?.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
+  const start = document.getElementById("startDate").value;
+  const end = document.getElementById("endDate").value;
+
+  if (!start || !end) {
+    alert("Please select both dates");
+    return;
+  }
+
+  const res = await fetch(`/admin/orders-summary?start=${start}&end=${end}`);
+  const data = await res.json();
+
+  revenueChart.data.labels = data.labels;
+  revenueChart.data.datasets[0].data = data.revenuePerDay;
+  revenueChart.update();
+
+  ordersChart.data.datasets[0].data = [
+    data.ordersByStatus.Delivered,
+    data.ordersByStatus.Returned,
+    data.ordersByStatus.Cancelled,
+    data.ordersByStatus.Pending
+  ];
+  ordersChart.update();
+});
+
+
+  
+</script>  -->
+
+
+
+<script>
+
+const centerTextPlugin = {
+  id: "centerText",
+  beforeDraw(chart, args, options) {
+    const { ctx, chartArea } = chart;
+    if (!chartArea) return;
+
+    const width = chartArea.width;
+    const height = chartArea.height;
+
+    ctx.save();
+    ctx.font = "bold 26px sans-serif";
+    ctx.fillStyle = "#000";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(options.text, width / 2, height / 2);
+    ctx.restore();
+  }
+};
+
+
+const menuBtn = document.getElementById("downloadMenuBtn");
+const menu = document.getElementById("downloadMenu");
+
+menuBtn.addEventListener("click", () => {
+  menu.classList.toggle("hidden");
+});
+
+document.addEventListener("click", (e) => {
+  if (!menu.contains(e.target) && !menuBtn.contains(e.target)) {
+    menu.classList.add("hidden");
+  }
+});
+
+menu.querySelectorAll("button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const type = btn.dataset.type;
+
+    if (type === "png") {
+      const link = document.createElement('a');
+      link.href = revenueChart.toBase64Image();
+      link.download = 'RevenueChart.png';
+      link.click();
+    }
+
+    if (type === "pdf") {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("landscape");
+
+      const img = revenueChart.toBase64Image();
+
+      pdf.setFontSize(18);
+      pdf.text("Revenue Chart", 14, 20);
+
+      pdf.addImage(img, "PNG", 10, 30, 270, 120);
+      pdf.save("RevenueChart.pdf");
+    }
+
+    menu.classList.add("hidden");
+  });
+});
+
+
+document.getElementById('revenueFilter').addEventListener('change', updateCharts);
+
+async function updateCharts() {
+  const timeframe = document.getElementById('revenueFilter').value;
+
+  try {
+    const res = await fetch(`/admin/orders-summary?timeframe=${timeframe}`);
+    const data = await res.json();
+
+    // Revenue
+    revenueChart.data.labels = data.labels;
+    revenueChart.data.datasets[0].data = data.revenuePerDay;
+    revenueChart.update();
+
+    ordersChart.data.datasets[0].data = [
+      data.ordersByStatus.Delivered,
+      data.ordersByStatus.Returned,
+      data.ordersByStatus.Cancelled,
+      data.ordersByStatus.Pending
+    ]
+
+    ordersChart.options.plugins.centerText.text =
+      data.ordersByStatus.Delivered.toString();
+
+    ordersChart.update();
+
+  } catch (err) {
+    console.error("Error Updating Chart:", err);
+  }
+}
+
+const downloadBtn = document.getElementById('downloadRevenue');
+if(downloadBtn){
+  downloadBtn.addEventListener('click', function() {
+    const link = document.createElement('a');
+    link.href = revenueChart.toBase64Image();
+    link.download = 'RevenueChart.png';
+    link.click();
+  });
+}
+
+
+const labels = JSON.parse('<%- JSON.stringify(labels || []) %>');
+const revenueData = JSON.parse('<%- JSON.stringify(revenuePerDay || []) %>');
+const ordersData = JSON.parse('<%- JSON.stringify(ordersByStatus || {}) %>');
+
+
+const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+const revenueChart = new Chart(revenueCtx, {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [{
+      label: 'Revenue',
+      data: revenueData,
+      borderColor: '#22c55e',
+      backgroundColor: 'rgba(34,197,94,0.2)',
+      fill: true,
+      tension: 0.3
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: { y: { beginAtZero: true } }
+  }
+});
+
+const totalOrdersCtx = document.getElementById('ordersChart').getContext('2d');
+const ordersChart = new Chart(totalOrdersCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Delivered','Returned','Cancelled','Pending'],
+    datasets: [{
+      data: [
+        ordersData.Delivered || 0,
+        ordersData.Returned || 0,
+        ordersData.Cancelled || 0,
+        ordersData.Pending || 0
+      ],
+      backgroundColor: ['#22c55e','#ef4444','#3b82f6','#facc15'],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: "70%",
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: { enabled: true },
+
+      centerText: {
+        text: (ordersData.Delivered || 0).toString()
+      }
+    }
+  },
+  plugins: [centerTextPlugin]  
+});
+
+
+document.getElementById('dateFilterForm')?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const start = document.getElementById("startDate").value;
+  const end = document.getElementById("endDate").value;
+
+  if (!start || !end) {
+    alert("Please select both dates");
+    return;
+  }
+
+  const res = await fetch(`/admin/orders-summary?start=${start}&end=${end}`);
+  const data = await res.json();
+
+  revenueChart.data.labels = data.labels;
+  revenueChart.data.datasets[0].data = data.revenuePerDay;
+  revenueChart.update();
+
+  ordersChart.data.datasets[0].data = [
+    data.ordersByStatus.Delivered,
+    data.ordersByStatus.Returned,
+    data.ordersByStatus.Cancelled,
+    data.ordersByStatus.Pending
+  ];
+
+  ordersChart.options.plugins.centerText.text =
+    data.ordersByStatus.Delivered.toString();
+
+  ordersChart.update();
+});
+
+</script>
 
 
 </body>
