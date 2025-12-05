@@ -1390,303 +1390,307 @@ document.addEventListener("DOMContentLoaded", () => {
 
   
 
-document.addEventListener("DOMContentLoaded", () => {
+// document.addEventListener("DOMContentLoaded", () => {
 
-  // =========================
-  // Elements
-  // =========================
-  const qtyInput = document.getElementById("orderQty");
-  const decreaseBtn = document.getElementById("decreaseQty");
-  const increaseBtn = document.getElementById("increaseQty");
-  const addBtn = document.getElementById("addToCartBtn");
-  const sizeBoxes = document.querySelectorAll(".size-box.available");
+//   // =========================
+//   // Elements
+//   // =========================
+//   const qtyInput = document.getElementById("orderQty");
+//   const decreaseBtn = document.getElementById("decreaseQty");
+//   const increaseBtn = document.getElementById("increaseQty");
+//   const addBtn = document.getElementById("addToCartBtn");
+//   const sizeBoxes = document.querySelectorAll(".size-box.available");
 
-  const priceDisplay = document.getElementById("priceDisplay");
-  const availableQtyText = document.getElementById("availableQty");
-  const searchInput = document.getElementById("searchProducts");
-  const searchBtn = document.getElementById("searchBtn");
-  const resultsList = document.getElementById("searchResults");
+//   const priceDisplay = document.getElementById("priceDisplay");
+//   const availableQtyText = document.getElementById("availableQty");
+//   const searchInput = document.getElementById("searchProducts");
+//   const searchBtn = document.getElementById("searchBtn");
+//   const resultsList = document.getElementById("searchResults");
 
-  let selectedSize = null;
-  let timeout = null;
-  const HARD_MAX = 8; // max quantity limit
-  const maxQuantity = addBtn ? parseInt(addBtn.dataset.quantity) || 1 : 1;
+//   let selectedSize = null;
+//   let timeout = null;
+//   const HARD_MAX = 8; // max quantity limit
+//   const maxQuantity = addBtn ? parseInt(addBtn.dataset.quantity) || 1 : 1;
 
-  // =========================
-  // Size Selection
-  // =========================
-  sizeBoxes.forEach(box => {
-    box.addEventListener("click", () => {
-      sizeBoxes.forEach(b => b.classList.remove("selected", "border-green-700"));
-      box.classList.add("selected", "border-green-700");
-      selectedSize = box.dataset.size;
+//   // =========================
+//   // Size Selection
+//   // =========================
+//   sizeBoxes.forEach(box => {
+//     box.addEventListener("click", () => {
+//       sizeBoxes.forEach(b => b.classList.remove("selected", "border-green-700"));
+//       box.classList.add("selected", "border-green-700");
+//       selectedSize = box.dataset.size;
 
-      // Update price & stock display
-      priceDisplay.innerText = `₹${box.dataset.price}`;
-      availableQtyText.innerText = `Available: ${box.dataset.quantity} items`;
+//       // Update price & stock display
+//       priceDisplay.innerText = `₹${box.dataset.price}`;
+//       availableQtyText.innerText = `Available: ${box.dataset.quantity} items`;
 
-      // Set quantity max respecting HARD_MAX
-      qtyInput.max = Math.min(HARD_MAX, parseInt(box.dataset.quantity));
-      qtyInput.value = qtyInput.max > 0 ? 1 : 0;
-    });
-  });
+//       // Set quantity max respecting HARD_MAX
+//       qtyInput.max = Math.min(HARD_MAX, parseInt(box.dataset.quantity));
+//       qtyInput.value = qtyInput.max > 0 ? 1 : 0;
+//     });
+//   });
 
-  // Initialize first available size
-  if(sizeBoxes[0]) sizeBoxes[0].click();
+//   // Initialize first available size
+//   if(sizeBoxes[0]) sizeBoxes[0].click();
 
-  // =========================
-  // Increment / Decrement
-  // =========================
-  decreaseBtn?.addEventListener("click", () => {
-    let current = parseInt(qtyInput.value) || 1;
-    if(current > 1) qtyInput.value = current - 1;
-  });
+//   // =========================
+//   // Increment / Decrement
+//   // =========================
+//   decreaseBtn?.addEventListener("click", () => {
+//     let current = parseInt(qtyInput.value) || 1;
+//     if(current > 1) qtyInput.value = current - 1;
+//   });
 
-  increaseBtn?.addEventListener("click", async () => {
-    let current = parseInt(qtyInput.value) || 1;
+//   increaseBtn?.addEventListener("click", async () => {
+//     let current = parseInt(qtyInput.value) || 1;
 
-    // Check HARD_MAX
-    if(current >= HARD_MAX){
-      Swal.fire({ icon: 'warning', title: 'Max Limit', text: `You can only select up to ${HARD_MAX} items!` });
-      return;
-    }
+//     // Check HARD_MAX
+//     if(current >= HARD_MAX){
+//       Swal.fire({ icon: 'warning', title: 'Max Limit', text: `You can only select up to ${HARD_MAX} items!` });
+//       return;
+//     }
 
-    // Check stock for selected size
-    const maxStock = parseInt(qtyInput.max) || HARD_MAX;
-    if(current < maxStock){
-      qtyInput.value = current + 1;
-    } else {
-      Swal.fire({ icon: 'warning', title: 'Stock Limit', text: `Only ${maxStock} items available!` });
-    }
-  });
+//     // Check stock for selected size
+//     const maxStock = parseInt(qtyInput.max) || HARD_MAX;
+//     if(current < maxStock){
+//       qtyInput.value = current + 1;
+//     } else {
+//       Swal.fire({ icon: 'warning', title: 'Stock Limit', text: `Only ${maxStock} items available!` });
+//     }
+//   });
 
-  // =========================
-  // Add to Cart Button
-  // =========================
-  if(addBtn){
-    addBtn.addEventListener("click", async () => {
-      const quantity = parseInt(qtyInput.value) || 1;
+//   // =========================
+//   // Add to Cart Button
+//   // =========================
+//   if(addBtn){
+//     addBtn.addEventListener("click", async () => {
+//       const quantity = parseInt(qtyInput.value) || 1;
 
-      // Login check
-    if(addBtn.dataset.user !== "true"){
-    Swal.fire({ 
-        icon: 'warning', 
-        title: 'Login Required', 
-        text: 'Please login first!' 
-    }).then(() => {
-        // redirect to signin page after user clicks OK
-        window.location.href = '/signin';
-    });
-    return;
-}
+//       // Login check
+//     if(addBtn.dataset.user !== "true"){
+//     Swal.fire({ 
+//         icon: 'warning', 
+//         title: 'Login Required', 
+//         text: 'Please login first!' 
+//     }).then(() => {
+//         // redirect to signin page after user clicks OK
+//         window.location.href = '/signin';
+//     });
+//     return;
+// }
 
 
-      // Size check
-      if(!selectedSize){
-        Swal.fire({ icon: 'warning', title: 'Select Size', text: 'Please select a size!' });
-        return;
-      }
+//       // Size check
+//       if(!selectedSize){
+//         Swal.fire({ icon: 'warning', title: 'Select Size', text: 'Please select a size!' });
+//         return;
+//       }
 
-      // Stock/Max check
-      if(quantity > HARD_MAX){
-        Swal.fire({ icon: 'warning', title: 'Max Quantity', text: `You can only add up to ${HARD_MAX} items per product!` });
-        return;
-      }
+//       // Stock/Max check
+//       if(quantity > HARD_MAX){
+//         Swal.fire({ icon: 'warning', title: 'Max Quantity', text: `You can only add up to ${HARD_MAX} items per product!` });
+//         return;
+//       }
 
-      try{
-        const res = await fetch('/cart/add', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ productId: addBtn.dataset.id, qty: quantity, size: selectedSize })
-        });
-        const data = await res.json();
+//       try{
+//         const res = await fetch('/cart/add', {
+//           method: 'POST',
+//           headers: {'Content-Type':'application/json'},
+//           body: JSON.stringify({ productId: addBtn.dataset.id, qty: quantity, size: selectedSize })
+//         });
+//         const data = await res.json();
 
-        if(data.success){
-          Swal.fire({ icon: 'success', title: 'Added!', text: 'Product added to cart', timer: 1500 });
-          qtyInput.value = 1;
-          addBtn.dataset.quantity = data.availableQuantity;
-        } else {
-          Swal.fire({ icon: 'error', title: 'Oops...', text: data.message });
-        }
-      } catch(err){
-        Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later.' });
-      }
-    });
-  }
+//         if(data.success){
+//           Swal.fire({ icon: 'success', title: 'Added!', text: 'Product added to cart', timer: 1500 });
+//           qtyInput.value = 1;
+//           addBtn.dataset.quantity = data.availableQuantity;
+//         } else {
+//           Swal.fire({ icon: 'error', title: 'Oops...', text: data.message });
+//         }
+//       } catch(err){
+//         Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later.' });
+//       }
+//     });
+//   }
 
-  // =========================
-  // Product Search
-  // =========================
-  if(searchBtn && searchInput){
-    searchBtn.addEventListener("click", async () => {
-      const query = searchInput.value.trim();
-      if(query.length === 0){
-        Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Please enter product name!' });
-        return;
-      }
-      try{
-        const res = await fetch(`/search-product?query=${encodeURIComponent(query)}`);
-        const data = await res.json();
-        if(!data || data.length === 0){
-          Swal.fire({ icon: 'error', title: 'Oops...', text: 'Product not found!' });
-          return;
-        }
-        window.location.href = `/product/${data[0]._id}`;
-      } catch(err){
-        Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later.' });
-      }
-    });
+//   // =========================
+//   // Product Search
+//   // =========================
+//   if(searchBtn && searchInput){
+//     searchBtn.addEventListener("click", async () => {
+//       const query = searchInput.value.trim();
+//       if(query.length === 0){
+//         Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Please enter product name!' });
+//         return;
+//       }
+//       try{
+//         const res = await fetch(`/search-product?query=${encodeURIComponent(query)}`);
+//         const data = await res.json();
+//         if(!data || data.length === 0){
+//           Swal.fire({ icon: 'error', title: 'Oops...', text: 'Product not found!' });
+//           return;
+//         }
+//         window.location.href = `/product/${data[0]._id}`;
+//       } catch(err){
+//         Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later.' });
+//       }
+//     });
 
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.trim();
-      if(timeout) clearTimeout(timeout);
-      timeout = setTimeout(async () => {
-        if(query.length === 0){
-          resultsList.innerHTML = '';
-          resultsList.classList.add('hidden');
-          return;
-        }
-        try{
-          const res = await fetch(`/search-products?query=${encodeURIComponent(query)}`);
-          const data = await res.json();
-          resultsList.innerHTML = '';
-          if(data.length === 0){
-            resultsList.classList.add('hidden');
-            Swal.fire({ icon: 'error', title: 'Oops...', text: 'No products found!' });
-            return;
-          }
-          data.forEach(product => {
-            const li = document.createElement('li');
-            li.textContent = product.name;
-            li.className = 'px-3 py-2 cursor-pointer hover:bg-gray-100';
-            li.addEventListener('click', () => { window.location.href = `/product/${product._id}`; });
-            resultsList.appendChild(li);
-          });
-          resultsList.classList.remove('hidden');
-        } catch(err){
-          Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later' });
-        }
-      }, 300);
-    });
+//     searchInput.addEventListener("input", () => {
+//       const query = searchInput.value.trim();
+//       if(timeout) clearTimeout(timeout);
+//       timeout = setTimeout(async () => {
+//         if(query.length === 0){
+//           resultsList.innerHTML = '';
+//           resultsList.classList.add('hidden');
+//           return;
+//         }
+//         try{
+//           const res = await fetch(`/search-products?query=${encodeURIComponent(query)}`);
+//           const data = await res.json();
+//           resultsList.innerHTML = '';
+//           if(data.length === 0){
+//             resultsList.classList.add('hidden');
+//             Swal.fire({ icon: 'error', title: 'Oops...', text: 'No products found!' });
+//             return;
+//           }
+//           data.forEach(product => {
+//             const li = document.createElement('li');
+//             li.textContent = product.name;
+//             li.className = 'px-3 py-2 cursor-pointer hover:bg-gray-100';
+//             li.addEventListener('click', () => { window.location.href = `/product/${product._id}`; });
+//             resultsList.appendChild(li);
+//           });
+//           resultsList.classList.remove('hidden');
+//         } catch(err){
+//           Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later' });
+//         }
+//       }, 300);
+//     });
 
-    document.addEventListener('click', e => {
-      if(!resultsList.contains(e.target) && e.target !== searchInput){
-        resultsList.classList.add('hidden');
-      }
-    });
-  }
+//     document.addEventListener('click', e => {
+//       if(!resultsList.contains(e.target) && e.target !== searchInput){
+//         resultsList.classList.add('hidden');
+//       }
+//     });
+//   }
 
-  // =========================
-  // Main Product Image Zoom
-  // =========================
-  const originalImage = "<%= mainImage.startsWith('http') || mainImage.startsWith('/') ? mainImage : '/' + mainImage %>";
-  window.changeImage = (src) => { document.getElementById('mainProductImage').src = src; };
-  window.resetImage = () => { document.getElementById('mainProductImage').src = originalImage; };
+//   // =========================
+//   // Main Product Image Zoom
+//   // =========================
+//   const originalImage = "<%= mainImage.startsWith('http') || mainImage.startsWith('/') ? mainImage : '/' + mainImage %>";
+//   window.changeImage = (src) => { document.getElementById('mainProductImage').src = src; };
+//   window.resetImage = () => { document.getElementById('mainProductImage').src = originalImage; };
 
-  const container = document.getElementById('zoomContainer');
-  const image = document.getElementById('mainProductImage');
-  const zoom = 1.8;
+//   const container = document.getElementById('zoomContainer');
+//   const image = document.getElementById('mainProductImage');
+//   const zoom = 1.8;
 
-  //  container?.addEventListener('mousemove', (e) => {
-  //   const y = ((e.clientY - rect.top) / rect.height) * 100;
-  //   image.style.transformOrigin = `${x}% ${y}%`;
-  //   image.style.transform = `scale(${zoom})`;
-  // });
-  container?.addEventListener('mousemove', (e) => {
-    const rect = container.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    image.style.transformOrigin = `${x}% ${y}%`;
-    image.style.transform = `scale(${zoom})`;
-  });
-  container?.addEventListener('mouseleave', () => {
-    image.style.transformOrigin = 'center center';
-    image.style.transform = 'scale(1)';
-  });
+//   //  container?.addEventListener('mousemove', (e) => {
+//   //   const y = ((e.clientY - rect.top) / rect.height) * 100;
+//   //   image.style.transformOrigin = `${x}% ${y}%`;
+//   //   image.style.transform = `scale(${zoom})`;
+//   // });
+//   container?.addEventListener('mousemove', (e) => {
+//     const rect = container.getBoundingClientRect();
+//     const x = ((e.clientX - rect.left) / rect.width) * 100;
+//     const y = ((e.clientY - rect.top) / rect.height) * 100;
+//     image.style.transformOrigin = `${x}% ${y}%`;
+//     image.style.transform = `scale(${zoom})`;
+//   });
+//   container?.addEventListener('mouseleave', () => {
+//     image.style.transformOrigin = 'center center';
+//     image.style.transform = 'scale(1)';
+//   });
 
-  // =========================
-  // User Dropdown & Logout
-  // =========================
-  const btn = document.getElementById("userDropdownBtn");
-  const dropdown = document.getElementById("userDropdown");
-  if(btn && dropdown){
-    btn.addEventListener("click", e => { e.stopPropagation(); dropdown.classList.toggle("hidden"); });
-    window.addEventListener("click", e => { if(!btn.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.add("hidden"); });
-  }
+//   // =========================
+//   // User Dropdown & Logout
+//   // =========================
+//   const btn = document.getElementById("userDropdownBtn");
+//   const dropdown = document.getElementById("userDropdown");
+//   if(btn && dropdown){
+//     btn.addEventListener("click", e => { e.stopPropagation(); dropdown.classList.toggle("hidden"); });
+//     window.addEventListener("click", e => { if(!btn.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.add("hidden"); });
+//   }
 
-  const logoutForm = document.getElementById("logoutForm");
-  logoutForm?.addEventListener("submit", e => {
-    e.preventDefault();
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You will be logged out!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, logout!'
-    }).then(result => { if(result.isConfirmed) logoutForm.submit(); });
-  });
+//   const logoutForm = document.getElementById("logoutForm");
+//   logoutForm?.addEventListener("submit", e => {
+//     e.preventDefault();
+//     Swal.fire({
+//       title: 'Are you sure?',
+//       text: "You will be logged out!",
+//       icon: 'warning',
+//       showCancelButton: true,
+//       confirmButtonColor: '#3085d6',
+//       cancelButtonColor: '#d33',
+//       confirmButtonText: 'Yes, logout!'
+//     }).then(result => { if(result.isConfirmed) logoutForm.submit(); });
+//   });
 
-  // =========================
-  // Login Form Submission
-  // =========================
-  const loginForm = document.getElementById("loginForm");
-  loginForm?.addEventListener("submit", async e => {
-    e.preventDefault();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    if(!email || !password){
-      Swal.fire({ icon:"warning", title:"Oops!", text:"Please enter email and password" });
-      return;
-    }
-    try {
-      const res = await fetch("/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, returnUrl: window.location.href })
-      });
-      const result = await res.json();
-      if(result.ok){
-        Swal.fire({
-          icon:"success",
-          title:"Login Successful 🎉",
-          text:`Welcome ${result.user?.name?.split(' ')[0] || ''}!`,
-          confirmButtonColor:"#16a34a"
-        }).then(() => { window.location.href = result.redirect || result.returnUrl || '/'; });
-      } else {
-        Swal.fire({ icon:"error", title:"Login Failed ❌", text: result.msg });
-      }
-    } catch(err){
-      Swal.fire({ icon:"error", title:"Server Error", text:"Try again later." });
-    }
-  });
+//   // =========================
+//   // Login Form Submission
+//   // =========================
+//   const loginForm = document.getElementById("loginForm");
+//   loginForm?.addEventListener("submit", async e => {
+//     e.preventDefault();
+//     const email = document.getElementById("email").value.trim();
+//     const password = document.getElementById("password").value.trim();
+//     if(!email || !password){
+//       Swal.fire({ icon:"warning", title:"Oops!", text:"Please enter email and password" });
+//       return;
+//     }
+//     try {
+//       const res = await fetch("/signin", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ email, password, returnUrl: window.location.href })
+//       });
+//       const result = await res.json();
+//       if(result.ok){
+//         Swal.fire({
+//           icon:"success",
+//           title:"Login Successful 🎉",
+//           text:`Welcome ${result.user?.name?.split(' ')[0] || ''}!`,
+//           confirmButtonColor:"#16a34a"
+//         }).then(() => { window.location.href = result.redirect || result.returnUrl || '/'; });
+//       } else {
+//         Swal.fire({ icon:"error", title:"Login Failed ❌", text: result.msg });
+//       }
+//     } catch(err){
+//       Swal.fire({ icon:"error", title:"Server Error", text:"Try again later." });
+//     }
+//   });
 
-  // =========================
-  // Check if user is blocked
-  // =========================
-  setInterval(async () => {
-    try {
-      const res = await fetch('/users/check-blocked');
-      if(!res.ok) return;
-      const data = await res.json();
-      if(data.isBlocked){
-        Swal.fire({
-          icon: 'warning',
-          title: 'Blocked!',
-          text: 'You have been blocked by admin. Logging out...',
-          allowOutsideClick: false,
-          confirmButtonText: 'OK'
-        }).then(async () => {
-          await fetch('/users/logout', { method: 'GET' });
-          window.location.href = '/auth/signin';
-        });
-      }
-    } catch(err){ console.error(err); }
-  }, 5000);
+//   // =========================
+//   // Check if user is blocked
+//   // =========================
+//   setInterval(async () => {
+//     try {
+//       const res = await fetch('/users/check-blocked');
+//       if(!res.ok) return;
+//       const data = await res.json();
+//       if(data.isBlocked){
+//         Swal.fire({
+//           icon: 'warning',
+//           title: 'Blocked!',
+//           text: 'You have been blocked by admin. Logging out...',
+//           allowOutsideClick: false,
+//           confirmButtonText: 'OK'
+//         }).then(async () => {
+//           await fetch('/users/logout', { method: 'GET' });
+//           window.location.href = '/auth/signin';
+//         });
+//       }
+//     } catch(err){ console.error(err); }
+//   }, 5000);
 
-});
+// });
 
+
+
+
+/////////////////////////////                      its ai code 
 
 
 // document.addEventListener("DOMContentLoaded", () => {
@@ -1701,30 +1705,37 @@ document.addEventListener("DOMContentLoaded", () => {
 //   const sizeBoxes = document.querySelectorAll(".size-box.available");
 
 //   const priceDisplay = document.getElementById("priceDisplay");
-//   const availableQtyText = document.getElementById("availableQty");
 //   const mrpDisplay = document.getElementById("mrpDisplay");
+//   const availableQtyText = document.getElementById("availableQty");
 
-//   let selectedSize = null;
+//   const searchInput = document.getElementById("searchProducts");
+//   const searchBtn = document.getElementById("searchBtn");
+//   const resultsList = document.getElementById("searchResults");
+
 //   const HARD_MAX = 8;
+//   let selectedSize = null;
+//   let timeout = null;
 
-//   // =========================================
-//   // OFFER PERCENTAGE FROM SERVER
-//   // =========================================
+//   // =========================
+//   // OFFER PERCENTAGE (from backend)
+//   // =========================
 //   const OFFER_PERCENT = Number("<%= offer ? offer.offerPercentage : 0 %>");
 
 //   // =========================
-//   // Size Selection
+//   // Size Box Selection + Offer Price Logic
 //   // =========================
 //   sizeBoxes.forEach(box => {
 //     box.addEventListener("click", () => {
+
 //       sizeBoxes.forEach(b => b.classList.remove("selected", "border-green-700"));
 //       box.classList.add("selected", "border-green-700");
+
 //       selectedSize = box.dataset.size;
 
 //       const price = parseInt(box.dataset.price);
 //       const qty = parseInt(box.dataset.quantity);
 
-//       // APPLY OFFER FOR SELECTED SIZE
+//       // Apply offer price
 //       let finalPrice = price;
 //       if (OFFER_PERCENT > 0) {
 //         finalPrice = Math.floor(price - (price * OFFER_PERCENT / 100));
@@ -1742,99 +1753,263 @@ document.addEventListener("DOMContentLoaded", () => {
 //     });
 //   });
 
-//   // Auto-select first size
+//   // Auto-select first available size
 //   if(sizeBoxes[0]) sizeBoxes[0].click();
 
+
 //   // =========================
-//   // Increment / Decrement
+//   // Quantity Buttons
 //   // =========================
+
 //   decreaseBtn?.addEventListener("click", () => {
 //     let current = parseInt(qtyInput.value) || 1;
-//     if(current > 1) qtyInput.value = current - 1;
+//     if (current > 1) qtyInput.value = current - 1;
 //   });
 
 //   increaseBtn?.addEventListener("click", () => {
 //     let current = parseInt(qtyInput.value) || 1;
-//     if(current >= HARD_MAX){
-//       Swal.fire({ icon: 'warning', title: 'Max Limit', text: `You can only select up to ${HARD_MAX} items!` });
+//     const maxStock = parseInt(qtyInput.max) || HARD_MAX;
+
+//     if (current >= HARD_MAX) {
+//       Swal.fire({ icon: 'warning', title: 'Max Limit', text: `Max ${HARD_MAX} allowed!` });
 //       return;
 //     }
-//     const maxStock = parseInt(qtyInput.max) || HARD_MAX;
-//     if(current < maxStock){
-//       qtyInput.value = current + 1;
-//     } else {
-//       Swal.fire({ icon: 'warning', title: 'Stock Limit', text: `Only ${maxStock} items available!` });
+
+//     if (current < maxStock) qtyInput.value = current + 1;
+//     else Swal.fire({ icon: 'warning', title: 'Stock Limit', text: `Only ${maxStock} items available!` });
+//   });
+
+
+//   // =========================
+//   // Add To Cart
+//   // =========================
+//   addBtn?.addEventListener("click", async () => {
+//     const quantity = parseInt(qtyInput.value) || 1;
+
+//     if (data.success) {
+//   Swal.fire({ icon: 'success', title: 'Added!', text: 'Product added to cart', timer: 1500 });
+//   qtyInput.value = 1;
+// } else {
+//   Swal.fire({ icon: 'error', title: 'Oops...', text: data.message });
+// }
+
+
+//     if (addBtn.dataset.user !== "true") {
+//       Swal.fire({ icon: 'warning', title: 'Login Required', text: 'Please login first!' })
+//         .then(() => window.location.href = '/signin');
+//       return;
+//     }
+
+//     if (!selectedSize) {
+//       Swal.fire({ icon: 'warning', title: 'Select Size', text: 'Please select a size!' });
+//       return;
+//     }
+
+//     if (quantity > HARD_MAX) {
+//       Swal.fire({ icon: 'warning', title: 'Max Quantity', text: `Max ${HARD_MAX} allowed!` });
+//       return;
+//     }
+
+//     const pricePerUnit = parseInt(priceDisplay.innerText.replace("₹", "")) || 0;
+
+//     try {
+//       const res = await fetch('/cart/add', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({
+//           productId: addBtn.dataset.id,
+//           qty: quantity,
+//           size: selectedSize,
+//           pricePerUnit
+//         })
+//       });
+
+//       const data = await res.json();
+
+//       if (data.success) {
+//         Swal.fire({ icon: 'success', title: 'Added!', text: 'Product added to cart', timer: 1500 });
+//         qtyInput.value = 1;
+//       } else {
+//         Swal.fire({ icon: 'error', title: 'Oops...', text: data.message });
+//       }
+
+//     } catch (err) {
+//       Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later.' });
 //     }
 //   });
 
+
 //   // =========================
-//   // Add to Cart
+//   // Product Search (Button)
 //   // =========================
-//   if(addBtn){
-//     addBtn.addEventListener("click", async () => {
-//       const quantity = parseInt(qtyInput.value) || 1;
+//   searchBtn?.addEventListener("click", async () => {
+//     const query = searchInput.value.trim();
+//     if (query.length === 0) {
+//       Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Please enter product name!' });
+//       return;
+//     }
 
-//       if(addBtn.dataset.user !== "true"){
-//         Swal.fire({ icon: 'warning', title: 'Login Required', text: 'Please login first!' })
-//           .then(() => window.location.href = '/signin');
+//     try {
+//       const res = await fetch(`/search-product?query=${encodeURIComponent(query)}`);
+//       const data = await res.json();
+
+//       if (!data || data.length === 0) {
+//         Swal.fire({ icon: 'error', title: 'Oops...', text: 'Product not found!' });
 //         return;
 //       }
 
-//       if(!selectedSize){
-//         Swal.fire({ icon: 'warning', title: 'Select Size', text: 'Please select a size!' });
+//       window.location.href = `/product/${data[0]._id}`;
+
+//     } catch (err) {
+//       Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later.' });
+//     }
+//   });
+
+
+//   // =========================
+//   // Live Search Suggestions
+//   // =========================
+//   searchInput?.addEventListener("input", () => {
+//     const query = searchInput.value.trim();
+//     if (timeout) clearTimeout(timeout);
+
+//     timeout = setTimeout(async () => {
+//       if (query.length === 0) {
+//         resultsList.innerHTML = '';
+//         resultsList.classList.add('hidden');
 //         return;
 //       }
 
-//       if(quantity > HARD_MAX){
-//         Swal.fire({ icon:'warning', title:'Max Quantity', text:`Max ${HARD_MAX} allowed!` });
-//         return;
-//       }
-
-//       const price = parseInt(document.getElementById("priceDisplay").innerText.replace("₹","")) || 0;
-
-//       try{
-//         const res = await fetch('/cart/add', {
-//           method: 'POST',
-//           headers: {'Content-Type':'application/json'},
-//           body: JSON.stringify({ 
-//             productId: addBtn.dataset.id, 
-//             qty: quantity, 
-//             size: selectedSize,
-//             pricePerUnit: price  // ✅ send offer price
-//           })
-//         });
-
+//       try {
+//         const res = await fetch(`/search-products?query=${encodeURIComponent(query)}`);
 //         const data = await res.json();
 
-//         if(data.success){
-//           Swal.fire({ icon: 'success', title: 'Added!', text: 'Product added to cart', timer: 1500 });
-//           qtyInput.value = 1;
-//         } else {
-//           Swal.fire({ icon: 'error', title: 'Oops...', text: data.message });
+//         resultsList.innerHTML = '';
+//         if (data.length === 0) {
+//           resultsList.classList.add('hidden');
+//           return;
 //         }
 
-//       } catch(err){
-//         Swal.fire({ icon:'error', title:'Server Error', text:'Try again later.' });
+//         data.forEach(product => {
+//           const li = document.createElement('li');
+//           li.textContent = product.name;
+//           li.className = 'px-3 py-2 cursor-pointer hover:bg-gray-100';
+//           li.addEventListener('click', () => window.location.href = `/product/${product._id}`);
+//           resultsList.appendChild(li);
+//         });
+
+//         resultsList.classList.remove('hidden');
+
+//       } catch (err) {
+//         Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later' });
+//       }
+//     }, 300);
+//   });
+
+//   document.addEventListener('click', e => {
+//     if (!resultsList.contains(e.target) && e.target !== searchInput) {
+//       resultsList.classList.add('hidden');
+//     }
+//   });
+
+
+//   // =========================
+//   // Image Zoom
+//   // =========================
+//   const originalImage = "<%= mainImage.startsWith('http') || mainImage.startsWith('/') ? mainImage : '/' + mainImage %>";
+//   window.changeImage = (src) => { document.getElementById('mainProductImage').src = src; };
+//   window.resetImage = () => { document.getElementById('mainProductImage').src = originalImage; };
+
+//   const container = document.getElementById('zoomContainer');
+//   const image = document.getElementById('mainProductImage');
+//   const zoom = 1.8;
+
+//   container?.addEventListener('mousemove', (e) => {
+//     const rect = container.getBoundingClientRect();
+//     const x = ((e.clientX - rect.left) / rect.width) * 100;
+//     const y = ((e.clientY - rect.top) / rect.height) * 100;
+//     image.style.transformOrigin = `${x}% ${y}%`;
+//     image.style.transform = `scale(${zoom})`;
+//   });
+
+//   container?.addEventListener('mouseleave', () => {
+//     image.style.transformOrigin = 'center center';
+//     image.style.transform = 'scale(1)';
+//   });
+
+
+//   // =========================
+//   // User Dropdown
+//   // =========================
+//   const btn = document.getElementById("userDropdownBtn");
+//   const dropdown = document.getElementById("userDropdown");
+
+//   if (btn && dropdown) {
+//     btn.addEventListener("click", e => {
+//       e.stopPropagation();
+//       dropdown.classList.toggle("hidden");
+//     });
+
+//     window.addEventListener("click", e => {
+//       if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+//         dropdown.classList.add("hidden");
 //       }
 //     });
 //   }
 
+
 //   // =========================
-//   // (Keep rest of your JS: search, zoom, login, logout) unchanged
+//   // Logout
 //   // =========================
+//   const logoutForm = document.getElementById("logoutForm");
+//   logoutForm?.addEventListener("submit", e => {
+//     e.preventDefault();
+//     Swal.fire({
+//       title: 'Are you sure?',
+//       text: "You will be logged out!",
+//       icon: 'warning',
+//       showCancelButton: true,
+//       confirmButtonColor: '#3085d6',
+//       cancelButtonColor: '#d33',
+//       confirmButtonText: 'Yes, logout!'
+//     }).then(result => {
+//       if (result.isConfirmed) logoutForm.submit();
+//     });
+//   });
+
+
+//   // =========================
+//   // Blocked User Auto-Check
+//   // =========================
+//   setInterval(async () => {
+//     try {
+//       const res = await fetch('/users/check-blocked');
+//       if (!res.ok) return;
+//       const data = await res.json();
+
+//       if (data.isBlocked) {
+//         Swal.fire({
+//           icon: 'warning',
+//           title: 'Blocked!',
+//           text: 'You have been blocked by admin. Logging out...',
+//           allowOutsideClick: false,
+//           confirmButtonText: 'OK'
+//         }).then(async () => {
+//           await fetch('/users/logout');
+//           window.location.href = '/auth/signin';
+//         });
+//       }
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   }, 5000);
 
 // });
 
 
 
 
-
-
-
-
-
-
-
+//////////////////////                                                   its currct code 
 
 
 
@@ -1972,104 +2147,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
-
-// document.addEventListener("DOMContentLoaded", () => {
-//   const qtyInput = document.getElementById("orderQty");
-//   const decreaseBtn = document.getElementById("decreaseQty");
-//   const increaseBtn = document.getElementById("increaseQty");
-//   const addBtn = document.getElementById("addToCartBtn");
-//   const sizeBoxes = document.querySelectorAll(".size-box.available");
-
-//   const priceDisplay = document.getElementById("priceDisplay");
-//   const mrpDisplay = document.getElementById("mrpDisplay");
-//   const availableQtyText = document.getElementById("availableQty");
-
-//   const HARD_MAX = 8;
-//   let selectedSize = null;
-
-//   // Offer percentage sent from server
-//   const OFFER_PERCENT = Number("<%= offer ? offer.offerPercentage : 0 %>");
-
-//   sizeBoxes.forEach(box => {
-//     box.addEventListener("click", () => {
-//       sizeBoxes.forEach(b => b.classList.remove("selected", "border-green-700"));
-//       box.classList.add("selected", "border-green-700");
-//       selectedSize = box.dataset.size;
-
-//       const price = parseInt(box.dataset.price);
-//       const qty = parseInt(box.dataset.quantity);
-
-//       // Apply offer
-//       let finalPrice = price;
-//       if(OFFER_PERCENT > 0){
-//         finalPrice = Math.floor(price - (price * OFFER_PERCENT / 100));
-//         mrpDisplay.innerText = "₹" + price;
-//         mrpDisplay.style.display = "inline-block";
-//       } else {
-//         mrpDisplay.style.display = "none";
-//       }
-
-//       priceDisplay.innerText = "₹" + finalPrice;
-//       availableQtyText.innerText = `Available: ${qty} items`;
-
-//       qtyInput.max = Math.min(HARD_MAX, qty);
-//       qtyInput.value = qtyInput.max > 0 ? 1 : 0;
-//     });
-//   });
-
-//   if(sizeBoxes[0]) sizeBoxes[0].click();
-
-//   decreaseBtn?.addEventListener("click", () => {
-//     let current = parseInt(qtyInput.value) || 1;
-//     if(current > 1) qtyInput.value = current - 1;
-//   });
-
-//   increaseBtn?.addEventListener("click", () => {
-//     let current = parseInt(qtyInput.value) || 1;
-//     const maxStock = parseInt(qtyInput.max) || HARD_MAX;
-//     if(current < maxStock && current < HARD_MAX) qtyInput.value = current + 1;
-//     else Swal.fire({ icon: 'warning', title: 'Limit', text: `Max ${Math.min(HARD_MAX, maxStock)} items!` });
-//   });
-
-//   addBtn?.addEventListener("click", async () => {
-//     const quantity = parseInt(qtyInput.value) || 1;
-//     if(addBtn.dataset.user !== "true"){
-//       Swal.fire({ icon: 'warning', title: 'Login Required', text: 'Please login first!' })
-//         .then(() => window.location.href = '/signin');
-//       return;
-//     }
-
-//     if(!selectedSize){
-//       Swal.fire({ icon: 'warning', title: 'Select Size', text: 'Please select a size!' });
-//       return;
-//     }
-
-//     const pricePerUnit = parseInt(priceDisplay.innerText.replace("₹","")) || 0;
-
-//     try {
-//       const res = await fetch('/cart/add', {
-//         method: 'POST',
-//         headers: {'Content-Type':'application/json'},
-//         body: JSON.stringify({ 
-//           productId: addBtn.dataset.id, 
-//           qty: quantity, 
-//           size: selectedSize,
-//           pricePerUnit
-//         })
-//       });
-//       const data = await res.json();
-//       if(data.success){
-//         Swal.fire({ icon:'success', title:'Added!', text:'Product added to cart', timer:1500 });
-//         qtyInput.value = 1;
-//       } else {
-//         Swal.fire({ icon:'error', title:'Oops...', text:data.message });
-//       }
-//     } catch(err){
-//       Swal.fire({ icon:'error', title:'Server Error', text:'Try again later.' });
-//     }
-//   });
-// });
 
 
 

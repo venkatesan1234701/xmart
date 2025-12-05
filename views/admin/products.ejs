@@ -855,12 +855,12 @@ const searchInput = document.getElementById("searchInput");
       tableBody.innerHTML = "";
 
       if (products.length === 0) {
-        Swal.fire({
-          icon: "info",
-          title: "No matching product found!",
-          timer: 2000,
-          showConfirmButton: false
-        });
+        // Swal.fire({
+        //   icon: "info",
+        //   title: "No matching product found!",
+        //   timer: 2000,
+        //   showConfirmButton: false
+        // });
         return;
       }
 
@@ -1227,74 +1227,212 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ================= FORM SUBMIT WITH VALIDATION =================
+  // productForm.addEventListener("submit", async (e) => {
+  //   e.preventDefault();
+  //   errorMsg.classList.add("hidden");
+  //   let errors = [];
+
+  //   // Category validation
+  //   if (!category.value) errors.push("Please select a category.");
+
+  //   // Product Name
+  //   if (!productName.value.trim()) errors.push("Please enter product name.");
+
+  //   // Description
+  //   if (!description.value.trim()) errors.push("Please enter product description.");
+
+  //   // Images validation (at least 3)
+  //   let imagesSelected = Array.from(imageInputs).filter(inp => inp.files.length > 0 || inp.closest('div').querySelector('img').src);
+  //   if (imagesSelected.length < 3) errors.push("Please select all 3 images.");
+
+  //   // Size validation
+  //   let variants = [];
+  //   sizeRows.forEach(row => {
+  //     const checkbox = row.querySelector(".size-checkbox");
+  //     const price = row.querySelector(".sizePrice");
+  //     const qty = row.querySelector(".sizeQty");
+
+  //     if(checkbox.checked){
+  //       if (!price.value || price.value <= 0) errors.push(`Enter valid price for size ${checkbox.value}`);
+  //       if (!qty.value || qty.value <= 0) errors.push(`Enter valid quantity for size ${checkbox.value}`);
+  //       variants.push({ size: checkbox.value, price: Number(price.value), qty: Number(qty.value) });
+  //     }
+  //   });
+
+  //   if(variants.length === 0) errors.push("Please select at least one size with price and quantity.");
+
+  //   // Show errors
+  //   if(errors.length > 0){
+  //     errorMsg.innerHTML = errors.join("<br>");
+  //     errorMsg.classList.remove("hidden");
+  //     return;
+  //   }
+
+  //   // Fill hidden input for variants
+  //   variantsInput.value = JSON.stringify(variants);
+
+  //   // Append sizes/prices/quantities to FormData for server
+  //   const formData = new FormData(productForm);
+  //   variants.forEach((v, i) => {
+  //     formData.append("sizes[]", v.size);
+  //     formData.append("prices[]", v.price);
+  //     formData.append("quantities[]", v.qty);
+  //   });
+
+  //   try {
+  //     const res = await fetch(productForm.action, {
+  //       method: "POST",
+  //       body: formData
+  //     });
+  //     const data = await res.json();
+  //     if(data.success){
+  //       Swal.fire("Success", data.message, "success").then(()=> window.location.reload());
+  //     } else {
+  //       Swal.fire("Error", data.message, "error");
+  //     }
+  //   } catch(err){
+  //     Swal.fire("Error", "Server Error", "error");
+  //     console.error(err);
+  //   }
+  // });
+
+
+
   productForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    errorMsg.classList.add("hidden");
-    let errors = [];
+  e.preventDefault();
+  errorMsg.classList.add("hidden");
+  let errors = [];
 
-    // Category validation
-    if (!category.value) errors.push("Please select a category.");
+  // Category validation
+  if (!category.value) errors.push("Please select a category.");
 
-    // Product Name
-    if (!productName.value.trim()) errors.push("Please enter product name.");
+  // ==========================
+  // PRODUCT NAME VALIDATION
+  // ==========================
+  // const nameValue = productName.value.trim();
 
-    // Description
-    if (!description.value.trim()) errors.push("Please enter product description.");
+// PRODUCT NAME VALIDATION
+const nameValue = productName.value.trim();
 
-    // Images validation (at least 3)
-    let imagesSelected = Array.from(imageInputs).filter(inp => inp.files.length > 0 || inp.closest('div').querySelector('img').src);
-    if (imagesSelected.length < 3) errors.push("Please select all 3 images.");
+if (!nameValue) {
+  errors.push("Please enter product name.");
+} else {
 
-    // Size validation
-    let variants = [];
-    sizeRows.forEach(row => {
-      const checkbox = row.querySelector(".size-checkbox");
-      const price = row.querySelector(".sizePrice");
-      const qty = row.querySelector(".sizeQty");
+  // Word count check
+  const nameWords = nameValue.split(/\s+/).filter(w => w).length;
 
-      if(checkbox.checked){
-        if (!price.value || price.value <= 0) errors.push(`Enter valid price for size ${checkbox.value}`);
-        if (!qty.value || qty.value <= 0) errors.push(`Enter valid quantity for size ${checkbox.value}`);
-        variants.push({ size: checkbox.value, price: Number(price.value), qty: Number(qty.value) });
-      }
-    });
+  if (nameWords > 25) {
+    errors.push("Product name cannot exceed 25 words.");
+  }
+}
 
-    if(variants.length === 0) errors.push("Please select at least one size with price and quantity.");
 
-    // Show errors
-    if(errors.length > 0){
-      errorMsg.innerHTML = errors.join("<br>");
-      errorMsg.classList.remove("hidden");
-      return;
+  // ==========================
+  // DESCRIPTION VALIDATION
+  // ==========================
+  if (!description.value.trim()) {
+    errors.push("Please enter product description.");
+  } else {
+    const descText = description.value.trim();
+
+    const wordCount = descText.split(/\s+/).filter(w => w.length > 0).length;
+    if (wordCount > 50) {
+      errors.push("Description cannot exceed 50 words.");
     }
 
-    // Fill hidden input for variants
-    variantsInput.value = JSON.stringify(variants);
+    if (descText.length > 130) {
+      errors.push("Description cannot exceed 130 characters.");
+    }
+  }
 
-    // Append sizes/prices/quantities to FormData for server
-    const formData = new FormData(productForm);
-    variants.forEach((v, i) => {
-      formData.append("sizes[]", v.size);
-      formData.append("prices[]", v.price);
-      formData.append("quantities[]", v.qty);
-    });
+  // ==========================
+  // IMAGES VALIDATION
+  // ==========================
+  let imagesSelected = Array.from(imageInputs).filter(
+    (inp) => inp.files.length > 0 || inp.closest("div").querySelector("img").src
+  );
+  if (imagesSelected.length < 3) errors.push("Please select all 3 images.");
 
-    try {
-      const res = await fetch(productForm.action, {
-        method: "POST",
-        body: formData
-      });
-      const data = await res.json();
-      if(data.success){
-        Swal.fire("Success", data.message, "success").then(()=> window.location.reload());
-      } else {
-        Swal.fire("Error", data.message, "error");
+  // ==========================
+  // SIZE + PRICE + QTY VALIDATION
+  // ==========================
+  let variants = [];
+
+  sizeRows.forEach((row) => {
+    const checkbox = row.querySelector(".size-checkbox");
+    const price = row.querySelector(".sizePrice");
+    const qty = row.querySelector(".sizeQty");
+
+    if (checkbox.checked) {
+
+      // PRICE VALIDATION
+      if (!price.value || price.value <= 0) {
+        errors.push(`Enter valid price for size ${checkbox.value}`);
+      } else if (price.value.length > 7) {
+        errors.push(`Price for size ${checkbox.value} cannot exceed 7 digits.`);
       }
-    } catch(err){
-      Swal.fire("Error", "Server Error", "error");
-      console.error(err);
+
+      // QTY VALIDATION
+      if (!qty.value || qty.value <= 0) {
+        errors.push(`Enter valid quantity for size ${checkbox.value}`);
+      } else if (qty.value.length > 7) {
+        errors.push(`Quantity for size ${checkbox.value} cannot exceed 7 digits.`);
+      }
+
+      variants.push({
+        size: checkbox.value,
+        price: Number(price.value),
+        qty: Number(qty.value),
+      });
     }
   });
+
+  if (variants.length === 0) {
+    errors.push("Please select at least one size with price and quantity.");
+  }
+
+  // ==========================
+  // ERROR DISPLAY
+  // ==========================
+  if (errors.length > 0) {
+    errorMsg.innerHTML = errors.join("<br>");
+    errorMsg.classList.remove("hidden");
+    return;
+  }
+
+  // Fill hidden input
+  variantsInput.value = JSON.stringify(variants);
+
+  // Prepare formData
+  const formData = new FormData(productForm);
+  variants.forEach((v) => {
+    formData.append("sizes[]", v.size);
+    formData.append("prices[]", v.price);
+    formData.append("quantities[]", v.qty);
+  });
+
+  try {
+    const res = await fetch(productForm.action, {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      Swal.fire("Success", data.message, "success").then(() =>
+        window.location.reload()
+      );
+    } else {
+      Swal.fire("Error", data.message, "error");
+    }
+  } catch (err) {
+    Swal.fire("Error", "Server Error", "error");
+    console.error(err);
+  }
+});
+
+
 
   // Optional: Remove size row
   document.querySelectorAll(".removeSizeBtn").forEach(btn => {

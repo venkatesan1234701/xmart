@@ -41,62 +41,6 @@ async function renderSignInPage(req, res, next) {
 }
 
 
-// const getOrdersSummary = async (req, res) => {
-//   try {
-//     const timeframe = req.query.timeframe || 'week';
-//     const now = new Date();
-//     let startDate;
-
-//     if (timeframe === 'week') {
-//       const firstDayOfWeek = now.getDate() - now.getDay();
-//       startDate = new Date(now.getFullYear(), now.getMonth(), firstDayOfWeek);
-//     } else if (timeframe === 'month') {
-//       startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-//     } else if (timeframe === 'year') {
-//       startDate = new Date(now.getFullYear(), 0, 1);
-//     }
-
-//     const orders = await Order.find({ createdAt: { $gte: startDate, $lte: now } }).lean();
-
-//     const ordersByStatus = {
-//       Delivered: orders.filter(o => o.orderStatus === 'Delivered').length,
-//       Returned: orders.filter(o => o.orderStatus === 'Returned').length,
-//       Cancelled: orders.filter(o => o.orderStatus === 'Cancelled').length,
-//       Pending: orders.filter(o => o.orderStatus === 'Pending').length
-//     };
-
-//     const labels = [];
-//     const revenuePerDay = [];
-
-//     const current = new Date(startDate);
-//     current.setHours(0,0,0,0)
-
-//     while (current <= now) {
-//       const dayStart = new Date(current);
-//       const dayEnd = new Date(current);
-//       dayEnd.setHours(23,59,59,999);
-
-//       const dayOrders = orders.filter(o => {
-//         const created = new Date(o.createdAt);
-//         return created >= dayStart && created <= dayEnd;
-//       });
-
-//       const dayRevenue = dayOrders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
-
-//       labels.push(`${dayStart.getDate()}/${dayStart.getMonth() + 1}`);
-//       revenuePerDay.push(dayRevenue);
-
-//       current.setDate(current.getDate() + 1);
-//     }
-
-//     res.json({ labels, revenuePerDay, ordersByStatus });
-
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: 'Server error' });
-//   }
-// }
-
 
 
 
@@ -106,31 +50,28 @@ const getOrdersSummary = async (req, res) => {
     const timeframe = req.query.timeframe || 'week';
 
     const now = new Date();
-    now.setHours(23, 59, 59, 999)
+    now.setHours(23, 59, 59, 999);
 
     let startDate = new Date();
-    startDate.setHours(0, 0, 0, 0)
+    startDate.setHours(0, 0, 0, 0);
 
     if (req.query.start && req.query.end) {
-      startDate = new Date(req.query.start)
-      startDate.setHours(0, 0, 0, 0)
-
-      now.setTime(new Date(req.query.end).setHours(23, 59, 59, 999))
-    } 
-    else {
+      startDate = new Date(req.query.start);
+      startDate.setHours(0, 0, 0, 0);
+      now.setTime(new Date(req.query.end).setHours(23, 59, 59, 999));
+    } else {
       if (timeframe === "week") {
         startDate.setDate(now.getDate() - 6);
-      } 
-      else if (timeframe === "month") {
+      } else if (timeframe === "month") {
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-      } 
-      else if (timeframe === "year") {
+      } else if (timeframe === "year") {
         startDate = new Date(now.getFullYear(), 0, 1);
       }
     }
+
     const orders = await Order.find({
       createdAt: { $gte: startDate, $lte: now }
-    }).lean()
+    }).lean();
 
     const ordersByStatus = {
       Delivered: orders.filter(o => o.orderStatus === 'Delivered').length,
@@ -143,11 +84,7 @@ const getOrdersSummary = async (req, res) => {
     const revenuePerDay = [];
 
     if (timeframe === "year" && !req.query.start) {
-      const monthNames = [
-        "Jan","Feb","Mar","Apr","May","Jun",
-        "Jul","Aug","Sep","Oct","Nov","Dec"
-      ];
-
+      const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
       for (let m = 0; m < 12; m++) {
         const monthStart = new Date(now.getFullYear(), m, 1);
         const monthEnd = new Date(now.getFullYear(), m + 1, 0, 23, 59, 59);
@@ -157,18 +94,12 @@ const getOrdersSummary = async (req, res) => {
           return created >= monthStart && created <= monthEnd;
         });
 
-        const monthRevenue = monthOrders.reduce(
-          (sum, o) => sum + (o.grandTotal || 0),
-          0
-        );
-
+        const monthRevenue = monthOrders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
         labels.push(monthNames[m]);
         revenuePerDay.push(monthRevenue);
       }
-    } 
-    else {
+    } else {
       let current = new Date(startDate);
-
       while (current <= now) {
         const dayStart = new Date(current);
         const dayEnd = new Date(current);
@@ -179,10 +110,7 @@ const getOrdersSummary = async (req, res) => {
           return created >= dayStart && created <= dayEnd;
         });
 
-        const dayRevenue = dayOrders.reduce(
-          (sum, o) => sum + (o.grandTotal || 0),
-          0
-        );
+        const dayRevenue = dayOrders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
 
         labels.push(`${dayStart.getDate()}/${dayStart.getMonth() + 1}`);
         revenuePerDay.push(dayRevenue);
@@ -190,20 +118,146 @@ const getOrdersSummary = async (req, res) => {
         current.setDate(current.getDate() + 1);
       }
     }
+
+    const bestSellingProducts = await Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lte: now },
+          orderStatus: "Delivered"
+        }
+      },
+      { $unwind: "$products" },
+      {
+        $group: {
+          _id: "$products.productId",
+          totalSold: { $sum: "$products.quantity" },
+          price: { $first: "$products.pricePerUnit" },
+          name: { $first: "$products.name" },
+          selectedSize: { $first: "$products.selectedSize" }
+        }
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productData"
+        }
+      },
+      { $unwind: { path: "$productData", preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          selectedSize: 1,
+          price: 1,
+          totalSold: 1,
+          productImg: { $arrayElemAt: ["$productData.productPic", 0] },
+          fallbackName: { $ifNull: ["$productData.name", "$name"] },
+          fallbackPricesArray: { $ifNull: ["$productData.prices", []] }
+        }
+      },
+      { $sort: { totalSold: -1 } },
+      { $limit: 4 }
+    ]);
+
+    const normalizedBest = bestSellingProducts.map(p => {
+      let finalPrice = p.price;
+      if ((!finalPrice || finalPrice === 0) && Array.isArray(p.fallbackPricesArray) && p.fallbackPricesArray.length) {
+        const idx = p.selectedSize === 'S' ? 0 : p.selectedSize === 'L' ? 2 : 1;
+        finalPrice = p.fallbackPricesArray[idx] || p.fallbackPricesArray[0];
+      }
+      return {
+        _id: p._id,
+        name: p.fallbackName || p.name,
+        price: finalPrice || 0,
+        selectedSize: p.selectedSize || 'M',
+        totalSold: p.totalSold || 0,
+        productImg: p.productImg || null
+      };
+    })
+    const bestSellingCategory = await Order.aggregate([
+  
+  {
+    $match: {
+      createdAt: { $gte: startDate, $lte: now },
+      orderStatus: "Delivered"
+    }
+  },
+
+  { $unwind: "$products" },
+
+  {
+    $lookup: {
+      from: "products",
+      localField: "products.productId",
+      foreignField: "_id",
+      as: "prod"
+    }
+  },
+  { 
+    $unwind: { 
+      path: "$prod", 
+      preserveNullAndEmptyArrays: false 
+    }
+  },
+
+  {
+    $group: {
+      _id: "$prod.category",
+      totalSold: { $sum: "$products.quantity" },  
+      image: { $first: { $arrayElemAt: ["$prod.productPic", 0] } }
+    }
+  },
+
+  {
+    $lookup: {
+      from: "categories",
+      localField: "_id",
+      foreignField: "_id",
+      as: "cat"
+    }
+  },
+  { 
+    $unwind: { 
+      path: "$cat", 
+      preserveNullAndEmptyArrays: true 
+    }
+  },
+
+  {
+    $match: {
+      "cat.isDeleted": false,
+      "cat.isBlocked": false
+    }
+  },
+
+  {
+    $project: {
+      _id: 1,
+      categoryName: "$cat.name",
+      totalSold: 1,
+      categoryImage: "$image"
+    }
+  },
+
+  { $sort: { totalSold: -1 } },
+  { $limit: 4 }
+])
+
     res.json({
       labels,
       revenuePerDay,
-      ordersByStatus
+      ordersByStatus,
+      bestSellingProducts: normalizedBest,
+      bestSellingCategory
     });
 
   } catch (err) {
-    console.error(err);
+    console.error("getOrdersSummary error:", err);
     res.status(500).json({ error: "Server error" });
   }
-}
-
-
-
+};
 
 
 

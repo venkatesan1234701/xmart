@@ -1076,12 +1076,23 @@
 					<div class="grid lg:grid-cols-2 gap-8 mb-8">
 						<div class="">
 							<!-- card -->
-							
+		 <div class="mt-4">
+          <h3 class="font-semibold">Top Selling (Delivered)</h3>
+          <ul id="bestProductsList" class="mt-2 divide-y">
+            <!-- JS inserts items -->
+          </ul>
+        </div>
 						</div>
 						<div class="">
 							<div class="position-relative h-full">
 								<!-- card -->
-								
+<div class="bg-white mt-4 p-4 rounded shadow">
+  <h3 class="font-semibold text-lg mb-2">Top Selling Categories</h3>
+  <div id="bestCategoryBox"></div>
+</div>
+
+
+
 								<!-- card -->
 								
 							</div>
@@ -1110,8 +1121,8 @@
  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
-
-<!-- <script>
+<!-- 
+ <script>
 	
 const menuBtn = document.getElementById("downloadMenuBtn");
 const menu = document.getElementById("downloadMenu");
@@ -1339,8 +1350,415 @@ document.getElementById('dateFilterForm')?.addEventListener("submit", async (e) 
 </script>  -->
 
 
-
 <script>
+
+
+	const $ = id => document.getElementById(id);
+
+  // chart placeholders
+
+
+  function updateBestSellingProducts(listData) {
+    const ul = $('bestProductsList');
+    ul.innerHTML = '';
+    if (!listData || listData.length === 0) {
+      ul.innerHTML = '<li class="p-3 text-gray-500">No products sold in this range.</li>';
+      return;
+    }
+    listData.forEach(item => {
+      const imgSrc = item.productImg || '/images/placeholder.png';
+      const li = document.createElement('li');
+      li.className = 'flex items-center gap-3 p-3';
+      li.innerHTML = `
+        <img src="${imgSrc}" alt="${item.name}" class="w-14 h-14 object-cover rounded border" />
+        <div class="flex-1">
+          <div class="font-semibold">${item.name}</div>
+          <div class="text-sm text-gray-600">Size: ${item.selectedSize} • ₹${item.price}</div>
+        </div>
+        <div class="font-bold text-green-600">Sold: ${item.totalSold}</div>
+      `;
+      ul.appendChild(li);
+    });
+  }
+
+  function initCharts(data) {
+    const rCtx = $('revenueChart').getContext('2d');
+    revenueChart = new Chart(rCtx, {
+      type: 'line',
+      data: {
+        labels: data.labels,
+        datasets: [{
+          label: 'Revenue',
+          data: data.revenuePerDay,
+          borderColor: '#22c55e',
+          backgroundColor: 'rgba(34,197,94,0.2)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    });
+
+    const oCtx = $('ordersChart').getContext('2d');
+    ordersChart = new Chart(oCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Delivered','Returned','Cancelled','Pending'],
+        datasets: [{
+          data: [
+            data.ordersByStatus.Delivered || 0,
+            data.ordersByStatus.Returned || 0,
+            data.ordersByStatus.Cancelled || 0,
+            data.ordersByStatus.Pending || 0
+          ],
+          backgroundColor: ['#22c55e','#ef4444','#3b82f6','#facc15'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        cutout: "70%",
+        plugins: { legend: { position: 'bottom' }, centerText: { text: (data.ordersByStatus.Delivered || 0).toString() } }
+      },
+      plugins: [centerTextPlugin]
+    });
+
+    updateBestSellingProducts(data.bestSellingProducts);
+  }
+
+  function updateChartsOnData(data) {
+    if (!revenueChart) { initCharts(data); return; }
+
+    revenueChart.data.labels = data.labels;
+    revenueChart.data.datasets[0].data = data.revenuePerDay;
+    revenueChart.update();
+
+    ordersChart.data.datasets[0].data = [
+      data.ordersByStatus.Delivered || 0,
+      data.ordersByStatus.Returned || 0,
+      data.ordersByStatus.Cancelled || 0,
+      data.ordersByStatus.Pending || 0
+    ];
+    ordersChart.options.plugins.centerText.text = (data.ordersByStatus.Delivered || 0).toString();
+    ordersChart.update();
+
+    updateBestSellingProducts(data.bestSellingProducts);
+  }
+
+  // download menu
+  $('downloadMenuBtn').addEventListener('click', () => $('downloadMenu').classList.toggle('hidden'));
+  document.addEventListener('click', (e) => {
+    if (!$('downloadMenu').contains(e.target) && !$('downloadMenuBtn').contains(e.target)) {
+      $('downloadMenu').classList.add('hidden');
+    }
+  });
+  $('downloadMenu').querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const type = btn.dataset.type;
+      if (!revenueChart) return alert('Chart not ready');
+      if (type === 'png') {
+        const link = document.createElement('a');
+        link.href = revenueChart.toBase64Image();
+        link.download = 'RevenueChart.png';
+        link.click();
+      } else if (type === 'pdf') {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('landscape');
+        const img = revenueChart.toBase64Image();
+        pdf.setFontSize(18);
+        pdf.text('Revenue Chart', 14, 20);
+        pdf.addImage(img, 'PNG', 10, 30, 270, 120);
+        pdf.save('RevenueChart.pdf');
+      }
+      $('downloadMenu').classList.add('hidden');
+    });
+  });
+
+  async function fetchSummary(params = {}) {
+    const qs = new URLSearchParams(params).toString();
+    const url = `/admin/orders-summary${qs ? '?' + qs : ''}`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Network response not ok');
+      const data = await res.json();
+      updateChartsOnData(data);
+    } catch (err) {
+      console.error('Fetch error', err);
+      alert('Failed to load dashboard data. Check console.');
+    }
+  }
+
+  // initial load
+  fetchSummary();
+
+  // timeframe change
+  $('revenueFilter').addEventListener('change', () => {
+    $('startDate').value = '';
+    $('endDate').value = '';
+    fetchSummary({ timeframe: $('revenueFilter').value });
+  });
+
+  // date form
+  $('dateFilterForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const s = $('startDate').value;
+    const eD = $('endDate').value;
+    if (!s || !eD) return alert('Please pick start & end date');
+    fetchSummary({ start: s, end: eD });
+  });
+// --------------------------------------------------
+// CENTER TEXT PLUGIN FOR DOUGHNUT
+// --------------------------------------------------
+const centerTextPlugin = {
+  id: "centerText",
+  beforeDraw(chart, args, options) {
+    const { ctx, chartArea } = chart;
+    if (!chartArea) return;
+
+    const width = chartArea.width;
+    const height = chartArea.height;
+
+    ctx.save();
+    ctx.font = "bold 26px sans-serif";
+    ctx.fillStyle = "#000";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(options.text, width / 2, height / 2);
+    ctx.restore();
+  }
+};
+
+
+
+function updateBestSellingCategory(data) {
+  const box = document.getElementById("bestCategoryBox");
+  box.innerHTML = "";
+
+  if (!data || data.length === 0) {
+    box.innerHTML = `<div class="p-3 text-gray-500">No category data</div>`;
+    return;
+  }
+
+  data.forEach(cat => {
+    box.innerHTML += `
+      <div class="flex items-center gap-3 p-3 border-b">
+        <img src="${cat.categoryImage || '/images/placeholder.png'}"
+             class="w-12 h-12 rounded object-cover border" />
+
+        <div class="flex-1">
+          <p class="font-semibold">${cat.categoryName}</p>
+          <p class="text-sm text-gray-600">Sold: ${cat.totalSold}</p>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function updateChartsOnData(data) {
+
+  revenueChart.data.labels = data.labels;
+  revenueChart.data.datasets[0].data = data.revenuePerDay;
+  revenueChart.update();
+
+  ordersChart.data.datasets[0].data = [
+    data.ordersByStatus.Delivered,
+    data.ordersByStatus.Returned,
+    data.ordersByStatus.Cancelled,
+    data.ordersByStatus.Pending
+  ];
+  ordersChart.options.plugins.centerText.text = data.ordersByStatus.Delivered;
+  ordersChart.update();
+
+  updateBestSellingProducts(data.bestSellingProducts);  
+  updateBestSellingCategory(data.bestSellingCategory);  
+}
+
+
+
+
+// --------------------------------------------------
+// DROPDOWN DOWNLOAD MENU
+// --------------------------------------------------
+const menuBtn = document.getElementById("downloadMenuBtn");
+const menu = document.getElementById("downloadMenu");
+
+menuBtn.addEventListener("click", () => {
+  menu.classList.toggle("hidden");
+});
+
+document.addEventListener("click", (e) => {
+  if (!menu.contains(e.target) && !menuBtn.contains(e.target)) {
+    menu.classList.add("hidden");
+  }
+});
+
+menu.querySelectorAll("button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const type = btn.dataset.type;
+
+    if (type === "png") {
+      const link = document.createElement('a');
+      link.href = revenueChart.toBase64Image();
+      link.download = 'RevenueChart.png';
+      link.click();
+    }
+
+    if (type === "pdf") {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("landscape");
+      const img = revenueChart.toBase64Image();
+
+      pdf.setFontSize(18);
+      pdf.text("Revenue Chart", 14, 20);
+      pdf.addImage(img, "PNG", 10, 30, 270, 120);
+
+      pdf.save("RevenueChart.pdf");
+    }
+
+    menu.classList.add("hidden");
+  });
+});
+
+
+// --------------------------------------------------
+// BACKEND DATA FROM EJS
+// --------------------------------------------------
+const labels = JSON.parse('<%- JSON.stringify(labels || []) %>');
+const revenueData = JSON.parse('<%- JSON.stringify(revenuePerDay || []) %>');
+const ordersData = JSON.parse('<%- JSON.stringify(ordersByStatus || {}) %>');
+
+
+// --------------------------------------------------
+// REVENUE CHART
+// --------------------------------------------------
+const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+
+const revenueChart = new Chart(revenueCtx, {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [{
+      label: 'Revenue',
+      data: revenueData,
+      borderColor: '#22c55e',
+      backgroundColor: 'rgba(34,197,94,0.2)',
+      fill: true,
+      tension: 0.3
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: { y: { beginAtZero: true } }
+  }
+});
+
+
+// --------------------------------------------------
+// ORDERS DOUGHNUT CHART
+// --------------------------------------------------
+const ordersCtx = document.getElementById('ordersChart').getContext('2d');
+
+const ordersChart = new Chart(ordersCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Delivered', 'Returned', 'Cancelled', 'Pending'],
+    datasets: [{
+      data: [
+        ordersData.Delivered || 0,
+        ordersData.Returned || 0,
+        ordersData.Cancelled || 0,
+        ordersData.Pending || 0
+      ],
+      backgroundColor: ['#22c55e','#ef4444','#3b82f6','#facc15'],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: "70%",
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: { enabled: true },
+      centerText: {
+        text: (ordersData.Delivered || 0).toString()
+      }
+    }
+  },
+  plugins: [centerTextPlugin]
+});
+
+
+// --------------------------------------------------
+// ✔ FUNCTION TO UPDATE ORDERS CHART DYNAMICALLY
+// --------------------------------------------------
+function updateOrdersChart(newData) {
+  ordersChart.data.datasets[0].data = [
+    newData.Delivered,
+    newData.Returned,
+    newData.Cancelled,
+    newData.Pending
+  ];
+
+  ordersChart.options.plugins.centerText.text =
+    newData.Delivered.toString();
+
+  ordersChart.update();
+}
+
+
+// --------------------------------------------------
+// TIMEFRAME FILTER UPDATE (Daily, Monthly, Weekly)
+// --------------------------------------------------
+document.getElementById('revenueFilter').addEventListener('change', updateCharts);
+
+async function updateCharts() {
+  const timeframe = document.getElementById('revenueFilter').value;
+
+  try {
+    const res = await fetch(`/admin/orders-summary?timeframe=${timeframe}`);
+    const data = await res.json();
+
+    revenueChart.data.labels = data.labels;
+    revenueChart.data.datasets[0].data = data.revenuePerDay;
+    revenueChart.update();
+
+    updateOrdersChart(data.ordersByStatus);
+
+  } catch (err) {
+    console.error("Error Updating Chart:", err);
+  }
+}
+
+
+// --------------------------------------------------
+// DATE FILTER UPDATE (Start - End)
+// --------------------------------------------------
+document.getElementById('dateFilterForm')?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const start = document.getElementById("startDate").value;
+  const end = document.getElementById("endDate").value;
+
+  if (!start || !end) {
+    alert("Please select both dates");
+    return;
+  }
+
+  const res = await fetch(`/admin/orders-summary?start=${start}&end=${end}`);
+  const data = await res.json();
+
+  revenueChart.data.labels = data.labels;
+  revenueChart.data.datasets[0].data = data.revenuePerDay;
+  revenueChart.update();
+
+  updateOrdersChart(data.ordersByStatus);
+});
+
+</script>
+
+
+
+<!-- <script>
 
 const centerTextPlugin = {
   id: "centerText",
@@ -1534,7 +1952,7 @@ document.getElementById('dateFilterForm')?.addEventListener("submit", async (e) 
   ordersChart.update();
 });
 
-</script>
+</script> -->
 
 
 </body>

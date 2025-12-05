@@ -651,11 +651,11 @@ async function performSearch(query) {
       resultsTbody.innerHTML = html;
     } else {
       resultsTbody.innerHTML = "";
-      Swal.fire({
-        icon: "error",
-        title: "User not found",
-        text: `No customers matched "${query}"`,
-      });
+      // Swal.fire({
+      //   icon: "error",
+      //   title: "User not found",
+      //   text: `No customers matched "${query}"`,
+      // });
     }
   } catch (err) {
     console.error(err);

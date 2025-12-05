@@ -362,16 +362,16 @@
         <div class="modal-body">
           <form id="couponForm" class="row g-3">
             <div class="col-12">
-              <input id="couponCode" type="text" class="form-control" placeholder="Coupon Code" required>
+              <input id="couponCode" type="text" class="form-control" placeholder="Coupon Code" >
             </div>
             <div class="col-12">
-              <input id="discountPercentage" type="number" class="form-control" placeholder="Discount %" min="1" max="100" required>
+              <input id="discountPercentage" type="number" class="form-control" placeholder="Discount %" min="1" max="100" >
             </div>
             <div class="col-12">
-              <input id="minimumPurchase" type="number" class="form-control" placeholder="Minimum Purchase (₹)" required>
+              <input id="minimumPurchase" type="number" class="form-control" placeholder="Minimum Purchase (₹)" >
             </div>
             <div class="col-12">
-              <input id="maximumDiscount" type="number" class="form-control" placeholder="Maximum Discount (₹)" required>
+              <input id="maximumDiscount" type="number" class="form-control" placeholder="Maximum Discount (₹)" >
             </div>
             <div class="col-12">
               <input id="couponStartDate" type="date" class="form-control">
@@ -411,7 +411,15 @@
             <input id="couponCode" type="text" class="form-control" placeholder="Coupon Code">
           </div>
           <div class="col-12">
-            <input id="discountPercentage" type="number" class="form-control" placeholder="Discount %" min="1" max="100">
+            <!-- <input id="discountPercentage" type="number" class="form-control" placeholder="Discount %" min="1" max="100">
+              -->
+            <input id="discountPercentage" 
+       type="number" 
+       class="form-control" 
+       placeholder="Discount %" 
+       min="1" 
+       max="100">
+
           </div>
           <div class="col-12">
             <input id="minimumPurchase" type="number" class="form-control" placeholder="Minimum Purchase (₹)">
@@ -656,30 +664,120 @@
       currentStatus: document.getElementById("currentStatus").value,
     };
 
-    if (!data.couponCode) {
-      return Swal.fire("Validation Error", "Coupon Code cannot be empty", "warning");
-    }
+    // if (!data.couponCode) {
+    //   return Swal.fire("Validation Error", "Coupon Code cannot be empty", "warning");
+    // }
 
-    if (!data.discountPercentage) {
-      return Swal.fire("Validation Error", "Discount % is required", "warning");
-    }
-    if (data.discountPercentage < 1 || data.discountPercentage > 100) {
-      return Swal.fire("Validation Error", "Discount must be between 1% and 100%", "warning");
-    }
+    // if (!data.discountPercentage) {
+    //   return Swal.fire("Validation Error", "Discount % is required", "warning");
+    // }
+    // if (data.discountPercentage < 1 || data.discountPercentage > 100) {
+    //   return Swal.fire("Validation Error", "Discount must be between 1% and 100%", "warning");
+    // }
 
-    if (!data.minimumPurchase) {
-      return Swal.fire("Validation Error", "Minimum Purchase is required", "warning");
-    }
-    if (isNaN(data.minimumPurchase) || data.minimumPurchase < 0) {
-      return Swal.fire("Validation Error", "Minimum Purchase must be a valid number", "warning");
-    }
+    // if (!data.minimumPurchase) {
+    //   return Swal.fire("Validation Error", "Minimum Purchase is required", "warning");
+    // }
+    // if (isNaN(data.minimumPurchase) || data.minimumPurchase < 0) {
+    //   return Swal.fire("Validation Error", "Minimum Purchase must be a valid number", "warning");
+    // }
 
-    if (!data.maximumDiscount) {
-      return Swal.fire("Validation Error", "Maximum Discount is required", "warning");
-    }
-    if (isNaN(data.maximumDiscount) || data.maximumDiscount < 0) {
-      return Swal.fire("Validation Error", "Maximum Discount must be a valid number", "warning");
-    }
+    // if (!data.maximumDiscount) {
+    //   return Swal.fire("Validation Error", "Maximum Discount is required", "warning");
+    // }
+    // if (isNaN(data.maximumDiscount) || data.maximumDiscount < 0) {
+    //   return Swal.fire("Validation Error", "Maximum Discount must be a valid number", "warning");
+    // }
+
+
+    // ====================
+// COUPON CODE
+// ====================
+if (!data.couponCode) {
+  return Swal.fire("Validation Error", "Coupon Code cannot be empty", "warning");
+}
+
+// Max 13 characters
+if (data.couponCode.length > 13) {
+  return Swal.fire(
+    "Validation Error",
+    "Coupon Code cannot exceed 13 characters",
+    "warning"
+  );
+}
+
+
+
+// ====================
+// DISCOUNT PERCENTAGE
+// ====================
+if (!data.discountPercentage) {
+  return Swal.fire("Validation Error", "Discount % is required", "warning");
+}
+
+// Must be a number
+if (isNaN(data.discountPercentage)) {
+  return Swal.fire("Validation Error", "Discount must be a valid number", "warning");
+}
+
+// Only **2 digits allowed** (0–99)
+if (data.discountPercentage.toString().length > 2) {
+  return Swal.fire(
+    "Validation Error",
+    "Discount percentage cannot exceed 2 digits",
+    "warning"
+  );
+}
+
+// Must be between 1 and 100
+if (data.discountPercentage < 1 || data.discountPercentage > 100) {
+  return Swal.fire("Validation Error", "Discount must be between 1% and 100%", "warning");
+}
+
+
+
+// ====================
+// MINIMUM PURCHASE
+// ====================
+if (!data.minimumPurchase) {
+  return Swal.fire("Validation Error", "Minimum Purchase is required", "warning");
+}
+
+if (isNaN(data.minimumPurchase) || data.minimumPurchase < 0) {
+  return Swal.fire("Validation Error", "Minimum Purchase must be a valid number", "warning");
+}
+
+// Max **7 digits** allowed
+if (data.minimumPurchase.toString().length > 7) {
+  return Swal.fire(
+    "Validation Error",
+    "Minimum Purchase cannot exceed 7 digits",
+    "warning"
+  );
+}
+
+
+
+// ====================
+// MAXIMUM DISCOUNT
+// ====================
+if (!data.maximumDiscount) {
+  return Swal.fire("Validation Error", "Maximum Discount is required", "warning");
+}
+
+if (isNaN(data.maximumDiscount) || data.maximumDiscount < 0) {
+  return Swal.fire("Validation Error", "Maximum Discount must be a valid number", "warning");
+}
+
+// Max **6 digits** allowed
+if (data.maximumDiscount.toString().length > 6) {
+  return Swal.fire(
+    "Validation Error",
+    "Maximum Discount cannot exceed 6 digits",
+    "warning"
+  );
+}
+
   
 
     const url = editMode ? `/admin/coupons/edit/${editingId}` : `/admin/coupons/add`;

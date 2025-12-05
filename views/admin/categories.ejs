@@ -1234,11 +1234,11 @@ document.querySelectorAll('.toggleCategoryBtn').forEach(btn => {
         document.querySelectorAll("#categoryResults tr").forEach(row => attachRowEvents(row));
       } else {
         catResults.innerHTML = "";
-        Swal.fire({
-          icon: "error",
-          title: "Category not found",
-          text: `No categories matched "${query}"`,
-        });
+        // Swal.fire({
+        //   icon: "error",
+        //   title: "Category not found",
+        //   text: `No categories matched "${query}"`,
+        // });
       }
     } catch (err) {
       console.error(err);
@@ -1382,35 +1382,65 @@ categoryForm.addEventListener("submit", async e => {
   });
 
   // ===== Edit Category =====
-  editForm.addEventListener("submit", async e => {
-    e.preventDefault();
-    const id = editId.value.trim();
-    const name = editName.value.trim();
-    const description = editDescription.value.trim();
-    if (!name || name.length < 3 || !description || description.length < 5) {
-      Swal.fire(' Error', 'Please provide valid name and description.', 'warning');
-      return;
+// ===== Edit Category =====
+editForm.addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const id = editId.value.trim();
+  const name = editName.value.trim();
+  const description = editDescription.value.trim();
+
+  // --- NAME VALIDATION ---
+  if (!name || name.length < 3) {
+    Swal.fire('Error', 'Name must be at least 3 characters.', 'warning');
+    return;
+  }
+
+  // ⭐ 15 CHARACTER LIMIT FOR NAME
+  if (name.length > 15) {
+    Swal.fire('Error', 'Name should not exceed 15 characters.', 'warning');
+    return;
+  }
+
+  // --- DESCRIPTION VALIDATION ---
+  if (!description || description.length < 5) {
+    Swal.fire('Error', 'Description must be at least 5 characters.', 'warning');
+    return;
+  }
+
+  // ⭐ 100 CHARACTER LIMIT FOR DESCRIPTION
+  if (description.length > 180) {
+    Swal.fire(
+      'Error',
+      `Description should not exceed 180 characters. (Now: ${description.length})`,
+      'warning'
+    );
+    return;
+  }
+
+  try {
+    const res = await fetch(`/admin/categories/edit/${id}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, description })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      const row = document.getElementById(`row-${id}`);
+      row.children[1].innerText = name;
+      row.children[2].innerText = description;
+
+      editModal.classList.add("hidden");
+      Swal.fire('Success', 'Category updated successfully!', 'success');
+    } else {
+      Swal.fire('Error', data.message, 'error');
     }
-    try {
-      const res = await fetch(`/admin/categories/edit/${id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, description })
-      });
-      const data = await res.json();
-      if (data.success) {
-        const row = document.getElementById(`row-${id}`);
-        row.children[1].innerText = name;
-        row.children[2].innerText = description;
-        editModal.classList.add("hidden");
-        Swal.fire(' Success', 'Category updated successfully!', 'success');
-      } else {
-        Swal.fire(' Error', data.message, 'error');
-      }
-    } catch (err) {
-      Swal.fire(' Error', 'Server error, please try again.', 'error');
-    }
-  });
+  } catch (err) {
+    Swal.fire('Error', 'Server error, please try again.', 'error');
+  }
+});
 
 });
 </script>

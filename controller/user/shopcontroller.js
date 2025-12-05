@@ -268,14 +268,36 @@ const addToCart = async (req, res) => {
       p.productId.toString() === productId && p.selectedSize === size
     );
 
+    // if (existingProduct) {
+    //   const newQty = existingProduct.quantity + quantity;
+    //   if (newQty > availableQty) {
+    //     return res.json({ success: false, message: `Only ${availableQty} items available` });
+    //   }
+    //   existingProduct.quantity = newQty;
+    //   existingProduct.pricePerUnit = unitPrice;
+
     if (existingProduct) {
-      const newQty = existingProduct.quantity + quantity;
-      if (newQty > availableQty) {
-        return res.json({ success: false, message: `Only ${availableQty} items available` });
-      }
-      existingProduct.quantity = newQty;
-      existingProduct.pricePerUnit = unitPrice;
-    } else {
+  const newQty = existingProduct.quantity + quantity;
+
+  if (existingProduct.quantity >= 8) {
+    return res.json({ success: false, message: "You already have maximum 8 quantity in cart!" });
+  }
+  if (newQty > 8) {
+    return res.json({
+      success: false,
+      message: `Only ${8 - existingProduct.quantity} more items can be added`
+    });
+  }
+  if (newQty > availableQty) {
+    return res.json({
+      success: false,
+      message: `Only ${availableQty} items available`
+    });
+  }
+  existingProduct.quantity = newQty;
+  existingProduct.pricePerUnit = unitPrice;
+}
+    else {
       cart.products.push({
         productId: product._id,
         quantity,

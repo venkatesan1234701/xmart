@@ -1120,13 +1120,13 @@
     value="Cash on Delivery" 
     id="cod"
     class="w-4 h-4 text-green-600 border-gray-300 rounded-full"
-    <%= grandTotal > 5000 ? 'disabled' : '' %>
+    <%= grandTotal > 4000 ? 'disabled' : '' %>
   />
   <label for="cod" class="flex flex-col">
     <span class="font-semibold">Cash on Delivery</span>
     <span class="text-sm text-gray-500">
-      <% if (grandTotal > 6000) { %>
-        ❌ Not available for orders above ₹6000.
+      <% if (grandTotal > 4000) { %>
+        ❌ Not available for orders above ₹4000.
       <% } else { %>
         Pay when you receive your order.
       <% } %>
