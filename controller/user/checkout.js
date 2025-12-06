@@ -587,103 +587,145 @@ const razorpayInstance = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
+// const returnOrderItem = async (req, res) => {
+//   try {
+//     const { orderId } = req.params;
+//     const { productId, selectedSize } = req.body;
+//     const userId = req.session.user?.id;
+
+//     if (!userId) {
+//       return res.status(401).json({ success: false, message: "User not logged in" });
+//     }
+
+//     if (!orderId || !productId || !selectedSize) {
+//       return res.status(400).json({ success: false, message: "Missing required fields" });
+//     }
+
+//     const order = await Order.findById(orderId).populate("products.productId");
+//     if (!order) {
+//       return res.status(404).json({ success: false, message: "Order not found" });
+//     }
+
+//     const productItem = order.products.find(
+//       (p) => p.productId._id.toString() === productId && p.selectedSize === selectedSize
+//     );
+
+//     if (!productItem) {
+//       return res.status(404).json({ success: false, message: "Product not found in order" });
+//     }
+
+//     if (productItem.itemStatus === "Returned") {
+//       return res.status(400).json({ success: false, message: "This product is already returned" });
+//     }
+
+//     productItem.itemStatus = "Returned";
+
+//     const product = await Product.findById(productId);
+//     if (product) {
+//       const sizeIndex = product.sizes.indexOf(selectedSize);
+//       if (sizeIndex !== -1) {
+//         product.quantities[sizeIndex] += productItem.quantity;
+//         await product.save();
+//       }
+//     }
+
+//     const price =
+//       Number(productItem.price) ||
+//       Number(productItem.pricePerUnit) ||
+//       Number(productItem.productId?.price) ||
+//       0;
+//     const qty = Number(productItem.quantity) || 1;
+//     const refundAmount = price * qty;
+
+//     if (isNaN(refundAmount) || refundAmount <= 0) {
+//       console.error("Invalid refund amount calculation", { price, qty });
+//       return res.status(400).json({ success: false, message: "Invalid refund amount" });
+//     }
+
+//     let wallet = await Wallet.findOne({ userId });
+//     if (!wallet) {
+//       wallet = await Wallet.create({ userId, balance: 0, transactions: [] });
+//     }
+
+//     const refundTxn = {
+//       amount: refundAmount,
+//       type: "OrderRefund",
+//       status: "completed",
+//       transactionType: "Credit",
+//       transactionDetail: `Refund for returned product: ${productItem.productId.name}`,
+//       orderId: orderId,
+//       createdAt: new Date(),
+//     };
+
+//     wallet.transactions.push(refundTxn);
+//     wallet.balance = Number(wallet.balance || 0) + refundAmount;
+//     await wallet.save();
+
+//     const allReturned = order.products.every(p => p.itemStatus === "Returned");
+
+//     order.paymentDetails.status = allReturned ? "Refunded" : "Partially Refunded";
+
+//     order.orderStatus = allReturned ? "Returned" : "Returning";
+
+//     await order.save();
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Product returned successfully, refund added to wallet",
+//       refundAmount,
+//       newWalletBalance: wallet.balance,
+//       paymentStatus: order.paymentDetails.status,
+//       orderStatus: order.orderStatus,
+//     });
+
+//   } catch (err) {
+//     console.error("Return Item Error:", err);
+//     res.status(500).json({ success: false, message: "Server error while returning product" });
+//   }
+// };
+
+
 const returnOrderItem = async (req, res) => {
   try {
     const { orderId } = req.params;
     const { productId, selectedSize } = req.body;
     const userId = req.session.user?.id;
 
-    if (!userId) {
-      return res.status(401).json({ success: false, message: "User not logged in" });
-    }
-
-    if (!orderId || !productId || !selectedSize) {
-      return res.status(400).json({ success: false, message: "Missing required fields" });
+    if (!userId || !orderId || !productId || !selectedSize) {
+      return res.status(400).json({ success: false, message: "Missing fields" });
     }
 
     const order = await Order.findById(orderId).populate("products.productId");
-    if (!order) {
+    if (!order || order.userId.toString() !== userId) {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
 
     const productItem = order.products.find(
-      (p) => p.productId._id.toString() === productId && p.selectedSize === selectedSize
+      (p) => p.productId._id.toString() === productId && 
+             p.selectedSize === selectedSize &&
+             p.itemStatus !== "Returned"
     );
 
     if (!productItem) {
-      return res.status(404).json({ success: false, message: "Product not found in order" });
+      return res.status(400).json({ success: false, message: "Invalid return request" });
     }
 
-    if (productItem.itemStatus === "Returned") {
-      return res.status(400).json({ success: false, message: "This product is already returned" });
-    }
-
-    productItem.itemStatus = "Returned";
-
-    const product = await Product.findById(productId);
-    if (product) {
-      const sizeIndex = product.sizes.indexOf(selectedSize);
-      if (sizeIndex !== -1) {
-        product.quantities[sizeIndex] += productItem.quantity;
-        await product.save();
-      }
-    }
-
-    const price =
-      Number(productItem.price) ||
-      Number(productItem.pricePerUnit) ||
-      Number(productItem.productId?.price) ||
-      0;
-    const qty = Number(productItem.quantity) || 1;
-    const refundAmount = price * qty;
-
-    if (isNaN(refundAmount) || refundAmount <= 0) {
-      console.error("Invalid refund amount calculation", { price, qty });
-      return res.status(400).json({ success: false, message: "Invalid refund amount" });
-    }
-
-    let wallet = await Wallet.findOne({ userId });
-    if (!wallet) {
-      wallet = await Wallet.create({ userId, balance: 0, transactions: [] });
-    }
-
-    const refundTxn = {
-      amount: refundAmount,
-      type: "OrderRefund",
-      status: "completed",
-      transactionType: "Credit",
-      transactionDetail: `Refund for returned product: ${productItem.productId.name}`,
-      orderId: orderId,
-      createdAt: new Date(),
-    };
-
-    wallet.transactions.push(refundTxn);
-    wallet.balance = Number(wallet.balance || 0) + refundAmount;
-    await wallet.save();
-
-    const allReturned = order.products.every(p => p.itemStatus === "Returned");
-
-    order.paymentDetails.status = allReturned ? "Refunded" : "Partially Refunded";
-
-    order.orderStatus = allReturned ? "Returned" : "Returning";
+    productItem.itemStatus = "Returning";
+    order.orderStatus = "Returning";
 
     await order.save();
 
-    return res.status(200).json({
+    res.json({
       success: true,
-      message: "Product returned successfully, refund added to wallet",
-      refundAmount,
-      newWalletBalance: wallet.balance,
-      paymentStatus: order.paymentDetails.status,
-      orderStatus: order.orderStatus,
+      message: "Return request sent! Waiting for admin approval",
+      orderStatus: "Returning"
     });
 
   } catch (err) {
-    console.error("Return Item Error:", err);
-    res.status(500).json({ success: false, message: "Server error while returning product" });
+    console.error("Return Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
 
 
 

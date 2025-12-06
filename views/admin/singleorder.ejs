@@ -268,7 +268,7 @@
     <!-- RIGHT SIDE STATUS + BUTTON -->
     <div class="d-flex align-items-center gap-2">
 
-      <select 
+       <!-- <select 
         id="status-<%= order._id %>" 
         class="form-select border rounded px-3 py-2 text-sm"
         onchange="updateOrderStatus('<%= order._id %>')"
@@ -284,7 +284,44 @@
           <option value="Shipped" <%= order.orderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
           <option value="Delivered" <%= order.orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
         <% } %>
-      </select>
+      </select>  -->
+
+<% 
+  const hasReturningItems = order.products && order.products.some(item => 
+    item.itemStatus && item.itemStatus.toString().toLowerCase().trim() === 'returning'
+  );
+  const isOrderReturning = order.orderStatus && order.orderStatus.toString().toLowerCase().trim() === 'returning';
+  const showApproveBtn = hasReturningItems || isOrderReturning;
+  const returnCount = order.products.filter(item => item.itemStatus?.toString().toLowerCase().trim() === 'returning').length;
+%>
+
+<% if (showApproveBtn) { %>
+  <button class="btn btn-sm btn-success w-100 px-3 py-2 text-start border rounded" 
+          onclick="processReturns('<%= order._id %>')"
+          title="<%= returnCount %> returning items">
+    <i class="fas fa-check-circle me-2"></i>
+    Approve Returns (<%= returnCount %>)
+  </button>
+<% } else { %>
+  <select id="status-<%= order._id %>" class="form-select border rounded px-3 py-2 text-sm"
+          onchange="updateOrderStatus('<%= order._id %>')"
+          <%= (order.orderStatus === 'Delivered' || order.orderStatus === 'Cancelled' || order.orderStatus === 'Returned') ? 'disabled' : '' %>>
+    <% if (order.orderStatus === 'Cancelled') { %>
+      <option value="Cancelled" selected>Cancelled</option>
+    <% } else if (order.orderStatus === 'Returned') { %>
+      <option value="Returned" selected>Returned</option>
+    <% } else { %>
+      <option value="Pending" <%= order.orderStatus === 'Pending' ? 'selected' : '' %>>Pending</option>
+      <option value="Processing" <%= order.orderStatus === 'Processing' ? 'selected' : '' %>>Processing</option>
+      <option value="Shipped" <%= order.orderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+      <option value="Delivered" <%= order.orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+    <% } %>
+  </select>
+<% } %>
+
+
+
+
 
       <button 
         type="button" 
@@ -346,11 +383,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
+<!-- 
 
 <script>
-
-
 
   async function updateOrderStatus(orderId) {
     const newStatus = document.getElementById(`status-${orderId}`).value;
@@ -375,32 +410,6 @@
       alert('⚠️ Something went wrong while updating order status');
     }
   }
-
-
-//  async function updateOrderStatus(orderId) {
-//     const status = document.getElementById(`status-${orderId}`).value;
-//     try {
-//       const res = await fetch(`/admin/orders/${orderId}/update-status`, {
-//         method: "PUT",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ status }),
-//       });
-//       const data = await res.json();
-//       if (data.success) {
-//         alert("✅ Order status updated successfully!");
-//         location.reload();
-//       } else {
-//         alert("❌ " + data.message);
-//       }
-//     } catch (err) {
-//       console.error(err);
-//       alert("Server error while updating order status.");
-//     }
-//   }
-
-
-
-
 
 
 async function confirmAndUpdate(orderId) {
@@ -472,6 +481,155 @@ async function confirmAndUpdate(orderId) {
   }
 }
 </script>
+   -->
+
+   
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+   async function updateOrderStatus(orderId) {
+    const newStatus = document.getElementById(`status-${orderId}`).value;
+
+    try {
+      const res = await fetch(`/admin/update-order-status/${orderId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderStatus: newStatus })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        alert('✅ Order status updated successfully!');
+        location.reload(); // Refresh page to show updated status
+      } else {
+        alert('❌ Failed to update order status: ' + data.message);
+      }
+    } catch (err) {
+      console.error('❌ Error updating order status:', err);
+      alert('⚠️ Something went wrong while updating order status');
+    }
+  }
+
+
+async function confirmAndUpdate(orderId) {
+  const selectEl = document.getElementById(`status-${orderId}`);
+  const newStatus = selectEl.value;
+
+  // ❗If already delivered, block further changes
+  if (selectEl.disabled) {
+    Swal.fire({
+      icon: "info",
+      title: "Locked",
+      text: "This order is already delivered and cannot be modified.",
+    });
+    return;
+  }
+
+  const result = await Swal.fire({
+    title: 'Confirm Update',
+    text: `Change order status to "${newStatus}"?`,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#16a34a',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, Update it!',
+  });
+
+  if (result.isConfirmed) {
+    try {
+      const res = await fetch(`/admin/updateOrderStatus/${orderId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        await Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: 'Order status updated successfully.',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        // ✅ Disable the dropdown + button if delivered
+        if (newStatus === "Delivered") {
+          selectEl.disabled = true;
+          document.querySelector(`button[onclick="confirmAndUpdate('${orderId}')"]`).disabled = true;
+        }
+
+        // Optional: refresh page if needed
+        // window.location.reload();
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed!',
+          text: data.message || 'Update failed.',
+        });
+      }
+    } catch (err) {
+      console.error('❌ Fetch error:', err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Server error. Please try again later.',
+      });
+    }
+  }
+}
+
+async function processReturns(orderId) {
+  console.log("🔥 APPROVE CLICKED:", orderId);
   
+  const confirm = await Swal.fire({
+    title: "Approve all returns?",
+    text: "This will process all Returning items and add refund to wallet",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes, approve all",
+    confirmButtonColor: "#28a745"
+  });
+  
+  if (!confirm.isConfirmed) return;
+
+  try {
+    // 🔥 FIXED URL - /admin/ prefix add pannunga!
+    const url = `/admin/orders/${orderId}/approve-returns`;
+    console.log("🔥 FETCHING:", url);
+    
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    console.log("🔥 STATUS:", res.status);
+    const data = await res.json();
+    
+    if (res.ok) {
+      await Swal.fire("✅ Approved!", data.message, "success");
+      location.reload();
+    } else {
+      Swal.fire("❌ Error", data.message || "Failed", "error");
+    }
+  } catch (err) {
+    console.error("ERROR:", err);
+    Swal.fire("❌ Error", "Try again", "error");
+  }
+}
+
+
+</script>
+
+
+
+
+
+
+
+
+
 </body>
 </html>

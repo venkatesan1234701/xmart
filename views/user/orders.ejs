@@ -695,26 +695,48 @@ function showOrderDetails(order) {
     // 🚀 ITEM STATUS BASED BUTTONS
     // ---------------------------
 
+    // if (itemStatus === "Returned") {
+    //   actionBtns = `<span class="badge bg-secondary">Returned</span>`;
+    // }
+    // else if (itemStatus === "Cancelled") {
+    //   actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
+    // }
+    // else if (orderStatus === "Delivered") {
+    //   actionBtns = `
+    //     <button class="btn btn-sm btn-outline-warning"
+    //       onclick="returnProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
+    //         Return
+    //     </button>`;
+    // }
+    // else {
+    //   actionBtns = `
+    //     <button class="btn btn-sm btn-outline-danger"
+    //       onclick="cancelProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
+    //         Cancel
+    //     </button>`;
+    // }
+
     if (itemStatus === "Returned") {
-      actionBtns = `<span class="badge bg-secondary">Returned</span>`;
-    }
-    else if (itemStatus === "Cancelled") {
-      actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
-    }
-    else if (orderStatus === "Delivered") {
-      actionBtns = `
-        <button class="btn btn-sm btn-outline-warning"
-          onclick="returnProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
-            Return
-        </button>`;
-    }
-    else {
-      actionBtns = `
-        <button class="btn btn-sm btn-outline-danger"
-          onclick="cancelProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
-            Cancel
-        </button>`;
-    }
+  actionBtns = `<span class="badge bg-secondary">Returned</span>`;
+} else if (itemStatus === "Cancelled") {
+  actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
+} else if(itemStatus === "Returning"){
+  actionBtns = `<span class="badge bg-danger">Returning</span>`;
+}
+else if (orderStatus === "Delivered") {
+  actionBtns = `
+    <button class="btn btn-sm btn-outline-warning"
+      onclick="returnProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
+      Return
+    </button>`;
+} else {
+  actionBtns = `
+    <button class="btn btn-sm btn-outline-danger"
+      onclick="cancelProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
+      Cancel
+    </button>`;
+}
+
 
     // PRODUCT HTML
     const productHtml = `
@@ -804,6 +826,32 @@ async function cancelProduct(orderId, productId, size) {
 }
 
 // ✅ Return specific product
+
+// async function returnProduct(orderId, productId, size) {
+//   const confirm = await Swal.fire({
+//     title: "Return this product?",
+//     icon: "warning",
+//     showCancelButton: true,
+//     confirmButtonText: "Yes, return it"
+//   });
+//   if (!confirm.isConfirmed) return;
+
+//   const res = await fetch(`/user/orders/${orderId}/return-item`, {
+//     method: "PUT",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({ productId, selectedSize: size })
+//   });
+
+//   const data = await res.json();
+//   if (res.ok) {
+//     await Swal.fire("✅ Returned!", data.message, "success");
+//     location.reload();
+//   } else {
+//     Swal.fire("❌ Error", data.message || "Failed to return product.", "error");
+//   }
+// }
+
+
 async function returnProduct(orderId, productId, size) {
   const confirm = await Swal.fire({
     title: "Return this product?",
@@ -821,7 +869,7 @@ async function returnProduct(orderId, productId, size) {
 
   const data = await res.json();
   if (res.ok) {
-    await Swal.fire("✅ Returned!", data.message, "success");
+    await Swal.fire("✅ Return Requested!", data.message, "success");
     location.reload();
   } else {
     Swal.fire("❌ Error", data.message || "Failed to return product.", "error");

@@ -80,6 +80,10 @@ router.delete('/category-offer/delete/:id', adminAuth, categoryOfferController.d
 
 
 router.post("/updateOrderStatus/:orderId", adminOrder.updateOrderStatus)
+// router.put("/admin/orders/:orderId/approve-returns", adminOrder.approveAllReturns);
+
+router.put("/orders/:orderId/approve-returns", adminOrder.approveAllReturns);
+
 
 router.get('/dashboard', (req, res) => {
   if (req.session.isAdminLogged) {
