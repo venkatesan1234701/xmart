@@ -1397,8 +1397,8 @@ editForm.addEventListener("submit", async e => {
   }
 
   // ⭐ 15 CHARACTER LIMIT FOR NAME
-  if (name.length > 15) {
-    Swal.fire('Error', 'Name should not exceed 15 characters.', 'warning');
+  if (name.length > 20) {
+    Swal.fire('Error', 'Name should not exceed 20 characters.', 'warning');
     return;
   }
 
@@ -1409,10 +1409,10 @@ editForm.addEventListener("submit", async e => {
   }
 
   // ⭐ 100 CHARACTER LIMIT FOR DESCRIPTION
-  if (description.length > 180) {
+  if (description.length > 250) {
     Swal.fire(
       'Error',
-      `Description should not exceed 180 characters. (Now: ${description.length})`,
+      `Description should not exceed 250 characters. (Now: ${description.length})`,
       'warning'
     );
     return;
