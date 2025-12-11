@@ -94,7 +94,7 @@
 
 
 
-<div class="flex gap-2 relative">
+<!-- <div class="flex gap-2 relative">
   <input
     type="search"
     id="searchProducts"
@@ -106,7 +106,26 @@
 </div>
 
 
-  <ul id="searchResults" class="absolute bg-white border rounded w-full mt-1 z-50 hidden"></ul>
+  <ul id="searchResults" class="absolute bg-white border rounded w-full mt-1 z-50 hidden"></ul> -->
+
+
+
+  <div class="flex gap-2 relative mb-6">
+  <input
+    type="search"
+    id="searchProducts"
+    placeholder="🔍 Search products..."
+    class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all outline-none pr-12"
+    autocomplete="off" 
+  />
+  <button id="searchBtn" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-all shadow-md">
+    Search
+  </button>
+</div>
+
+<!-- Live Search Dropdown -->
+<ul id="searchResults" class="absolute bg-white border border-gray-200 rounded-lg w-full mt-1 z-50 hidden shadow-xl max-h-64 overflow-y-auto"></ul>
+
   
 </div>
 						</form>
@@ -209,14 +228,15 @@
      class="flex items-center gap-2 text-gray-700 font-medium cursor-pointer hover:text-blue-600 transition">
     
     <!-- Card SVG Icon -->
-    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <rect x="2" y="5" width="20" height="14" rx="2" />
       <line x1="2" y1="10" x2="22" y2="10" />
       <line x1="6" y1="15" x2="6.01" y2="15" />
       <line x1="10" y1="15" x2="14" y2="15" />
-    </svg>
-
+    </svg> -->
+<svg fill="#000000" width="24" height="24" viewBox="0 0 24 24" id="cart" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color"><path id="secondary-upstroke" d="M11,20.5h.1m5.9,0h.1" style="fill: none; stroke: rgb(44, 169, 188); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path id="primary" d="M3,3H5.14a1,1,0,0,1,1,.85L6.62,7,8,16l11-1,2-8H6.62" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path></svg>
+ 
     <!-- <span>My Cards</span> -->
   </a>
 
@@ -229,13 +249,13 @@
        class="flex items-center gap-2 text-gray-700 font-medium cursor-pointer hover:text-blue-600 transition">
 
       <% if (user && user.firstName) { %>
-        <span>Hi, <%= user.firstName %></span>
+        <span><%= user.firstName %></span>
         <!-- Dropdown Arrow -->
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="pointer-events: none;">
           <path d="M1.5 5.5l6 6 6-6"/>
         </svg>
       <% } else { %>
-        <span>Hi, Guest</span>
+        <span></span>
         <!-- User Icon -->
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="pointer-events: none;">
           <path d="M0 0h24v24H0z" stroke="none"/>
@@ -837,85 +857,78 @@
 
 					<!-- icon -->
 					<div class="flex flex-row justify-between md:items-center gap-3">
-						<div class="flex items-center justify-between">
-							<div class="flex items-center gap-4">
-					
-							
-								
-							</div>
-						</div>
-
-						<div class="flex gap-3">
-							<div class="flex-grow-1">
-
-								
-								<!-- select option -->
-
-<select id="categorySelect" onchange="filterProductsByCategory()"
-  class="text-base py-2 block w-full border-gray-300 rounded-lg focus:border-green-600 focus:ring-green-600">
-  
-  <option value="all" selected>Show All</option> <!-- Default value should be "all" -->
-
-  <% categories.forEach(category => { %>
-    <% if (!category.isBlocked && !category.isDeleted) { %> <!-- only active categories -->
-      <option value="<%= category._id %>"><%= category.name %></option>
-    <% } %>
-  <% }) %>
-</select>
-
-
-						
 						
 
-							</div>
-							<div>
-								<!-- select option -->
+					<!-- PREMIUM FILTER BAR -->
+<div id="filtersBox" class="w-full backdrop-blur-sm bg-white/70 shadow-lg border border-gray-200 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4">
 
+  <!-- CATEGORY -->
+  <div class="flex items-center gap-2">
+    <span class="text-green-700 text-lg">🏷️</span>
+    <select id="categorySelect"
+            onchange="filterProductsByCategory()"
+            class="py-2 px-4 text-sm font-medium border border-gray-300 rounded-lg focus:border-green-600 focus:ring-green-600 min-w-[180px] hover:border-green-500 transition">
+      <option value="all" selected>All Categories</option>
+      <% categories.forEach(category => { %>
+        <% if (!category.isBlocked && !category.isDeleted) { %>
+          <option value="<%= category._id %>"><%= category.name %></option>
+        <% } %>
+      <% }) %>
+    </select>
+  </div>
 
-<div class="flex flex-wrap justify-end items-center gap-4 mb-6">
+  <!-- SORT BUTTONS -->
+  <div class="flex items-center gap-3">
+    <span class="text-green-700 text-lg">✨</span>
+    <div class="flex gap-2">
+      <button class="filter-btn px-4 py-2 bg-gray-100 rounded-lg hover:bg-green-600 hover:text-white text-sm shadow-sm transition" data-sort="popularity">
+        Popular
+      </button>
+      <button class="filter-btn px-4 py-2 bg-gray-100 rounded-lg hover:bg-green-600 hover:text-white text-sm shadow-sm transition" data-sort="ratings">
+        Ratings
+      </button>
+      <button class="filter-btn px-4 py-2 bg-gray-100 rounded-lg hover:bg-green-600 hover:text-white text-sm shadow-sm transition" data-sort="new">
+        New
+      </button>
+    </div>
+  </div>
 
-  <!-- Sorting Buttons -->
-  <div class="flex gap-2 flex-wrap">
-    <button class="filter-btn px-4 py-2 bg-gray-100 rounded hover:bg-green-600 hover:text-white text-sm" data-sort="popularity">
-      Popularity
-    </button>
-    <button class="filter-btn px-4 py-2 bg-gray-100 rounded hover:bg-green-600 hover:text-white text-sm" data-sort="ratings">
-      Average Ratings
-    </button>
-    <button class="filter-btn px-4 py-2 bg-gray-100 rounded hover:bg-green-600 hover:text-white text-sm" data-sort="new">
-      New Arrivals
+  <!-- SORT DROPDOWN -->
+  <div class="flex items-center gap-2">
+    <span class="text-green-700 text-lg">🔽</span>
+    <select id="sortSelect"
+            class="text-sm py-2 px-3 border border-gray-300 rounded-lg bg-white shadow-sm focus:border-green-600 hover:border-green-600 transition w-44">
+      <option selected disabled>Sort by</option>
+      <option value="lowToHigh">💰 Low → High</option>
+      <option value="highToLow">💸 High → Low</option>
+      <option value="nameAToZ">A → Z</option>
+      <option value="nameZToA">Z → A</option>
+    </select>
+  </div>
+
+  <!-- PRICE RANGE -->
+  <div class="flex items-center gap-3">
+    <span class="text-green-700 text-lg">💵</span>
+    <span id="priceRangeValue" class="text-sm font-semibold text-green-700">0 - 10000</span>
+    <input type="range" id="maxPriceRange" min="0" max="10000" step="500" value="10000"
+           class="w-40 accent-green-600 rounded-full">
+    <button id="filterPriceBtn"
+            class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm shadow hover:bg-green-700 transition">
+      Apply
     </button>
   </div>
 
-  <!-- Sort Dropdown -->
-  <select id="sortSelect"
-          class="text-sm py-2 px-3 border border-gray-300 rounded-lg shadow-sm focus:border-green-600 focus:ring-green-600 hover:border-green-500 cursor-pointer w-40">
-    <option selected disabled>Sort by:</option>
-    <option value="lowToHigh">💰 Price: Low to High</option>
-    <option value="highToLow">💸 Price: High to Low</option>
-    <option value="nameAToZ">🔤 Name: A → Z</option>
-    <option value="nameZToA">🔤 Name: Z → A</option>
-  </select>
-
-  <!-- Price Range Filter -->
-  <div class="flex gap-2 items-center text-sm">
-    <label for="maxPriceRange" class="font-medium mb-0">
-      Price: <span id="priceRangeValue">0 - 10000</span>
-    </label>
-    <input type="range" id="maxPriceRange" min="0" max="10000" step="500" value="10000" class="h-2 w-36">
-    <button id="filterPriceBtn" class="bg-green-600 text-white text-sm px-3 py-1 rounded">
-      Filter
-    </button>
-  </div>
+  <!-- CLEAR FILTER BUTTON -->
+  <button id="clearFiltersBtn"
+          onclick="window.location.href='/shop'"
+          class="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 shadow transition">
+    ❌ Clear
+  </button>
 
 </div>
 
-
-
-								  <!-- Price Range Slider -->
-
-							</div>
-						</div>					
+						
+						
 					</div>					
 				</div>
 				</div>
@@ -923,7 +936,9 @@
 				<div class="flex flex-wrap">
 					<div class="w-full mb-6">
 						<h2 class="text-lg">Popular Products</h2>
+						
 					</div>
+					
 				</div>
 
 
@@ -932,7 +947,7 @@
 
 <!-- Grid View -->
 
-<div id="productContainer" class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 mb-8">
+<!-- <div id="productContainer" class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 mb-8">
   <% if (products && products.length > 0) { %>
     <% products.forEach(product => { 
          const basePrice = product.prices && product.prices.find(p => p>0) ? product.prices.find(p=>p>0) : 0;
@@ -997,9 +1012,148 @@
   <% } else { %>
     <p class="text-center text-gray-500 col-span-full">No products available</p>
   <% } %>
-</div>
+</div> -->
 
 
+ <% if (query && query.trim()) { %>
+      <div class="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+        <h1 class="text-2xl font-bold text-blue-900">
+          <i class="fas fa-search mr-2"></i>
+          <%= searchMessage || `Showing results for "${query}"` %>
+          <span class="text-sm font-normal text-blue-700 ml-2">
+            (<%= allProductsCount || 0 %> products)
+          </span>
+        </h1>
+        <% if (categoryFilter && categoryFilter !== 'all') { %>
+          <p class="text-sm text-blue-600 mt-1">
+            <i class="fas fa-filter mr-1"></i>Category: <%= categoryFilter %>
+          </p>
+        <% } %>
+      </div>
+    <% } %>
+
+    <!-- Products Grid -->
+    <div id="productContainer" class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 mb-8">
+      
+      <% if (products && products.length > 0) { %>
+        <% products.forEach(product => { 
+          const basePrice = product.prices && product.prices.find(p => p > 0) ? product.prices.find(p => p > 0) : 0;
+          const offerPercentage = product.offer ? product.offer.offerPercentage : 0;
+          const finalPrice = offerPercentage > 0 ? Math.floor(basePrice - (basePrice * offerPercentage / 100)) : basePrice;
+
+          let imgToShow = (product.images && product.images.length > 0) 
+            ? product.images[0] 
+            : (product.productPic && product.productPic.length > 0) 
+              ? product.productPic[0] 
+              : "images/default-product.jpg";
+        %>
+
+          <div class="product-card relative rounded-lg border bg-white border-gray-300 shadow p-4 mb-6 card-product w-full mx-auto hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
+               data-category="<%= product.category ? product.category._id : '' %>"
+               data-name="<%= product.name %>"
+               data-price="<%= finalPrice %>">
+
+            <% if(offerPercentage > 0){ %>
+              <div class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow-md">
+                <%= offerPercentage %>% OFF
+              </div>
+            <% } %>
+
+            <div class="flex flex-col h-full">
+              <div class="flex-1 mb-3 overflow-hidden rounded mx-auto" style="width:200px; height:200px;">
+                <img src="<%= imgToShow.startsWith('http') || imgToShow.startsWith('/') ? imgToShow : '/' + imgToShow %>" 
+                     alt="<%= product.name %>" 
+                     style="width:200px; height:200px; object-fit:cover;"
+                     class="hover:scale-110 transition-transform duration-300 w-full h-full">
+              </div>
+
+              <div class="flex flex-col justify-end items-center mt-auto">
+                <% if(product.category && product.category.name){ %>
+                  <p class="text-gray-500 text-sm mb-1 text-center"><%= product.category.name %></p>
+                <% } %>
+
+                <h3 class="text-center text-lg font-semibold mb-1 truncate w-full text-gray-900"><%= product.name %></h3>
+
+                <% if(offerPercentage > 0){ %>
+                  <p class="text-green-600 font-bold mb-3 text-center">
+                    ₹<%= finalPrice %> 
+                    <span class="line-through text-gray-400 text-sm">₹<%= basePrice %></span>
+                  </p>
+                <% } else { %>
+                  <p class="text-green-600 font-bold mb-3 text-center">
+                    ₹<%= basePrice %>
+                  </p>
+                <% } %>
+
+                <a href="/product/<%= product._id %>">
+                  <button class="bg-green-600 hover:bg-green-700 text-white text-sm px-6 py-2 rounded-lg font-medium transition-all w-full shadow-md">
+                    View Product
+                  </button>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        <% }) %>
+
+      <% } else { %>
+        <!-- 🔥 SIMPLE CENTERED NO PRODUCTS MESSAGE -->
+        <div class="col-span-full flex flex-col items-center justify-center py-16 px-4">
+          <div class="text-center max-w-md space-y-4">
+            
+            <!-- Simple Icon -->
+            <div class="w-20 h-20 mx-auto bg-gray-100 rounded-2xl flex items-center justify-center">
+              <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </div>
+
+            <!-- Title + Message -->
+            <div class="space-y-1">
+              <h3 class="text-xl font-bold text-gray-900">No products found</h3>
+              <% if (query && query.trim()) { %>
+                <p class="text-gray-600">No products match "<strong><%= query %></strong>"</p>
+              <% } else { %>
+                <p class="text-gray-600">No products available</p>
+              <% } %>
+            </div>
+
+            <!-- Home Button Only -->
+            <a href="/shop" class="inline-block bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold transition-all shadow-md">
+              ← Go to shop
+            </a>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Pagination (Only show if products exist) -->
+    <!-- <% if (products && products.length > 0 && pages > 1) { %>
+      <div class="flex justify-center mt-12 mb-8">
+        <div class="flex bg-white rounded-lg shadow-md p-1">
+          <% for(let i = 1; i <= pages; i++) { %>
+            <a href="/shop?page=<%= i %>&sort=<%= sort || 'newest' %>&query=<%= query || '' %>&category=<%= categoryFilter || 'all' %>" 
+               class="px-4 py-2 mx-1 rounded-md font-medium transition-all <%= i === current ? 'bg-green-600 text-white shadow-md' : 'text-gray-700 hover:bg-gray-100 hover:shadow-sm' %>">
+              <%= i %>
+            </a>
+          <% } %>
+        </div>
+      </div>
+    <% } %> -->
+
+
+	<% if (products && products.length > 0 && pages > 1) { %>
+  <div id="paginationBox" class="flex justify-center mt-12 mb-8">
+    <div class="flex bg-white rounded-lg shadow-md p-1">
+      <% for(let i = 1; i <= pages; i++) { %>
+        <a href="/shop?page=<%= i %>&sort=<%= sort || 'newest' %>&query=<%= query || '' %>&category=<%= categoryFilter || 'all' %>" 
+           class="px-4 py-2 mx-1 rounded-md font-medium transition-all <%= i === current ? 'bg-green-600 text-white shadow-md' : 'text-gray-700 hover:bg-gray-100 hover:shadow-sm' %>">
+          <%= i %>
+        </a>
+      <% } %>
+    </div>
+  </div>
+<% } %>
 
 
 <!-- Grid View -->
@@ -1050,25 +1204,6 @@
 </div> -->
 
 
-<!-- Pagination -->
-<% if (pages > 1) { %>
-  <div class="flex justify-center items-center mt-6 space-x-2">
-    <% if (current > 1) { %>
-      <a href="?page=<%= current - 1 %>" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Prev</a>
-    <% } %>
-
-    <% for(let i = 1; i <= pages; i++) { %>
-      <a href="?page=<%= i %>" 
-         class="px-3 py-1 rounded <%= current === i ? 'bg-green-600 text-white' : 'bg-gray-200 hover:bg-gray-300' %>">
-         <%= i %>
-      </a>
-    <% } %>
-
-    <% if (current < pages) { %>
-      <a href="?page=<%= current + 1 %>" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Next</a>
-    <% } %>
-  </div>
-<% } %>
 
 
 
@@ -1754,6 +1889,40 @@ Remove if you do not want.
 
 
 <script>
+async function filterProductsByCategory() {
+  const category = document.getElementById("categorySelect").value;
+
+  const res = await fetch(`/filter-products?category=${category}`);
+  const data = await res.json();
+
+  const container = document.getElementById("productContainer");
+  container.innerHTML = "";
+
+  data.products.forEach(p => {
+    container.innerHTML += `
+      <div class="p-4 border rounded">
+        <h3>${p.name}</h3>
+        <p>₹ ${p.price}</p>
+      </div>
+    `;
+  });
+
+  // HIDE PAGINATION WHEN FILTER APPLIED
+  document.getElementById("paginationBox")?.classList.add("hidden");
+}
+
+const paginationBox = document.getElementById("paginationBox");
+const filtersBox = document.getElementById("filtersBox");
+
+// HIDE pagination when user clicks ANYWHERE inside filter section
+filtersBox.addEventListener("click", () => {
+  paginationBox?.classList.add("hidden");
+});
+
+// HIDE pagination when a filter value changes
+filtersBox.addEventListener("change", () => {
+  paginationBox?.classList.add("hidden");
+});
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -1908,91 +2077,175 @@ sortSelect.addEventListener('change', function() {
 //const searchInput = document.getElementById("searchProducts");
 
 
+// const searchInput = document.getElementById("searchProducts");
+// const searchBtn = document.getElementById("searchBtn");
+// const categorySelect = document.getElementById("categorySelect"); // category dropdown
+// const productsTableBody = document.querySelector("#productsTable tbody");
+// const resultsList = document.getElementById("searchResults");
+
+// let timeout = null;
+
+// // 🔍 Search Button Click — fetch products and show in table
+// searchBtn.addEventListener("click", async () => {
+//   const query = searchInput.value.trim();
+//   const selectedCategory = categorySelect ? categorySelect.value : "all";
+
+//   if (!query) {
+//     Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Please enter product name!' });
+//     return;
+//   }
+
+//   try {
+//     const url = `/search-products?query=${encodeURIComponent(query)}&category=${selectedCategory}`;
+//     const res = await fetch(url);
+//     const data = await res.json();
+
+//     // Clear table
+//     productsTableBody.innerHTML = '';
+
+//     if (!data || data.length === 0) {
+//       productsTableBody.innerHTML = `
+//         <tr>
+//           <td colspan="4" class="text-center py-4 text-gray-500">
+//             No products starting with "${query}" in this category
+//           </td>
+//         </tr>
+//       `;
+//       return;
+//     }
+
+//     // Render products in table
+//     data.forEach(prod => {
+//       const tr = document.createElement('tr');
+//       tr.innerHTML = `
+//         <td>${prod.name}</td>
+//         <td>${prod.category ? prod.category.name || '-' : '-'}</td>
+//         <td>${prod.price}</td>
+//         <td>${prod.quantity || 0}</td>
+//       `;
+//       productsTableBody.appendChild(tr);
+//     });
+
+//   } catch (err) {
+//     console.error(err);
+//     Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later.' });
+//   }
+// });
+
+// // Live Search Suggestion (with debounce)
+// searchInput.addEventListener("input", () => {
+//   const query = searchInput.value.trim();
+//   const selectedCategory = categorySelect ? categorySelect.value : "all";
+
+//   if (timeout) clearTimeout(timeout);
+
+//   timeout = setTimeout(async () => {
+//     if (query.length === 0) {
+//       resultsList.innerHTML = '';
+//       resultsList.classList.add('hidden');
+//       return;
+//     }
+
+//     try {
+//       const url = `/search-products?query=${encodeURIComponent(query)}&category=${selectedCategory}`;
+//       const res = await fetch(url);
+//       const data = await res.json();
+
+//       resultsList.innerHTML = '';
+
+//       if (!data || data.length === 0) {
+//         resultsList.classList.add('hidden');
+//         return;
+//       }
+
+//       data.forEach(product => {
+//         const li = document.createElement('li');
+//         li.textContent = product.name;
+//         li.className = 'px-3 py-2 cursor-pointer hover:bg-gray-100';
+//         li.addEventListener('click', () => {
+//           window.location.href = `/product/${product._id}`;
+//         });
+//         resultsList.appendChild(li);
+//       });
+
+//       resultsList.classList.remove('hidden');
+//     } catch (err) {
+//       console.error(err);
+//       Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later' });
+//     }
+//   }, 300);
+// });
+
+// // Hide suggestions if click outside
+// document.addEventListener('click', e => {
+//   if (!resultsList.contains(e.target) && e.target !== searchInput) {
+//     resultsList.classList.add('hidden');
+//   }
+// });
+
+// // Small delay to allow clicking suggestion before hiding
+// searchInput.addEventListener('blur', () => {
+//   setTimeout(() => {
+//     resultsList.classList.add('hidden');
+//   }, 200);
+// });
+
+
 const searchInput = document.getElementById("searchProducts");
 const searchBtn = document.getElementById("searchBtn");
-const categorySelect = document.getElementById("categorySelect"); // category dropdown
-const productsTableBody = document.querySelector("#productsTable tbody");
 const resultsList = document.getElementById("searchResults");
 
 let timeout = null;
+let isSearching = false; 
 
-// 🔍 Search Button Click — fetch products and show in table
-searchBtn.addEventListener("click", async () => {
+searchBtn.addEventListener("click", async (e) => {
+  e.preventDefault(); 
+  
   const query = searchInput.value.trim();
-  const selectedCategory = categorySelect ? categorySelect.value : "all";
-
   if (!query) {
     Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Please enter product name!' });
     return;
   }
 
-  try {
-    const url = `/search-products?query=${encodeURIComponent(query)}&category=${selectedCategory}`;
-    const res = await fetch(url);
-    const data = await res.json();
-
-    // Clear table
-    productsTableBody.innerHTML = '';
-
-    if (!data || data.length === 0) {
-      productsTableBody.innerHTML = `
-        <tr>
-          <td colspan="4" class="text-center py-4 text-gray-500">
-            No products starting with "${query}" in this category
-          </td>
-        </tr>
-      `;
-      return;
-    }
-
-    // Render products in table
-    data.forEach(prod => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${prod.name}</td>
-        <td>${prod.category ? prod.category.name || '-' : '-'}</td>
-        <td>${prod.price}</td>
-        <td>${prod.quantity || 0}</td>
-      `;
-      productsTableBody.appendChild(tr);
-    });
-
-  } catch (err) {
-    console.error(err);
-    Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later.' });
-  }
+  resultsList.classList.add('hidden');
+  isSearching = true;
+  window.location.href = `/shop?query=${encodeURIComponent(query)}`;
 });
 
-// Live Search Suggestion (with debounce)
 searchInput.addEventListener("input", () => {
-  const query = searchInput.value.trim();
-  const selectedCategory = categorySelect ? categorySelect.value : "all";
 
+  if (isSearching) return;
+
+  const query = searchInput.value.trim();
+  
   if (timeout) clearTimeout(timeout);
 
   timeout = setTimeout(async () => {
-    if (query.length === 0) {
+    if (query.length < 2) {
       resultsList.innerHTML = '';
       resultsList.classList.add('hidden');
       return;
     }
 
     try {
-      const url = `/search-products?query=${encodeURIComponent(query)}&category=${selectedCategory}`;
-      const res = await fetch(url);
+      const res = await fetch(`/search-products?query=${encodeURIComponent(query)}`);
       const data = await res.json();
 
       resultsList.innerHTML = '';
 
-      if (!data || data.length === 0) {
+      if (data.length === 0) {
         resultsList.classList.add('hidden');
         return;
       }
 
-      data.forEach(product => {
+      data.slice(0, 6).forEach(product => {
         const li = document.createElement('li');
-        li.textContent = product.name;
-        li.className = 'px-3 py-2 cursor-pointer hover:bg-gray-100';
+        li.innerHTML = `
+          <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer group">
+            <div class="font-medium text-gray-900 group-hover:text-green-600">${product.name}</div>
+          
+          </div>
+        `;
         li.addEventListener('click', () => {
           window.location.href = `/product/${product._id}`;
         });
@@ -2002,26 +2255,22 @@ searchInput.addEventListener("input", () => {
       resultsList.classList.remove('hidden');
     } catch (err) {
       console.error(err);
-      Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later' });
+      resultsList.classList.add('hidden');
     }
   }, 300);
 });
 
-// Hide suggestions if click outside
-document.addEventListener('click', e => {
+document.addEventListener('click', (e) => {
   if (!resultsList.contains(e.target) && e.target !== searchInput) {
     resultsList.classList.add('hidden');
   }
 });
 
-// Small delay to allow clicking suggestion before hiding
-searchInput.addEventListener('blur', () => {
-  setTimeout(() => {
-    resultsList.classList.add('hidden');
-  }, 200);
+searchInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    searchBtn.click(); 
+  }
 });
-
-
 
 
 
@@ -2158,6 +2407,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
+
+
+
 </script>
 
 

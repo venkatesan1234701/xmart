@@ -2,8 +2,8 @@
 const mongoose = require('mongoose');
 const Wishlist = require('../../models/wishlistModel');
 const Product = require('../../models/productModel');
-
-
+const User = require('../../models/userSchema')
+const bcrypt = require("bcrypt")
 
 const getWishlistPage = async (req, res) => {
   try {
@@ -213,9 +213,103 @@ const deleteWishlistItem = async (req, res) => {
 };
 
 
+const changepassword = async (req, res) => {
+  try {
+    const userId = req.session?.user?.id;
+    if (!userId) return res.redirect("/signin");
+
+    const user = await User.findById(userId);
+
+    if (user.loginType === "google") {
+      return res.redirect("/user/profile?googleBlock=true");
+    }
+    res.render("user/change-password");
+
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).send("Server error");
+  }
+};
+
+
+const postchangepass = async (req, res) => {
+  try {
+    const userId = req.session?.user?.id;
+    if (!userId) {
+      return res.json({ success: false, message: "Not logged in" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    if (user.loginType === "google") {
+      return res.json({
+        success: false,
+        message: "Google login users cannot change password"
+      });
+    }
+
+    const { password, newpassword, cofirmpassword } = req.body;
+
+    if (!password || !newpassword || !cofirmpassword) {
+      return res.json({
+        success: false,
+        message: "Please fill all fields",
+        field: "current"
+      });
+    }
+
+    const correctOld = await bcrypt.compare(password, user.password);
+    if (!correctOld) {
+      return res.json({
+        success: false,
+        message: "Old password is incorrect",
+        field: "current"
+      });
+    }
+
+    if (newpassword.length < 8) {
+      return res.json({
+        success: false,
+        message: "New password must be at least 8 characters",
+        field: "new"
+      });
+    }
+
+    if (newpassword !== cofirmpassword) {
+      return res.json({
+        success: false,
+        message: "Passwords do not match",
+        field: "confirm"
+      });
+    }
+
+    const hashed = await bcrypt.hash(newpassword, 10);
+
+    await User.findByIdAndUpdate(userId, { password: hashed });
+
+    return res.json({
+      success: true,
+      message: "Password updated"
+    });
+
+  } catch (err) {
+    console.error("Error:", err);
+    res.json({ success: false, message: "Server error" });
+  }
+};
+
+
 
 module.exports = { 
   addToWishlist,
   getWishlistPage ,
-  deleteWishlistItem
+  deleteWishlistItem,
+  changepassword,
+  postchangepass
 };

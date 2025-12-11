@@ -46,6 +46,17 @@ const addProduct = async (req, res) => {
 
     if(!category) return res.status(400).json({ success: false, message: "Category is required" })
     if(!name || !name.trim()) return res.status(400).json({ success: false, message: "Product name is required" })
+        const existingProduct = await Product.findOne({
+      category,
+      name: { $regex: `^${name.trim()}$`, $options: "i" }
+    });
+
+    if (existingProduct) {
+      return res.status(400).json({
+        success: false,
+        message: "Product already exists in this category"
+      });
+    }
 
     const sizes = ["S","M","L"];
     const prices = [];
@@ -85,16 +96,32 @@ const addProduct = async (req, res) => {
 }
 
 
+// const getAddProductPage = async (req, res) => {
+//   try {
+//     const categories = await Category.find({ isDeleted: false }).sort({ name: 1 }).lean();
+//     res.render("admin/addProduct", { categories });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send("Server Error");
+//   }
+// }
+
+
 const getAddProductPage = async (req, res) => {
   try {
-    const categories = await Category.find({ isDeleted: false }).sort({ name: 1 }).lean();
+    const categories = await Category.find({
+      isDeleted: false,
+      isBlock: false,       // ⬅️ NEW FILTER added
+    })
+    .sort({ name: 1 })
+    .lean();
+
     res.render("admin/addProduct", { categories });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
   }
-}
-
+};
 
 
 
@@ -167,6 +194,19 @@ const updateProduct = async (req, res) => {
     const product = await Product.findById(productId);
     if (!product) return res.status(404).json({ success: false, message: "Product not found" })
 
+      const duplicate = await Product.findOne({
+      _id: { $ne: productId },
+      category,
+      name: { $regex: `^${name.trim()}$`, $options: "i" }
+    });
+
+    if (duplicate) {
+      return res.status(400).json({
+        success: false,
+        message: "Product already exists in this category"
+      });
+    }
+
     product.name = name.trim();
     product.description = description?.trim() || "";
     product.category = category;
@@ -205,7 +245,8 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
   try {
-    await Product.findByIdAndUpdate(req.params.id, { isDeleted: true });
+    // await Product.findByIdAndDelete(req.params.id);
+    await Product.findByIdAndUpdate(req.params.id, { isDeleted: true })
     res.redirect("/admin/products");
   } catch (err) {
     console.error(err);

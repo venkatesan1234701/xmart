@@ -15,6 +15,12 @@ const userSchema = new mongoose.Schema(
     referredBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
       referralCode: { type: String, unique: true, required: true },
     isVerified: { type: Boolean, default: false },
+    loginType: {
+  type: String,
+  enum: ["manual", "google"],
+  default: "manual"
+}
+
   },
   { timestamps: true }
 );

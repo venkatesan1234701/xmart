@@ -223,7 +223,6 @@ const approveAllReturns = async (req, res) => {
       item.itemStatus?.toString().toLowerCase().trim() === 'returning'  
     );
 
-    // console.log(" RETURNING ITEMS COUNT:", returningItems.length);
 
     if (returningItems.length === 0) {
       return res.json({ success: true, message: "No returning items found" });
@@ -232,7 +231,7 @@ const approveAllReturns = async (req, res) => {
     let totalRefund = 0;
 
     for (const item of returningItems) {
-      // console.log(" PROCESSING ITEM:", item.productId?.name, item.selectedSize);
+      // console.log(" product item:", item.productId?.name, item.selectedSize);
       
       item.itemStatus = "Returned";
       
@@ -262,6 +261,8 @@ const approveAllReturns = async (req, res) => {
         wallet = await Wallet.create({ userId, balance: 0, transactions: [] });
       }
 
+       const refundTransactionId = "REF" + Math.floor(100000 + Math.random() * 900000)
+
       wallet.transactions.push({
         amount: totalRefund,
         type: "OrderRefund",
@@ -269,9 +270,12 @@ const approveAllReturns = async (req, res) => {
         transactionType: "Credit",
         transactionDetail: `Refund for ${returningItems.length} returned items - Order ${orderId}`,
         orderId: orderId,
+        transactionId: refundTransactionId,
         createdAt: new Date()
       });
+      
       wallet.balance += totalRefund;
+      console.log('return amount',wallet.balance )
       await wallet.save();
     }
 

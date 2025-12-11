@@ -792,11 +792,13 @@ if (data.maximumDiscount.toString().length > 6) {
 
       const result = await res.json();
 
-      if (res.ok) {
-        Swal.fire("Success", result.message || "Coupon saved!", "success").then(() => location.reload());
-      } else {
-        Swal.fire("Error", result.error || "Something went wrong", "error");
-      }
+  if (res.ok) {
+  Swal.fire("Success", result.message || "Coupon saved!", "success")
+    .then(() => location.reload());
+} else {
+  Swal.fire("Error", result.message || result.error || "Something went wrong", "error");
+}
+
     } catch (err) {
       Swal.fire("Error", "Server request failed!", "error");
     }

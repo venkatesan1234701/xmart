@@ -57,6 +57,11 @@
 </head>
 <body class="container py-4">
 
+   
+  <div class=" mt-4">
+    <a href="/admin/orders" class="btn btn-primary px-4">⬅ Back to Orders</a>
+  </div>
+
   <!-- 🧾 Page Title -->
   <div class="text-center mb-4">
     <h2 class="fw-bold text-primary">Order Details</h2>
@@ -373,10 +378,7 @@
 
 
   <!-- 🛍️ Products -->
- 
-  <div class="text-center mt-4">
-    <a href="/admin/orders" class="btn btn-primary px-4">⬅ Back to Orders</a>
-  </div>
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -407,7 +409,7 @@
       }
     } catch (err) {
       console.error('❌ Error updating order status:', err);
-      alert('⚠️ Something went wrong while updating order status');
+    
     }
   }
 
@@ -500,14 +502,14 @@ async function confirmAndUpdate(orderId) {
       const data = await res.json();
 
       if (data.success) {
-        alert('✅ Order status updated successfully!');
+        alert(' Order status updated successfully!');
         location.reload(); // Refresh page to show updated status
       } else {
-        alert('❌ Failed to update order status: ' + data.message);
+        alert(' Failed to update order status: ' + data.message);
       }
     } catch (err) {
-      console.error('❌ Error updating order status:', err);
-      alert('⚠️ Something went wrong while updating order status');
+      console.error(' Error updating order status:', err);
+      // alert(' Something went wrong while updating order status');
     }
   }
 
@@ -516,7 +518,7 @@ async function confirmAndUpdate(orderId) {
   const selectEl = document.getElementById(`status-${orderId}`);
   const newStatus = selectEl.value;
 
-  // ❗If already delivered, block further changes
+  // If already delivered, block further changes
   if (selectEl.disabled) {
     Swal.fire({
       icon: "info",
@@ -555,7 +557,7 @@ async function confirmAndUpdate(orderId) {
           showConfirmButton: false,
         });
 
-        // ✅ Disable the dropdown + button if delivered
+        // Disable the dropdown + button if delivered
         if (newStatus === "Delivered") {
           selectEl.disabled = true;
           document.querySelector(`button[onclick="confirmAndUpdate('${orderId}')"]`).disabled = true;
@@ -571,7 +573,7 @@ async function confirmAndUpdate(orderId) {
         });
       }
     } catch (err) {
-      console.error('❌ Fetch error:', err);
+      console.error(' Fetch error:', err);
       Swal.fire({
         icon: 'error',
         title: 'Error',
@@ -582,7 +584,7 @@ async function confirmAndUpdate(orderId) {
 }
 
 async function processReturns(orderId) {
-  console.log("🔥 APPROVE CLICKED:", orderId);
+  console.log(" APPROVE CLICKED:", orderId);
   
   const confirm = await Swal.fire({
     title: "Approve all returns?",
@@ -596,27 +598,27 @@ async function processReturns(orderId) {
   if (!confirm.isConfirmed) return;
 
   try {
-    // 🔥 FIXED URL - /admin/ prefix add pannunga!
+    //  FIXED URL - /admin/ prefix add pannunga!
     const url = `/admin/orders/${orderId}/approve-returns`;
-    console.log("🔥 FETCHING:", url);
+    console.log(" FETCHING:", url);
     
     const res = await fetch(url, {
       method: "PUT",
       headers: { "Content-Type": "application/json" }
     });
 
-    console.log("🔥 STATUS:", res.status);
+    console.log(" STATUS:", res.status);
     const data = await res.json();
     
     if (res.ok) {
-      await Swal.fire("✅ Approved!", data.message, "success");
+      await Swal.fire(" Approved!", data.message, "success");
       location.reload();
     } else {
-      Swal.fire("❌ Error", data.message || "Failed", "error");
+      Swal.fire(" Error", data.message || "Failed", "error");
     }
   } catch (err) {
     console.error("ERROR:", err);
-    Swal.fire("❌ Error", "Try again", "error");
+    Swal.fire(" Error", "Try again", "error");
   }
 }
 

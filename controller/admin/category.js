@@ -47,9 +47,6 @@ const getCategories = async (req, res) => {
 
 
 
-
-
-
 const addCategory = async (req, res) => {
   const { name, description } = req.body;
 
@@ -58,20 +55,61 @@ const addCategory = async (req, res) => {
   }
 
   try {
-    const existing = await Category.findOne({ name });
+    const existing = await Category.findOne({
+      name: { $regex: `^${name}$`, $options: "i" }
+    });
+
     if (existing) {
-      return res.status(400).json({ success: false, message: "Category already exists" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Category already exists" });
     }
 
-    const category = new Category({ name, description });
-    await category.save()
+    const category = new Category({
+      name: name.trim(),
+      description: description.trim(),
+    });
 
-    res.json({ success: true, message: "Category added successfully", category });
+    await category.save();
+
+    return res.json({
+      success: true,
+      message: "Category added successfully",
+      category,
+    });
   } catch (error) {
     console.error("Add Category Error:", error.message);
-    res.status(500).json({ success: false, message: "Server error, please try again" });
+
+    return res
+      .status(500)
+      .json({ success: false, message: "Server error, please try again" });
   }
-}
+};
+
+
+
+// const addCategory = async (req, res) => {
+//   const { name, description } = req.body;
+
+//   if (!name || !description || name.trim() === "" || description.trim() === "") {
+//     return res.status(400).json({ success: false, message: "Name and description are required" });
+//   }
+
+//   try {
+//     const existing = await Category.findOne({ name });
+//     if (existing) {
+//       return res.status(400).json({ success: false, message: "Category already exists" });
+//     }
+
+//     const category = new Category({ name, description });
+//     await category.save()
+
+//     res.json({ success: true, message: "Category added successfully", category });
+//   } catch (error) {
+//     console.error("Add Category Error:", error.message);
+//     res.status(500).json({ success: false, message: "Server error, please try again" });
+//   }
+// }
 
 
 
@@ -115,17 +153,55 @@ const getEditCategory = async (req, res) => {
 }
 
 
+// const postEditCategory = async (req, res) => {
+//   const { name, description } = req.body;
+//   const id = req.params.id;
+//   try {
+//     await Category.findByIdAndUpdate(id, { name, description });
+//     res.json({ success: true });
+//   } catch (err) {
+//     console.error(err.message);
+//     res.json({ success: false, message: "Server error, please try again" });
+//   }
+// };
+
 const postEditCategory = async (req, res) => {
   const { name, description } = req.body;
   const id = req.params.id;
+
   try {
-    await Category.findByIdAndUpdate(id, { name, description });
-    res.json({ success: true });
+    const existing = await Category.findOne({
+      _id: { $ne: id }, 
+      name: { $regex: `^${name}$`, $options: "i" }  
+    });
+
+    if (existing) {
+      return res.json({
+        success: false,
+        message: "Category name already exists"
+      });
+    }
+
+    await Category.findByIdAndUpdate(id, {
+      name: name.trim(),
+      description: description.trim()
+    });
+
+    return res.json({
+      success: true,
+      message: "Category updated successfully"
+    });
+
   } catch (err) {
-    console.error(err.message);
-    res.json({ success: false, message: "Server error, please try again" });
+    console.error("Edit Category Error:", err.message);
+    return res.json({
+      success: false,
+      message: "Server error, please try again"
+    });
   }
 };
+
+
 
 
 const searchCategories = async (req, res) => {

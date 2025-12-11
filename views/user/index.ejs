@@ -91,23 +91,22 @@
 						<div class="mb-4">
 
 
-
-							<div class="flex gap-2 relative">
+  <div class="flex gap-2 relative mb-6">
   <input
     type="search"
     id="searchProducts"
-    placeholder="Search for products"
-    class="border border-gray-300 rounded-lg p-2 w-full focus:ring-green-600 focus:border-green-600"
-	autocomplete="off" 
+    placeholder="🔍 Search products..."
+    class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all outline-none pr-12"
+    autocomplete="off" 
   />
-  <button id="searchBtn" class="px-4 py-2 bg-green-600 text-white rounded-lg">Search</button>
-
-
-  
+  <button id="searchBtn" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-all shadow-md">
+    Search
+  </button>
 </div>
 
+<!-- Live Search Dropdown -->
+<ul id="searchResults" class="absolute bg-white border border-gray-200 rounded-lg w-full mt-1 z-50 hidden shadow-xl max-h-64 overflow-y-auto"></ul>
 
-  <ul id="searchResults" class="absolute bg-white border rounded w-full mt-1 z-50 hidden"></ul>
   
 </div>
 						</form>
@@ -166,14 +165,14 @@
      class="flex items-center gap-2 text-gray-700 font-medium cursor-pointer hover:text-blue-600 transition">
     
     <!-- Card SVG Icon -->
-    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <rect x="2" y="5" width="20" height="14" rx="2" />
       <line x1="2" y1="10" x2="22" y2="10" />
       <line x1="6" y1="15" x2="6.01" y2="15" />
       <line x1="10" y1="15" x2="14" y2="15" />
-    </svg>
-
+    </svg> -->
+<svg fill="#000000" width="24" height="24" viewBox="0 0 24 24" id="cart" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color"><path id="secondary-upstroke" d="M11,20.5h.1m5.9,0h.1" style="fill: none; stroke: rgb(44, 169, 188); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path id="primary" d="M3,3H5.14a1,1,0,0,1,1,.85L6.62,7,8,16l11-1,2-8H6.62" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path></svg>
     <!-- <span>My Cards</span> -->
   </a>
 
@@ -185,13 +184,13 @@
        class="flex items-center gap-2 text-gray-700 font-medium cursor-pointer hover:text-blue-600 transition">
 
       <% if (user && user.firstName) { %>
-        <span>Hi, <%= user.firstName %></span>
+        <span><%= user.firstName %></span>
         <!-- Dropdown Arrow -->
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="pointer-events: none;">
           <path d="M1.5 5.5l6 6 6-6"/>
         </svg>
       <% } else { %>
-        <span>Hi, Guest</span>
+        <span></span>
         <!-- User Icon -->
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="pointer-events: none;">
           <path d="M0 0h24v24H0z" stroke="none"/>
@@ -1265,96 +1264,181 @@ Remove if you do not want.
 
 <script>
 
-
-
-
-
-	const searchInput = document.getElementById("searchProducts");
+const searchInput = document.getElementById("searchProducts");
 const searchBtn = document.getElementById("searchBtn");
+const resultsList = document.getElementById("searchResults");
 
-searchBtn.addEventListener("click", async () => {
+let timeout = null;
+let isSearching = false; 
+
+searchBtn.addEventListener("click", async (e) => {
+  e.preventDefault(); 
+  
   const query = searchInput.value.trim();
-
-  if(query.length === 0){
+  if (!query) {
     Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Please enter product name!' });
     return;
   }
 
-  try{
-    const res = await fetch(`/search-product?query=${encodeURIComponent(query)}`);
-    const data = await res.json();
-
-    if(!data || data.length === 0){
-      Swal.fire({ icon: 'error', title: 'Oops...', text: 'Product not found!' });
-      return;
-    }
-
-    // If multiple products match, go to the first one (or you can list them)
-    window.location.href = `/product/${data[0]._id}`;
-
-  } catch(err){
-    console.error(err);
-    Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later.' });
-  }
+  resultsList.classList.add('hidden');
+  isSearching = true;
+  window.location.href = `/shop?query=${encodeURIComponent(query)}`;
 });
 
-// const searchInput = document.getElementById("searchProducts");
-const resultsList = document.getElementById("searchResults");
-
-let timeout = null;
-
 searchInput.addEventListener("input", () => {
+
+  if (isSearching) return;
+
   const query = searchInput.value.trim();
+  
+  if (timeout) clearTimeout(timeout);
 
-  // Clear previous timeout
-  if(timeout) clearTimeout(timeout);
-
-  // Small delay before sending request
   timeout = setTimeout(async () => {
-    if(query.length === 0){
+    if (query.length < 2) {
       resultsList.innerHTML = '';
       resultsList.classList.add('hidden');
       return;
     }
 
-    try{
+    try {
       const res = await fetch(`/search-products?query=${encodeURIComponent(query)}`);
       const data = await res.json();
 
       resultsList.innerHTML = '';
 
-      if(data.length === 0){
+      if (data.length === 0) {
         resultsList.classList.add('hidden');
-        Swal.fire({ icon: 'error', title: 'Oops...', text: 'No products found!' });
         return;
       }
 
-      data.forEach(product => {
+      data.slice(0, 6).forEach(product => {
         const li = document.createElement('li');
-        li.textContent = product.name;
-        li.className = 'px-3 py-2 cursor-pointer hover:bg-gray-100';
+        li.innerHTML = `
+          <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer group">
+            <div class="font-medium text-gray-900 group-hover:text-green-600">${product.name}</div>
+          
+          </div>
+        `;
         li.addEventListener('click', () => {
-          window.location.href = `/product/${product._id}`; // redirect to product page
+          window.location.href = `/product/${product._id}`;
         });
         resultsList.appendChild(li);
       });
 
       resultsList.classList.remove('hidden');
-
-    } catch(err){
+    } catch (err) {
       console.error(err);
-      Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later' });
+      resultsList.classList.add('hidden');
     }
-
-  }, 300); // 300ms debounce
+  }, 300);
 });
 
-// Hide results if click outside
-document.addEventListener('click', e => {
-  if(!resultsList.contains(e.target) && e.target !== searchInput){
+document.addEventListener('click', (e) => {
+  if (!resultsList.contains(e.target) && e.target !== searchInput) {
     resultsList.classList.add('hidden');
   }
 });
+
+searchInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    searchBtn.click(); 
+  }
+});
+
+
+
+
+
+
+
+
+
+// 	const searchInput = document.getElementById("searchProducts");
+// const searchBtn = document.getElementById("searchBtn");
+
+// searchBtn.addEventListener("click", async () => {
+//   const query = searchInput.value.trim();
+
+//   if(query.length === 0){
+//     Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Please enter product name!' });
+//     return;
+//   }
+
+//   try{
+//     const res = await fetch(`/search-product?query=${encodeURIComponent(query)}`);
+//     const data = await res.json();
+
+//     if(!data || data.length === 0){
+//       Swal.fire({ icon: 'error', title: 'Oops...', text: 'Product not found!' });
+//       return;
+//     }
+
+//     // If multiple products match, go to the first one (or you can list them)
+//     window.location.href = `/product/${data[0]._id}`;
+
+//   } catch(err){
+//     console.error(err);
+//     Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later.' });
+//   }
+// });
+
+// // const searchInput = document.getElementById("searchProducts");
+// const resultsList = document.getElementById("searchResults");
+
+// let timeout = null;
+
+// searchInput.addEventListener("input", () => {
+//   const query = searchInput.value.trim();
+
+//   // Clear previous timeout
+//   if(timeout) clearTimeout(timeout);
+
+//   // Small delay before sending request
+//   timeout = setTimeout(async () => {
+//     if(query.length === 0){
+//       resultsList.innerHTML = '';
+//       resultsList.classList.add('hidden');
+//       return;
+//     }
+
+//     try{
+//       const res = await fetch(`/search-products?query=${encodeURIComponent(query)}`);
+//       const data = await res.json();
+
+//       resultsList.innerHTML = '';
+
+//       if(data.length === 0){
+//         resultsList.classList.add('hidden');
+//         Swal.fire({ icon: 'error', title: 'Oops...', text: 'No products found!' });
+//         return;
+//       }
+
+//       data.forEach(product => {
+//         const li = document.createElement('li');
+//         li.textContent = product.name;
+//         li.className = 'px-3 py-2 cursor-pointer hover:bg-gray-100';
+//         li.addEventListener('click', () => {
+//           window.location.href = `/product/${product._id}`; // redirect to product page
+//         });
+//         resultsList.appendChild(li);
+//       });
+
+//       resultsList.classList.remove('hidden');
+
+//     } catch(err){
+//       console.error(err);
+//       Swal.fire({ icon: 'error', title: 'Server Error', text: 'Try again later' });
+//     }
+
+//   }, 300); // 300ms debounce
+// });
+
+// // Hide results if click outside
+// document.addEventListener('click', e => {
+//   if(!resultsList.contains(e.target) && e.target !== searchInput){
+//     resultsList.classList.add('hidden');
+//   }
+// });
 
 
 

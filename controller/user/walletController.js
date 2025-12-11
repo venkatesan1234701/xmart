@@ -112,7 +112,7 @@ const verifyWalletPayment = async (req, res) => {
     }
 
     console.log("Wallet payment verified successfully");
-
+const refundTransactionId = "REF" + Math.floor(100000 + Math.random() * 900000);
     let wallet = await Wallet.findOne({ userId });
     if (!wallet) wallet = await Wallet.create({ userId });
 
@@ -122,7 +122,7 @@ const verifyWalletPayment = async (req, res) => {
       type: "Razorpay",
       transactionType: "Credit",
       transactionDetail: "Wallet Top-up",
-      transactionId: razorpay_payment_id,
+      transactionId: refundTransactionId,
       status: "completed",
     });
 

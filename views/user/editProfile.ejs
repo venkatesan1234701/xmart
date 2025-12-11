@@ -67,7 +67,7 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+<!-- 
 <script>
   const form = document.getElementById('editProfileForm');
   const phoneInput = document.getElementById('phone');
@@ -93,7 +93,75 @@
       showConfirmButton: false
     }).then(() => form.submit());
   });
+</script> -->
+
+<script>
+  const form = document.getElementById("editProfileForm");
+  const phoneInput = document.getElementById("phone");
+  const phoneError = document.getElementById("phoneError");
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const firstName = document.getElementById("firstName").value.trim();
+    const secondName = document.getElementById("secondName").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+
+    if (firstName === "" || secondName === "") {
+      Swal.fire("", "Fields cannot be empty", "error");
+      return;
+    }
+
+    if (!/^\d{10}$/.test(phone)) {
+      phoneError.textContent = "Phone must be exactly 10 digits";
+      phoneError.classList.remove("d-none");
+      return;
+    } else {
+      phoneError.classList.add("d-none");
+    }
+
+    const response = await fetch("/user/edit-profile", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        firstName,
+        secondName,
+        phone
+      })
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      phoneError.textContent = result.msg;
+      phoneError.classList.remove("d-none");
+
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: result.msg,
+      });
+
+      return;
+    }
+
+    Swal.fire({
+      icon: "success",
+      title: "Profile Updated!",
+      text: "Your details have been saved.",
+      timer: 1500,
+      showConfirmButton: false
+    }).then(() => {
+      window.location.href = "/user/profile";
+    });
+  });
 </script>
+
+
+
+
 
 </body>
 </html>

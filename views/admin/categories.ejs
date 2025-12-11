@@ -900,11 +900,18 @@
         <tr id="row-<%= category._id %>" class="border-b border-gray-300 bg-white hover:bg-gray-50 transition-colors duration-200" style="height: 180px;">
           <td class="py-3 px-6 text-left align-top"></td>
           <td class="py-3 px-6 text-left align-top font-medium text-gray-700"><%= category.name %></td>
-          <td class="py-3 px-6 text-left align-top break-words" style="white-space: normal; word-wrap: break-word; height: 100%; overflow-wrap: break-word;">
+          <!-- <td class="py-3 px-6 text-left align-top break-words" style="white-space: normal; word-wrap: break-word; height: 100%; overflow-wrap: break-word;">
             <div class="h-full overflow-hidden text-gray-600">
               <%= category.description %>
             </div>
-          </td>
+          </td> -->
+
+		  <td class="py-3 px-6 text-left align-top break-words" style="max-width: 400px; width: 400px;">
+  <div class="max-h-24 overflow-y-auto text-gray-600 break-words">
+    <%= category.description %>
+  </div>
+</td>
+
           <td class="py-3 px-6 text-left align-top text-gray-500"><%= category.createdAt.toDateString() %></td>
           <td class="py-3 px-6 text-left flex gap-2 align-top">
             <button
@@ -920,11 +927,11 @@
   <%= category.isDeleted ? 'list' : 'unlist' %>
 </button>
 
-  <button
+  <!-- <button
     class="px-3 py-1 rounded <%= category.isBlocked ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700' %> text-white shadow-sm transition-colors duration-200 toggleBlockBtn"
     data-id="<%= category._id %>">
     <%= category.isBlocked ? 'Block' : 'Unblock' %>
-  </button>
+  </button> -->
           </td>
         </tr>
       <% }) %>
@@ -1261,21 +1268,20 @@ categoryForm.addEventListener("submit", async e => {
   const name = document.getElementById("categoryName").value.trim();
   const description = document.getElementById("categoryDescription").value.trim();
 
-  // Validation rules
   if (!name) {
     Swal.fire(' Error', 'Please enter category name.', 'warning');
     return;
   } 
-  if (name.length < 3) {
-    Swal.fire(' Error', 'Category name must be at least 3 characters.', 'warning');
+  if (name.length < 4) {
+    Swal.fire(' Error', 'Category name must be at least 4 characters.', 'warning');
     return;
   }
   if (name.length > 15) {
     Swal.fire(' Error', 'Category name should not exceed 15 characters.', 'warning');
     return;
   }
-  if (!description || description.length < 5) {
-    Swal.fire(' Error', 'Please provide a valid description (minimum 5 characters).', 'warning');
+  if (!description || description.length < 30) {
+    Swal.fire(' Error', 'Please provide a valid description (minimum 30 characters).', 'warning');
     return;
   }
 
@@ -1403,16 +1409,16 @@ editForm.addEventListener("submit", async e => {
   }
 
   // --- DESCRIPTION VALIDATION ---
-  if (!description || description.length < 5) {
-    Swal.fire('Error', 'Description must be at least 5 characters.', 'warning');
+  if (!description || description.length < 30) {
+    Swal.fire('Error', 'Description must be at least 30 characters.', 'warning');
     return;
   }
 
   // ⭐ 100 CHARACTER LIMIT FOR DESCRIPTION
-  if (description.length > 250) {
+  if (description.length > 200) {
     Swal.fire(
       'Error',
-      `Description should not exceed 250 characters. (Now: ${description.length})`,
+      `Description should not exceed 200 characters. (Now: ${description.length})`,
       'warning'
     );
     return;
@@ -1443,6 +1449,10 @@ editForm.addEventListener("submit", async e => {
 });
 
 });
+
+
+
+
 </script>
 
 

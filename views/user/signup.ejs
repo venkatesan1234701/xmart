@@ -120,11 +120,18 @@
   </div>
 
   <!-- Google -->
-  <a href="/auth/google/signup" >
+  <!-- <a href="/auth/google/signup" >
     <button type="button" class="btn btn-outline-danger w-100">
       <img src="/images/validation/google-brands-solid.png" alt="" class="google-icon me-3"> Sign Up with Google
     </button>
-  </a>
+  </a> -->
+  <a href="/auth/google">
+  <button type="button" class="btn btn-outline-danger w-100">
+    <img src="/images/validation/google-brands-solid.png" class="google-icon me-3">
+    Sign Up with Google
+  </button>
+</a>
+
 </div>
 
 
@@ -205,9 +212,114 @@ document.getElementById("togglePassword").addEventListener("click", function () 
 
 </script> -->
 
+<script>
+
+const signupForm = document.getElementById("sign-up-form");
+const signUpBtn = signupForm.querySelector("button[type='submit']");
+
+// Clear error when user types
+signupForm.querySelectorAll("input").forEach(input => {
+  input.addEventListener("input", () => {
+    const errorEl = document.getElementById(input.id + "Error");
+    if (errorEl) errorEl.textContent = "";
+  });
+});
+
+// Form submit + validation + referral DB check
+signupForm.addEventListener("submit", async function (e) {
+  e.preventDefault(); 
+
+  let isValid = true;
+
+  // Reset previous errors
+  document.querySelectorAll(".error-style").forEach(el => el.textContent = "");
+
+  // Get input values
+  const firstName = document.getElementById("firstName").value.trim();
+  const lastName = document.getElementById("lastName").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const referral = document.getElementById("referralCode").value.trim();
+
+  // Regex
+  const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  const phoneRegex = /^[0-9]{10}$/;
+
+  // Validation
+  if (!firstName) { document.getElementById("firstNameError").textContent = "First name is required"; isValid = false; }
+  if (!lastName) { document.getElementById("lastNameError").textContent = "Last name is required"; isValid = false; }
+
+  if (!email) { document.getElementById("emailError").textContent = "Email is required"; isValid = false; }
+  else if (!emailRegex.test(email)) {
+    document.getElementById("emailError").textContent = "Enter a valid email";
+    isValid = false;
+  }
+
+  if (!phone) { document.getElementById("phoneError").textContent = "Phone number is required"; isValid = false; }
+  else if (!phoneRegex.test(phone)) {
+    document.getElementById("phoneError").textContent = "Enter a valid 10-digit phone number";
+    isValid = false;
+  }
+
+  if (!password) { document.getElementById("passwordError").textContent = "Password is required"; isValid = false; }
+  else if (password.length < 6) {
+    document.getElementById("passwordError").textContent = "Password must be at least 6 characters";
+    isValid = false;
+  }
+
+  if (referral && referral.length !== 6) {
+    document.getElementById("referralCodeError").textContent = "Referral code must be 6 characters";
+    isValid = false;
+  }
+
+  if (!isValid) return; // Stop here if validation failed
 
 
+  // -------------------------------
+  // ✅ Referral Code Database Check
+  // -------------------------------
+  if (referral) {
+    try {
+      const response = await fetch("/check-referral", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: referral })
+      });
 
+      const data = await response.json();
+
+      if (!data.success) {
+        document.getElementById("referralCodeError").textContent = data.message;
+        return; // Stop submission
+      }
+
+    } catch (err) {
+      document.getElementById("referralCodeError").textContent = "Server error. Try again later.";
+      return;
+    }
+  }
+
+  // -------------------------------
+  // Submit Form
+  // -------------------------------
+  signUpBtn.disabled = true;
+  signUpBtn.innerText = "Signing Up...";
+
+  signupForm.submit();
+});
+
+
+// Toggle Password Visibility
+document.getElementById("togglePassword").addEventListener("click", function () {
+  const pwd = document.getElementById("password");
+  pwd.type = pwd.type === "password" ? "text" : "password";
+});
+
+</script>
+
+
+<!-- 
 <script>
 const signupForm = document.getElementById("sign-up-form");
 const signUpBtn = signupForm.querySelector("button[type='submit']");
@@ -283,7 +395,7 @@ document.getElementById("togglePassword").addEventListener("click", function () 
   const pwd = document.getElementById("password");
   pwd.type = pwd.type === "password" ? "text" : "password";
 });
-</script>
+</script> -->
 
 
 

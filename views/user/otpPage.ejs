@@ -351,20 +351,23 @@
 
   <!-- Scripts -->
 
+
+
 <script>
-  // ======= OTP Input Handling =======
+
+  // =========================
+  // OTP INPUT HANDLING
+  // =========================
   const otpInputs = document.querySelectorAll('input[name^="otp"]');
   otpInputs.forEach((input, index) => {
     input.addEventListener("input", (e) => {
-      const value = e.target.value;
-      if (!/^\d$/.test(value)) {
+      if (!/^\d$/.test(e.target.value)) {
         e.target.value = "";
         return;
       }
-      if (value.length === 1 && index < otpInputs.length - 1) {
-        otpInputs[index + 1].focus();
-      }
+      if (index < otpInputs.length - 1) otpInputs[index + 1].focus();
     });
+
     input.addEventListener("keydown", (e) => {
       if (e.key === "Backspace" && !input.value && index > 0) {
         otpInputs[index - 1].focus();
@@ -372,70 +375,114 @@
     });
   });
 
-  // ======= Resend OTP Timer =======
- 
-const resendBtn = document.getElementById('resendBtn');
-const timerSpan = document.getElementById('timer');
-let timer = sessionStorage.getItem('otpTimer') ? parseInt(sessionStorage.getItem('otpTimer')) : 120;
-let countdown;
 
-// Function to start countdown and keep timer visible
-function startCountdown() {
-  resendBtn.disabled = true;
-  timerSpan.textContent = timer;
 
-  countdown = setInterval(() => {
-    timer--;
-    sessionStorage.setItem('otpTimer', timer);
-    timerSpan.textContent = timer;
+  // =========================
+  // RESEND OTP TIMER
+  // =========================
 
-    if (timer <= 0) {
-      clearInterval(countdown);
-      resendBtn.disabled = false;
-      resendBtn.innerHTML = `Resend OTP`;
-      sessionStorage.removeItem('otpTimer');
-    }
-  }, 1000);
+  const resendBtn = document.getElementById("resendBtn");
+  let timerSpan = document.getElementById("timer");
+
+// Check if page is opened for the first time
+const firstLoad = sessionStorage.getItem("otpPageLoaded") === null;
+
+if (firstLoad) {
+  timer = 90;  // Always start from 90 on first entry
+  sessionStorage.setItem("otpTimer", 90);
+  sessionStorage.setItem("otpPageLoaded", "true");
+} else {
+  timer = parseInt(sessionStorage.getItem("otpTimer")) || 90;
+
+  if (timer <= 0 || isNaN(timer)) {
+    timer = 90;
+    sessionStorage.setItem("otpTimer", 90);
+  }
 }
 
-// Start countdown if timer > 0
-if (timer > 0) startCountdown();
 
-// Resend OTP click
-resendBtn.addEventListener('click', async (e) => {
-  e.preventDefault();
+  let countdown;
 
-  // Reset timer to 30s and start countdown
-  timer = 120;
-  sessionStorage.setItem('otpTimer', timer);
+  function renderButton() {
+    resendBtn.innerHTML = `Resend OTP in <span id="timer">${timer}</span>s`;
+    timerSpan = document.getElementById("timer");
+  }
+
+  function startCountdown() {
+    if (countdown) clearInterval(countdown);
+
+    resendBtn.disabled = true;
+    renderButton();
+
+    countdown = setInterval(() => {
+      timer--;
+      sessionStorage.setItem("otpTimer", timer);
+
+      if (timerSpan) {
+        timerSpan.textContent = timer;
+      }
+
+      if (timer <= 0) {
+        clearInterval(countdown);
+        resendBtn.disabled = false;
+        resendBtn.textContent = "Resend OTP";
+        sessionStorage.removeItem("otpTimer");
+      }
+    }, 1000);
+  }
+
+  renderButton();
   startCountdown();
 
-  try {
-    const email = "<%= email %>";
-    await fetch('/resend-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
 
-    Swal.fire({
-      icon: 'success',
-      title: 'OTP Sent',
-      text: 'OTP has been resent!'
-    });
 
-  } catch (err) {
-    console.error(err);
-    Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to resend OTP' });
-    clearInterval(countdown);
-    resendBtn.disabled = false;
-    resendBtn.innerHTML = `Resend OTP in <span id="timer">${timer}</span>s`;
-    sessionStorage.removeItem('otpTimer');
-  }
-});
+  // =========================
+  // RESEND OTP BUTTON CLICK
+  // =========================
+  resendBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
 
+    // Reset to 90 seconds always
+    timer = 90;
+    sessionStorage.setItem("otpTimer", 90);
+
+    // Restart countdown
+    startCountdown();
+
+    try {
+      const email = "<%= email %>";
+
+      await fetch("/resend-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+
+      Swal.fire({
+        icon: "success",
+        title: "OTP Sent",
+        text: "A new OTP has been sent!"
+      });
+
+    } catch (err) {
+      console.error(err);
+
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to resend OTP"
+      });
+
+      clearInterval(countdown);
+      resendBtn.disabled = false;
+      renderButton();
+      sessionStorage.removeItem("otpTimer");
+    }
+  });
 
 </script>
+
+
 
 
 

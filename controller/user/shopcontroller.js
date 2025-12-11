@@ -17,12 +17,93 @@ const { models } = require("mongoose")
 
 
 
+// const getShopPage = async (req, res) => {
+//   try {
+//     const user = req.session.user || null;
+//     const perPage = 8;
+//     const page = parseInt(req.query.page) || 1;
+//     const sort = req.query.sort || 'newest';
+
+//     let sortOption = { createdAt: -1 };
+//     if (sort === 'lowToHigh') sortOption = { 'prices.0': 1 };
+//     if (sort === 'highToLow') sortOption = { 'prices.0': -1 };
+//     if (sort === 'nameAToZ') sortOption = { name: 1 };
+//     if (sort === 'nameZToA') sortOption = { name: -1 };
+
+//     const categories = await Category.find({ isBlocked: false, isDeleted: false }).lean();
+
+//     let products = await Product.find({ isDeleted: false })
+//       .populate({ path: 'category', match: { isBlocked: false, isDeleted: false } })
+//       .sort(sortOption)
+//       .lean();
+
+//     products = products.filter(p => p.category);
+
+//     const now = new Date();
+
+//     const activeProductOffers = await ProductOffer.find({
+//       currentStatus: 'active',
+//       isListed: true,
+//       startDate: { $lte: now },
+//       endDate: { $gte: now }
+//     }).lean();
+
+//     const activeCategoryOffers = await CategoryOffer.find({
+//       status: 'list',
+//       isListed: true,
+//       startDate: { $lte: now },
+//       endDate: { $gte: now }
+//     }).lean();
+
+//     const productsWithOffer = products.map(product => {
+//       const productOffer = activeProductOffers.find(o => o.product.toString() === product._id.toString());
+//       let categoryOffer = null;
+
+//       if (product.category) {
+//         categoryOffer = activeCategoryOffers.find(c => c.category.toString() === product.category._id.toString());
+//       }
+
+//       let finalOffer = null;
+//       if (productOffer && categoryOffer) {
+//         finalOffer = productOffer.offerPercentage >= categoryOffer.offerPercentage ? productOffer : categoryOffer;
+//       } else if (productOffer) {
+//         finalOffer = productOffer;
+//       } else if (categoryOffer) {
+//         finalOffer = categoryOffer;
+//       }
+
+//       return { ...product, offer: finalOffer };
+//     });
+
+//     const totalProducts = productsWithOffer.length;
+//     const pages = Math.ceil(totalProducts / perPage);
+//     const paginatedProducts = productsWithOffer.slice((page - 1) * perPage, page * perPage);
+
+//     res.render('user/shop', {
+//       user,
+//       products: paginatedProducts,
+//       categories,
+//       current: page,
+//       pages,
+//       sort
+//     });
+
+//   } catch (err) {
+//     console.error("getShopPage error:", err);
+//     res.status(500).send('Server Error');
+//   }
+// };
+
+
+
 const getShopPage = async (req, res) => {
   try {
     const user = req.session.user || null;
     const perPage = 8;
     const page = parseInt(req.query.page) || 1;
     const sort = req.query.sort || 'newest';
+    const query = req.query.query || ''; 
+    const categoryFilter = req.query.category || 'all'; 
 
     let sortOption = { createdAt: -1 };
     if (sort === 'lowToHigh') sortOption = { 'prices.0': 1 };
@@ -30,17 +111,40 @@ const getShopPage = async (req, res) => {
     if (sort === 'nameAToZ') sortOption = { name: 1 };
     if (sort === 'nameZToA') sortOption = { name: -1 };
 
-    const categories = await Category.find({ isBlocked: false, isDeleted: false }).lean();
+    const categories = await Category.find({ 
+      isBlocked: false, 
+      isDeleted: false 
+    }).lean();
 
-    let products = await Product.find({ isDeleted: false })
-      .populate({ path: 'category', match: { isBlocked: false, isDeleted: false } })
+    let productFilter = { 
+      isDeleted: false 
+    };
+
+    if (query && query.trim().length >= 2) {
+      productFilter.name = { 
+        $regex: query.trim(), 
+        $options: "i" 
+      };
+    }
+
+    if (categoryFilter && categoryFilter !== 'all') {
+      productFilter.category = categoryFilter;
+    }
+
+    let products = await Product.find(productFilter)
+      .populate({ 
+        path: 'category', 
+        match: { isBlocked: false, isDeleted: false } 
+      })
       .sort(sortOption)
       .lean();
 
-    products = products.filter(p => p.category);
+    products = products.filter(p => 
+      p.category && 
+      p.name.toLowerCase() !== 'siva'
+    );
 
     const now = new Date();
-
     const activeProductOffers = await ProductOffer.find({
       currentStatus: 'active',
       isListed: true,
@@ -56,46 +160,82 @@ const getShopPage = async (req, res) => {
     }).lean();
 
     const productsWithOffer = products.map(product => {
-      const productOffer = activeProductOffers.find(o => o.product.toString() === product._id.toString());
+      const productOffer = activeProductOffers.find(
+        o => o.product.toString() === product._id.toString()
+      );
+      
       let categoryOffer = null;
-
       if (product.category) {
-        categoryOffer = activeCategoryOffers.find(c => c.category.toString() === product.category._id.toString());
+        categoryOffer = activeCategoryOffers.find(
+          c => c.category.toString() === product.category._id.toString()
+        );
       }
 
       let finalOffer = null;
       if (productOffer && categoryOffer) {
-        finalOffer = productOffer.offerPercentage >= categoryOffer.offerPercentage ? productOffer : categoryOffer;
+        finalOffer = productOffer.offerPercentage >= categoryOffer.offerPercentage 
+          ? productOffer 
+          : categoryOffer;
       } else if (productOffer) {
         finalOffer = productOffer;
       } else if (categoryOffer) {
         finalOffer = categoryOffer;
       }
 
-      return { ...product, offer: finalOffer };
+      return { 
+        ...product, 
+        offer: finalOffer 
+      };
     });
 
     const totalProducts = productsWithOffer.length;
     const pages = Math.ceil(totalProducts / perPage);
-    const paginatedProducts = productsWithOffer.slice((page - 1) * perPage, page * perPage);
+    const paginatedProducts = productsWithOffer.slice(
+      (page - 1) * perPage, 
+      page * perPage
+    );
+
+    let searchMessage = "Browse our products";
+    let noProductsMessage = "No products available";
+    
+    if (query.trim()) {
+      searchMessage = `Showing results for "${query}"`;
+      if (totalProducts === 0) {
+        noProductsMessage = `No products found for "${query}"`;
+      }
+    }
+
+    if (categoryFilter !== 'all') {
+      const selectedCategory = categories.find(c => c._id.toString() === categoryFilter);
+      if (selectedCategory) {
+        searchMessage = `Products in ${selectedCategory.name}`;
+      }
+    }
 
     res.render('user/shop', {
       user,
       products: paginatedProducts,
+      allProductsCount: totalProducts,       
       categories,
       current: page,
       pages,
-      sort
+      sort,
+      query: query || '',                    
+      categoryFilter,                         
+      searchMessage,                         
+      noProducts: totalProducts === 0,       
+      noProductsMessage,                     
+      hasSearch: !!query.trim(),             
+      hasCategoryFilter: categoryFilter !== 'all' 
     });
 
   } catch (err) {
     console.error("getShopPage error:", err);
-    res.status(500).send('Server Error');
+    res.status(500).render('user/error', { 
+      error: 'Shop page failed to load. Please try again.' 
+    });
   }
 };
-
-
-
 
 
 
@@ -227,33 +367,42 @@ const getCartTotals = async (req, res) => {
 };
 
 
-
-
-
-
-
 const addToCart = async (req, res) => {
   try {
     const { productId, qty, size, pricePerUnit } = req.body;
-    const quantity = Math.min(parseInt(qty) || 1, 8);
-    const unitPrice = parseFloat(pricePerUnit);
 
     if (!req.user || !req.user.id) {
       return res.status(401).json({ success: false, message: "Login required" });
     }
+
     const userId = req.user.id;
+    const quantity = Math.min(parseInt(qty) || 1, 8);
+    const unitPrice = parseFloat(pricePerUnit);
 
     const product = await Product.findById(productId);
-    if (!product) return res.json({ success: false, message: "Product not found" });
+    if (!product) {
+      return res.json({ success: false, message: "Product not found" });
+    }
 
     const sizeIndex = product.sizes.indexOf(size);
-    if (sizeIndex === -1) return res.json({ success: false, message: "Invalid size selected" });
+    if (sizeIndex === -1) {
+      return res.json({ success: false, message: "Invalid size selected" });
+    }
 
     const availableQty = product.quantities[sizeIndex];
-    if (quantity > availableQty) return res.json({ success: false, message: `Only ${availableQty} items available` });
-    if (isNaN(unitPrice) || unitPrice <= 0) return res.json({ success: false, message: "Invalid price per unit" });
+
+    if (quantity > availableQty) {
+      return res.json({ success: false, message: `Only ${availableQty} items available` });
+    }
+
+    if (isNaN(unitPrice) || unitPrice <= 0) {
+      return res.json({ success: false, message: "Invalid price per unit" });
+    }
+
+    const originalPrice = unitPrice;
 
     let cart = await Cart.findOne({ userId });
+
     if (!cart) {
       cart = new Cart({
         userId,
@@ -264,51 +413,55 @@ const addToCart = async (req, res) => {
       });
     }
 
-    const existingProduct = cart.products.find(p =>
-      p.productId.toString() === productId && p.selectedSize === size
+    const existingProduct = cart.products.find(
+      p => p.productId.toString() === productId && p.selectedSize === size
     );
 
-    // if (existingProduct) {
-    //   const newQty = existingProduct.quantity + quantity;
-    //   if (newQty > availableQty) {
-    //     return res.json({ success: false, message: `Only ${availableQty} items available` });
-    //   }
-    //   existingProduct.quantity = newQty;
-    //   existingProduct.pricePerUnit = unitPrice;
-
     if (existingProduct) {
-  const newQty = existingProduct.quantity + quantity;
+      const newQty = existingProduct.quantity + quantity;
 
-  if (existingProduct.quantity >= 8) {
-    return res.json({ success: false, message: "You already have maximum 8 quantity in cart!" });
-  }
-  if (newQty > 8) {
-    return res.json({
-      success: false,
-      message: `Only ${8 - existingProduct.quantity} more items can be added`
-    });
-  }
-  if (newQty > availableQty) {
-    return res.json({
-      success: false,
-      message: `Only ${availableQty} items available`
-    });
-  }
-  existingProduct.quantity = newQty;
-  existingProduct.pricePerUnit = unitPrice;
-}
+      if (existingProduct.quantity >= 8) {
+        return res.json({ success: false, message: "Max 8 per product allowed" });
+      }
+
+      if (newQty > 8) {
+        return res.json({
+          success: false,
+          message: `You can add only ${8 - existingProduct.quantity} more`
+        });
+      }
+
+      if (newQty > availableQty) {
+        return res.json({
+          success: false,
+          message: `Only ${availableQty} items available`
+        });
+      }
+
+      existingProduct.quantity = newQty;
+      existingProduct.pricePerUnit = existingProduct.originalPrice;
+    }
+
     else {
       cart.products.push({
         productId: product._id,
         quantity,
         selectedSize: size,
-        pricePerUnit: unitPrice,
+
+        originalPrice: originalPrice,
+
+        pricePerUnit: originalPrice,
+
         productDiscount: 0
       });
     }
 
-    cart.subtotal = cart.products.reduce((acc, p) => acc + (p.quantity * p.pricePerUnit), 0);
-    cart.grandTotal = cart.subtotal + (cart.shippingCost || 0);
+    cart.subtotal = cart.products.reduce(
+      (sum, p) => sum + p.pricePerUnit * p.quantity,
+      0
+    );
+
+    cart.grandTotal = cart.subtotal + cart.shippingCost;
 
     await cart.save();
 
@@ -329,38 +482,169 @@ const addToCart = async (req, res) => {
 
 
 
+// const addToCart = async (req, res) => {
+//   try {
+//     const { productId, qty, size, pricePerUnit } = req.body;
+//     const quantity = Math.min(parseInt(qty) || 1, 8);
+//     const unitPrice = parseFloat(pricePerUnit);
+
+//     if (!req.user || !req.user.id) {
+//       return res.status(401).json({ success: false, message: "Login required" });
+//     }
+//     const userId = req.user.id;
+
+//     const product = await Product.findById(productId);
+//     if (!product) return res.json({ success: false, message: "Product not found" });
+
+//     const sizeIndex = product.sizes.indexOf(size);
+//     if (sizeIndex === -1) return res.json({ success: false, message: "Invalid size selected" });
+
+//     const availableQty = product.quantities[sizeIndex];
+//     if (quantity > availableQty) return res.json({ success: false, message: `Only ${availableQty} items available` });
+//     if (isNaN(unitPrice) || unitPrice <= 0) return res.json({ success: false, message: "Invalid price per unit" });
+
+//     let cart = await Cart.findOne({ userId });
+//     if (!cart) {
+//       cart = new Cart({
+//         userId,
+//         subtotal: 0,
+//         shippingCost: 40,
+//         grandTotal: 0,
+//         products: []
+//       });
+//     }
+
+//     const existingProduct = cart.products.find(p =>
+//       p.productId.toString() === productId && p.selectedSize === size
+//     );
+
+//     // if (existingProduct) {
+//     //   const newQty = existingProduct.quantity + quantity;
+//     //   if (newQty > availableQty) {
+//     //     return res.json({ success: false, message: `Only ${availableQty} items available` });
+//     //   }
+//     //   existingProduct.quantity = newQty;
+//     //   existingProduct.pricePerUnit = unitPrice;
+
+//     if (existingProduct) {
+//   const newQty = existingProduct.quantity + quantity;
+
+//   if (existingProduct.quantity >= 8) {
+//     return res.json({ success: false, message: "You already have maximum 8 quantity in cart!" });
+//   }
+//   if (newQty > 8) {
+//     return res.json({
+//       success: false,
+//       message: `Only ${8 - existingProduct.quantity} more items can be added`
+//     });
+//   }
+//   if (newQty > availableQty) {
+//     return res.json({
+//       success: false,
+//       message: `Only ${availableQty} items available`
+//     });
+//   }
+//   existingProduct.quantity = newQty;
+//   existingProduct.pricePerUnit = unitPrice;
+// }
+//     else {
+//       cart.products.push({
+//         productId: product._id,
+//         quantity,
+//         selectedSize: size,
+//         pricePerUnit: unitPrice,
+//         productDiscount: 0
+//       });
+//     }
+
+//     cart.subtotal = cart.products.reduce((acc, p) => acc + (p.quantity * p.pricePerUnit), 0);
+//     cart.grandTotal = cart.subtotal + (cart.shippingCost || 0);
+
+//     await cart.save();
+
+//     return res.json({
+//       success: true,
+//       message: "Product added to cart",
+//       availableQuantity: availableQty,
+//       cart
+//     });
+
+//   } catch (err) {
+//     console.error("AddToCart Error:", err);
+//     return res.status(500).json({ success: false, message: "Server error" });
+//   }
+// };
+
+
 
 const searchProducts = async (req, res) => {
   try {
     const { query = "", category } = req.query;
 
-    if (!query.trim()) return res.json([]);
-
-    let filter = {
-      name: { $regex: `^${query}`, $options: "i" },
-      isDeleted: false
+    if (!query.trim() || query.trim().length < 2) {
+      return res.json([]);
     }
+    let filter = {
+      name: { $regex: query.trim(), $options: "i" }, 
+      isDeleted: false
+    };
 
     if (category && category !== "all") {
       filter.category = category;
     }
 
-    let products = await Product.find(filter).limit(50);
+    const products = await Product.find(filter)
+      .select('name category price quantity _id')
+      .limit(10)
+      .lean();
 
-    if (query.trim().toLowerCase().startsWith('v')) {
-      products = products.filter(prod => prod.name.toLowerCase() !== 'siva');
-    }
+    const filteredProducts = products.filter(prod => 
+      prod.name.toLowerCase() !== 'siva'
+    );
 
-    res.json(products)
-
+    res.json(filteredProducts);
   } catch (err) {
     console.error("Search error:", err);
-    res.status(500).json({ message: "Server error", products: [] })
+    res.status(500).json({ products: [] });
   }
-}
+};
+
+
+
+
+
+// const searchProducts = async (req, res) => {
+//   try {
+//     const { query = "", category } = req.query;
+
+//     if (!query.trim()) return res.json([]);
+
+//     let filter = {
+//       name: { $regex: `^${query}`, $options: "i" },
+//       isDeleted: false
+//     }
+
+//     if (category && category !== "all") {
+//       filter.category = category;
+//     }
+
+//     let products = await Product.find(filter).limit(50);
+
+//     if (query.trim().toLowerCase().startsWith('v')) {
+//       products = products.filter(prod => prod.name.toLowerCase() !== 'siva');
+//     }
+
+//     res.json(products)
+
+//   } catch (err) {
+//     console.error("Search error:", err);
+//     res.status(500).json({ message: "Server error", products: [] })
+//   }
+// }
 
 const getProfilePage = async (req, res) => {
   try {
+     const googleBlock = req.query.googleBlock
     const sessionUser = req.session.user;
     if (!sessionUser) return res.redirect("/signin");
 
@@ -372,7 +656,7 @@ const getProfilePage = async (req, res) => {
       isActive: true 
     }).lean();
 
-    res.render("user/profile", { user, addresses });
+    res.render("user/profile", { user, addresses,googleBlock });
   } catch (err) {
     console.error("Profile Page Error:", err);
     res.status(500).send("Server Error");
@@ -381,27 +665,62 @@ const getProfilePage = async (req, res) => {
 
 
 
+// const getEditProfile = async (req, res) => {
+//   try {
+//     const userId = req.session.user.id;
+//     if (!userId) return res.redirect("/signin");
+
+//     const user = await User.findById(userId).lean();
+//     if (!user) return res.redirect("/signin");
+
+//     res.render("user/editProfile", { user });
+//   } catch (err) {
+//     console.error(err);
+//     res.redirect("/user/profile");
+//   }
+// };
+
+
+
 const getEditProfile = async (req, res) => {
   try {
+    if (!req.session.user) {
+      return res.redirect("/signin");
+    }
     const userId = req.session.user.id;
-    if (!userId) return res.redirect("/signin");
+    if (!userId) return res.redirect("/signin")
 
-    const user = await User.findById(userId).lean();
-    if (!user) return res.redirect("/signin");
+    const user = await User.findById(userId).lean()
+    if (!user) return res.redirect("/signin")
 
-    res.render("user/editProfile", { user });
+    res.render("user/editProfile", { user })
+
   } catch (err) {
     console.error(err);
-    res.redirect("/user/profile");
+    res.redirect("/signin")
   }
-};
+}
+
 
 const updateProfile = async (req, res) => {
   try {
     const userId = req.session.user?.id;
-    if (!userId) return res.redirect("/signin");
+    if (!userId) return res.status(401).json({ success: false, msg: "Not logged in" });
 
     const { firstName, secondName, phone } = req.body;
+
+    if (!firstName || !secondName || !phone) {
+      return res.status(400).json({ success: false, msg: "All fields required" });
+    }
+
+    if (phone.length !== 10) {
+      return res.status(400).json({ success: false, msg: "Phone must be 10 digits" });
+    }
+
+    const exists = await User.findOne({ phone, _id: { $ne: userId } });
+    if (exists) {
+      return res.status(400).json({ success: false, msg: "Phone number already exists" });
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
@@ -414,14 +733,14 @@ const updateProfile = async (req, res) => {
       firstName: updatedUser.firstName,
       secondName: updatedUser.secondName,
       email: updatedUser.email,
-      phone: updatedUser.phone,
-      profile: updatedUser.profile
+      phone: updatedUser.phone
     };
 
-    res.redirect("/user/profile");
+    return res.json({ success: true });
+
   } catch (err) {
     console.error(err);
-    res.redirect("/user/edit-profile");
+    return res.status(500).json({ success: false, msg: "Server error" });
   }
 };
 

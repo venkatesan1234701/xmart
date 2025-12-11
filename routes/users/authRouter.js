@@ -43,10 +43,14 @@ router.post("/verify-otp",authController.verifyOtp)
 router.get("/reset-password", authController.getResetPassword)
 router.post("/reset-password", authController.postResetPassword)
 
-router.get('/auth/google/signup', passport.authenticate('google', { scope: ['profile', 'email'] }))
-router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
-  res.redirect('/')
-})
+// router.get('/auth/google/signup', passport.authenticate('google', { scope: ['profile', 'email'] }))
+// router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
+//   res.redirect('/')
+// })
+
+router.get("/auth/google", authController.authenticateGoogle);
+router.get("/auth/google/callback", authController.googleCallBack);
+
 
 
 router.post("/check-referral",authController.checkReferral)
@@ -120,13 +124,13 @@ router.post("/edit-address/:id",addresscontroller. postEditAddress);
 
 // router.get('/orders', orderController.getOrdersPage)
 
+router.get('/changepassword',WishlistCotroller.changepassword)
+router.post("/changepassword",WishlistCotroller.postchangepass);
 
 router.get("/change-mail", mailcontroller.renderChangeMail);
 router.post("/send-otp", mailcontroller.sendOtp);
 router.post("/verify-mailotp", mailcontroller.verifyOtp);
 
-// router.post("/send-otp", mailcontroller.sendOtp);
-// router.post("/verify-mailotp", mailcontroller.verifyOtp);
 
 
 router.get('/search-products',shopcontroller.searchProducts)

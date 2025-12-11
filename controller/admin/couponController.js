@@ -55,10 +55,6 @@ const getCoupons = async (req, res) => {
 
 
 
-
-
-
-
 const addCoupon = async (req, res) => {
   try {
     const {
@@ -72,7 +68,7 @@ const addCoupon = async (req, res) => {
     } = req.body;
 
     if (new Date(couponExpiryDate) < new Date(couponStartDate)) {
-      return res.status(400).json({ error: "Expiry date cannot be before start date" })
+      return res.status(400).json({ success: false, message: "Expiry date cannot be before start date" });
     }
 
     const newCoupon = new Coupon({
@@ -86,13 +82,25 @@ const addCoupon = async (req, res) => {
     });
 
     await newCoupon.save();
-    res.status(201).json({ message: "Coupon added successfully" });
+
+    return res.status(201).json({ success: true, message: "Coupon added successfully" });
+
   } catch (error) {
-    console.error("Error adding coupon:", error);
-    res.status(500).json({ error: "Failed to add coupon" });
+    // console.error("Error adding coupon:", error);
+
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: "Coupon code already exists"
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error, please try again"
+    });
   }
 };
-
 
 
 const updateCoupon = async (req, res) => {
@@ -108,8 +116,20 @@ const updateCoupon = async (req, res) => {
     } = req.body;
 
     if (new Date(couponExpiryDate) < new Date(couponStartDate)) {
-      return res.status(400).json({ error: "Expiry date cannot be before start date" });
+      return res.status(400).json({ success: false, message: "Expiry date cannot be before start date" });
     }
+
+    const existing = await Coupon.findOne({
+      _id: { $ne: req.params.id },
+      couponCode: { $regex: `^${couponCode}$`, $options: "i" }
+    });
+if (existing) {
+  return res.status(400).json({
+    success: false,
+    error: "Coupon code already exists"
+  });
+}
+
 
     const updated = await Coupon.findByIdAndUpdate(
       req.params.id,
@@ -126,16 +146,29 @@ const updateCoupon = async (req, res) => {
     );
 
     if (!updated) {
-      return res.status(404).json({ error: "Coupon not found" });
+      return res.status(404).json({ success: false, message: "Coupon not found" });
     }
 
-    res.json({ message: "Coupon updated successfully", coupon: updated });
+    res.json({
+      success: true,
+      message: "Coupon updated successfully",
+      coupon: updated
+    });
+
   } catch (error) {
     console.error("Error updating coupon:", error);
-    res.status(500).json({ error: "Failed to update coupon" });
-  }
-};
 
+   if (error.code === 11000) {
+  return res.status(400).json({
+    success: false,
+    error: "Coupon code already exists"
+  });
+}
+
+
+    res.status(500).json({ success: false, message: "Failed to update coupon" });
+  }
+}
 
 
 

@@ -89,7 +89,7 @@
         <!-- Actions -->
         <div class="text-center mt-4">
           <a href="/user/edit-profile" class="btn btn-primary me-2">Edit Profile</a>
-          <a href="/forgot-password" class="btn btn-success">Change Password</a>
+          <a href="/user/changepassword" class="btn btn-success">Change Password</a>
         </div>
       </div>
     </div>
@@ -115,6 +115,17 @@
       <% }) %>
     </div>
   </div>
+
+  <% if (googleBlock) { %>
+<script>
+  Swal.fire({
+    icon: 'info',
+    title: 'Not Allowed',
+    text: 'You logged in using Google. Password change is not allowed.',
+  });
+</script>
+<% } %>
+
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

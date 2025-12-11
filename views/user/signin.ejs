@@ -85,11 +85,13 @@
 </div>
 
 		<!-- section -->
+
+<!-- 		
 		<section class="my-10">
 			<div class="container">
 				<div class="flex flex-wrap justify-center items-center gap-8 lg:gap-16">
 					<div class="w-full md:w-1/3 xl:w-1/3 lg:order-1 order-2">
-						<!-- img -->
+						
 						<img src="../assets/images/svg-graphics/signin-g.svg" alt="" class="max-w-full h-auto" />
 					</div>
 					<div class="w-full md:w-1/2 lg:mx-1/6 xl:w-1/4 lg:order-2 order-1 flex flex-col gap-6">
@@ -103,7 +105,7 @@
 							<div class="flex flex-col gap-5">
 								<div class="flex flex-col gap-3">
 									<div class="w-full">
-										<!-- input -->
+										
 										<label for="formSigninEmail" class="invisible hidden">Email address</label>
 										<input type="email"
 											class="form-control border border-gray-300 text-gray-900 rounded-lg focus:shadow-[0_0_0_.25rem_rgba(10,173,10,.25)] focus:ring-green-600 focus:ring-0 focus:border-green-600 block p-2 px-3 disabled:opacity-50 disabled:pointer-events-none w-full text-base"
@@ -111,7 +113,7 @@
 										<div class="invalid-feedback">Please enter name.</div>
 									</div>
 									<div class="w-full">
-										<!-- input -->
+										
 										<div class="password-field relative">
 <div class="password-field relative">
   <label for="formSigninPassword" class="invisible hidden">Password</label>
@@ -134,12 +136,12 @@
 								</div>
 								<div class="flex flex-col gap-4">
 									<div class="flex justify-between w-full">
-										<!-- form check -->
+									
 										<div class="relative block">
 											<input
 												class="w-4 h-4 text-green-600 bg-white border-gray-300 rounded focus:ring-green-600 focus:outline-none focus:ring-2"
 												type="checkbox" value="" id="flexCheckDefault" />
-											<!-- label -->
+									
 											<label class="text-gray-700 pl-1" for="flexCheckDefault">Remember me</label>
 										</div>
 										<div>
@@ -147,7 +149,7 @@
 											<a href="/forgot-password" class="text-green-600">Reset It</a>
 										</div>
 									</div>
-									<!-- btn -->
+									
 									<div class="w-full grid">
 										<button type="submit"
 											class="btn inline-flex items-center gap-x-2 bg-green-600 text-white border-green-600 disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-300">
@@ -156,19 +158,168 @@
 									</div>
 								</div>
 							</div>
-							<!-- link -->
+						<hr>
+						or
+						<hr>
+						  <a href="/auth/google">
+  <button type="button" class="btn btn-outline-danger w-100">
+    <img src="/images/validation/google-brands-solid.png" class="google-icon me-3">
+    Sign Up with Google
+  </button>
+</a>
 							<div class="mt-2">
 								Don’t have an account?
 								<a href="/signup" class="text-green-600">Sign Up</a>
 							</div>
 						</form>
 
-
+ 
 
 					</div>
 				</div>
 			</div>
-		</section>
+		</section> -->
+
+
+    <section class="my-10">
+  <div class="container">
+    <div class="flex flex-wrap justify-center items-center gap-8 lg:gap-16">
+
+      <!-- Image -->
+      <div class="w-full md:w-1/3 xl:w-1/3 lg:order-1 order-2">
+        <img src="../assets/images/svg-graphics/signin-g.svg" 
+             alt="Sign In Illustration" 
+             class="max-w-full h-auto drop-shadow-md" />
+      </div>
+
+      <!-- Sign In Form Section -->
+      <div class="w-full md:w-1/2 xl:w-1/3 lg:order-2 order-1 flex justify-center">
+
+        <form 
+          class="needs-validation space-y-6 bg-white p-8 rounded-2xl shadow-xl 
+                 w-full max-w-[500px]" 
+          novalidate>
+
+          <!-- Heading -->
+          <div class="flex flex-col gap-1">
+            <h1 class="text-2xl font-semibold text-gray-900">Sign in to Xmart</h1>
+            <p class="text-gray-600 text-sm">Welcome back to Xmart! Enter your email to get started.</p>
+          </div>
+
+          <div class="flex flex-col gap-5">
+
+            <!-- Email + Password -->
+            <div class="flex flex-col gap-4">
+
+              <!-- Email -->
+              <div class="w-full">
+                <label for="formSigninEmail" class="hidden">Email address</label>
+                <input type="email"
+                  class="form-control border border-gray-300 text-gray-900 rounded-lg
+                         focus:ring-2 focus:ring-green-600 focus:border-green-600
+                         block p-3 w-full text-base"
+                  id="formSigninEmail"
+                  placeholder="Email"
+                  autocomplete="off" />
+                <div class="invalid-feedback">Please enter email.</div>
+              </div>
+
+              <!-- Password WITH EYE ICON INSIDE -->
+             <div class="w-full relative">
+
+  <label for="formSigninPassword" class="invisible hidden">Password</label>
+
+  <input 
+    type="password"
+    class="form-control border border-gray-300 text-gray-900 rounded-lg 
+           block p-2 px-3 w-full text-base fakePassword"
+    id="formSigninPassword" 
+    placeholder="*****" 
+  />
+
+  <span id="togglePassword"
+        style="position: absolute; 
+               right: 10px; 
+               top: 50%; 
+               transform: translateY(-50%); 
+               cursor: pointer; 
+               font-size: 18px;">
+    👁
+  </span>
+
+  <div class="invalid-feedback">Please enter password.</div>
+
+</div>
+
+
+            </div>
+
+            <!-- Remember + Forgot + Button -->
+            <div class="flex flex-col gap-4">
+
+              <div class="flex justify-between w-full text-sm">
+                <label class="flex items-center gap-2 text-gray-700 cursor-pointer">
+                  <input
+                    class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-600"
+                    type="checkbox"
+                    id="flexCheckDefault" />
+                  Remember me
+                </label>
+
+                <div class="text-gray-700">
+                  Forgot password?
+                  <a href="/forgot-password" class="text-green-600 hover:underline">
+                    Reset It
+                  </a>
+                </div>
+              </div>
+
+              <!-- Sign In Button -->
+              <button type="submit"
+                class="w-full inline-flex items-center justify-center gap-x-2
+                       bg-green-600 text-white py-3 rounded-lg
+                       hover:bg-green-700 active:bg-green-800
+                       focus:ring-4 focus:ring-green-300 transition shadow-md">
+                Sign In
+              </button>
+
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <div class="flex items-center gap-3 my-3">
+            <div class="flex-1 h-px bg-gray-300"></div>
+            <span class="text-gray-500 text-sm">or</span>
+            <div class="flex-1 h-px bg-gray-300"></div>
+          </div>
+
+          <!-- Google Sign Up -->
+          <a href="/auth/google">
+            <button type="button"
+              class="w-full flex items-center justify-center gap-3 
+                     border border-red-500 text-red-600 py-3 rounded-lg
+                     hover:bg-red-50 transition shadow-sm">
+              <img src="/images/validation/google-brands-solid.png" class="google-icon w-5 h-5">
+              Sign Up with Google
+            </button>
+          </a>
+
+          <!-- Sign Up Link -->
+          <div class="text-center mt-2 text-sm">
+            Don’t have an account?
+            <a href="/signup" class="text-green-600 font-medium hover:underline">Sign Up</a>
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
 	</main>
 	<% if (typeof sweetError !== 'undefined') { %>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -650,6 +801,21 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+
+      
+if (res.googleUser) {
+  Swal.fire({
+    icon: "info",
+    title: "Google Account Found",
+    text: res.msg,
+    confirmButtonText: "Login with Google"
+  }).then(() => {
+    window.location.href = "/auth/google";
+  });
+  return;
+}
+
+
       // Login success
       if (data.ok && data.verify) {
         Swal.fire({
@@ -680,6 +846,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
 </script>
 
 

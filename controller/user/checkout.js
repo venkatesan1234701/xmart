@@ -24,55 +24,256 @@ const razorpay = new Razorpay({
 });
 
 
+// const checkout = async (req, res) => {
+//   try {
+//     const userId = req.session.user?.id;
+//     if (!userId) return res.redirect("/signin");
+
+//     const { selectedAddress, paymentMethod } = req.body;
+
+//     const address = await Address.findOne({ _id: selectedAddress, userId });
+//     if (!address) return res.status(400).send("Invalid address selected");
+
+//     const cart = await Cart.findOne({ userId }).populate({
+//       path: "products.productId",
+//       strictPopulate: false,
+//     });
+//     if (!cart || cart.products.length === 0)
+//       return res.status(400).send("Cart is empty");
+
+//     const subTotal = cart.subtotal || 0;
+//     const discount = cart.coupon?.discount || 0;
+//     const shippingCost = cart.shippingCost || 40;
+//     const grandTotal = cart.grandTotal || subTotal - discount + shippingCost;
+
+//     // 🪙 Wallet Payment Logic
+//     if (paymentMethod === "Wallet") {
+//       const wallet = await Wallet.findOne({ userId });
+//       if (!wallet) return res.status(400).send("Wallet not found");
+
+//       // if (wallet.balance < grandTotal) {
+//       //   return res.render("user/order-failed", {
+//       //     orderId: "N/A",
+//       //     grandTotal,
+//       //     paymentMethod: "Wallet",
+//       //     message: "Insufficient wallet balance",
+//       //   });
+//       // }
+
+//       if (wallet.balance < grandTotal) {
+//     return res.render("user/order-failed", {
+//         orderId: "ORD" + Math.floor(100000 + Math.random() * 900000),
+//         grandTotal,
+//         paymentMethod: "Wallet",
+//         message: "Insufficient wallet balance",
+//     });
+// }
+
+
+//       // ✅ Deduct amount
+//       wallet.balance -= grandTotal;
+//       await wallet.save();
+
+//       // ✅ Reduce stock
+//       for (const item of cart.products) {
+//         const product = item.productId;
+//         if (!product) continue;
+//         const sizeIndex = product.sizes.indexOf(item.selectedSize);
+//         if (sizeIndex === -1) continue;
+//         const availableQty = product.quantities[sizeIndex];
+//         if (availableQty < item.quantity)
+//           return res.status(400).send(`Not enough stock for ${product.name}`);
+//         product.quantities[sizeIndex] -= item.quantity;
+//         await product.save();
+//       }
+
+//       const newOrder = new Order({
+//         userId,
+//         orderId: "ORD" + Math.floor(100000 + Math.random() * 900000),
+//         paymentDetails: { method: "Wallet", status: "Completed" },
+//         subTotal,
+//         overallDiscountAmount: discount,
+//         shippingCost,
+//         grandTotal,
+//         products: cart.products.map((item) => ({
+//           productId: item.productId?._id,
+//           name: item.productId?.name,
+//           selectedSize: item.selectedSize,
+//           quantity: item.quantity,
+//           pricePerUnit: item.pricePerUnit,
+//           totalPrice: item.pricePerUnit * item.quantity,
+//         })),
+//         shippingAddress: {
+//           firstName: address.firstName,
+//           addressType: address.addressType,
+//           addressLine1: address.addressLine1,
+//           addressLine2: address.addressLine2,
+//           city: address.city,
+//           state: address.state,
+//           country: address.country,
+//           zipCode: address.zipCode,
+//         },
+//       });
+
+//       await newOrder.save();
+//       await Cart.findOneAndDelete({ userId });
+
+//       return res.render("user/order-success", {
+//         orderId: newOrder.orderId,
+//         grandTotal,
+//         paymentMethod: "Wallet",
+//         address,
+//       });
+//     }
+
+//     if (paymentMethod === "Razorpay") {
+//       const options = {
+//         amount: grandTotal * 100,
+//         currency: "INR",
+//         receipt: "order_rcptid_" + Math.floor(Math.random() * 100000),
+//       };
+//       const order = await razorpay.orders.create(options);
+
+//       return res.render("user/razorpay-checkout", {
+//         key_id: process.env.RAZORPAY_KEY_ID,
+//         order,
+//         grandTotal,
+//         address,
+//       });
+//     }
+
+//     for (const item of cart.products) {
+//       const product = item.productId;
+//       if (!product) continue;
+//       const sizeIndex = product.sizes.indexOf(item.selectedSize);
+//       if (sizeIndex === -1) continue;
+//       const availableQty = product.quantities[sizeIndex];
+//       if (availableQty < item.quantity)
+//         return res.status(400).send(`Not enough stock for ${product.name}`);
+//       product.quantities[sizeIndex] -= item.quantity;
+//       await product.save();
+//     }
+
+//     const newOrder = new Order({
+//       userId,
+//       orderId: "ORD" + Math.floor(100000 + Math.random() * 900000),
+//       paymentDetails: {
+//         method: "Cash on Delivery",
+//         status: "Pending",
+//       },
+//       subTotal,
+//       overallDiscountAmount: discount,
+//       shippingCost,
+//       grandTotal,
+//       products: cart.products.map((item) => ({
+//         productId: item.productId?._id,
+//         name: item.productId?.name,
+//         selectedSize: item.selectedSize,
+//         quantity: item.quantity,
+//         pricePerUnit: item.pricePerUnit,
+//         totalPrice: item.pricePerUnit * item.quantity,
+//       })),
+//       shippingAddress: {
+//         firstName: address.firstName,
+//         addressType: address.addressType,
+//         addressLine1: address.addressLine1,
+//         addressLine2: address.addressLine2,
+//         city: address.city,
+//         state: address.state,
+//         country: address.country,
+//         zipCode: address.zipCode,
+//       },
+//     });
+
+//     await newOrder.save();
+//     await Cart.findOneAndDelete({ userId });
+
+//     return res.render("user/order-success", {
+//       orderId: newOrder.orderId,
+//       grandTotal,
+//       paymentMethod,
+//       address,
+//     });
+//   } catch (error) {
+//     console.error("Checkout Error:", error);
+//     // return res.render("user/order-failed", {
+//     //   orderId: "N/A",
+//     //   grandTotal: 0,
+//     //   paymentMethod: "Unknown",
+//     //   message: "Something went wrong during checkout",
+//     // });
+
+//     return res.render("user/order-failed", {
+//     orderId: "N/A",
+//     grandTotal: cart?.grandTotal || 0,
+//     paymentMethod: paymentMethod || "Unknown",
+//     message: "Something went wrong during checkout",
+// });
+
+//   }
+// };
+
 const checkout = async (req, res) => {
+  // ⭐ MUST HAVE → FIX razorpay crash issues
+  let cart = null;
+  let paymentMethod = null;
+  let grandTotal = 0;
+
   try {
     const userId = req.session.user?.id;
     if (!userId) return res.redirect("/signin");
 
-    const { selectedAddress, paymentMethod } = req.body;
+    const { selectedAddress, paymentMethod: pm } = req.body;
+    paymentMethod = pm; // ⭐ Save here so catch block can access
 
     const address = await Address.findOne({ _id: selectedAddress, userId });
     if (!address) return res.status(400).send("Invalid address selected");
 
-    const cart = await Cart.findOne({ userId }).populate({
+    // Load Cart
+    cart = await Cart.findOne({ userId }).populate({
       path: "products.productId",
       strictPopulate: false,
     });
+
     if (!cart || cart.products.length === 0)
       return res.status(400).send("Cart is empty");
 
     const subTotal = cart.subtotal || 0;
     const discount = cart.coupon?.discount || 0;
     const shippingCost = cart.shippingCost || 40;
-    const grandTotal = cart.grandTotal || subTotal - discount + shippingCost;
+    grandTotal = cart.grandTotal || subTotal - discount + shippingCost;
 
-    // 🪙 Wallet Payment Logic
+    // ***************************
+    // 💰 WALLET PAYMENT
+    // ***************************
     if (paymentMethod === "Wallet") {
       const wallet = await Wallet.findOne({ userId });
       if (!wallet) return res.status(400).send("Wallet not found");
 
       if (wallet.balance < grandTotal) {
         return res.render("user/order-failed", {
-          orderId: "N/A",
+          orderId: "ORD" + Math.floor(100000 + Math.random() * 900000),
           grandTotal,
           paymentMethod: "Wallet",
           message: "Insufficient wallet balance",
         });
       }
 
-      // ✅ Deduct amount
       wallet.balance -= grandTotal;
       await wallet.save();
 
-      // ✅ Reduce stock
+      // Reduce stock
       for (const item of cart.products) {
         const product = item.productId;
         if (!product) continue;
+
         const sizeIndex = product.sizes.indexOf(item.selectedSize);
         if (sizeIndex === -1) continue;
+
         const availableQty = product.quantities[sizeIndex];
         if (availableQty < item.quantity)
           return res.status(400).send(`Not enough stock for ${product.name}`);
+
         product.quantities[sizeIndex] -= item.quantity;
         await product.save();
       }
@@ -90,6 +291,11 @@ const checkout = async (req, res) => {
           name: item.productId?.name,
           selectedSize: item.selectedSize,
           quantity: item.quantity,
+
+          // ADD THESE IF REQUIRED IN YOUR SCHEMA
+          originalPrice: Number(item.pricePerUnit) + Number(item.productDiscount || 0),
+          productDiscount: item.productDiscount || 0,
+
           pricePerUnit: item.pricePerUnit,
           totalPrice: item.pricePerUnit * item.quantity,
         })),
@@ -116,12 +322,16 @@ const checkout = async (req, res) => {
       });
     }
 
+    // ***************************
+    // 💳 RAZORPAY PAYMENT
+    // ***************************
     if (paymentMethod === "Razorpay") {
       const options = {
         amount: grandTotal * 100,
         currency: "INR",
         receipt: "order_rcptid_" + Math.floor(Math.random() * 100000),
       };
+
       const order = await razorpay.orders.create(options);
 
       return res.render("user/razorpay-checkout", {
@@ -132,25 +342,30 @@ const checkout = async (req, res) => {
       });
     }
 
+    // ***************************
+    // 🚚 CASH ON DELIVERY (COD)
+    // ***************************
+    // Reduce stock
     for (const item of cart.products) {
       const product = item.productId;
       if (!product) continue;
+
       const sizeIndex = product.sizes.indexOf(item.selectedSize);
       if (sizeIndex === -1) continue;
+
       const availableQty = product.quantities[sizeIndex];
       if (availableQty < item.quantity)
         return res.status(400).send(`Not enough stock for ${product.name}`);
+
       product.quantities[sizeIndex] -= item.quantity;
       await product.save();
     }
 
+    // Create COD Order
     const newOrder = new Order({
       userId,
       orderId: "ORD" + Math.floor(100000 + Math.random() * 900000),
-      paymentDetails: {
-        method: "Cash on Delivery",
-        status: "Pending",
-      },
+      paymentDetails: { method: "Cash on Delivery", status: "Pending" },
       subTotal,
       overallDiscountAmount: discount,
       shippingCost,
@@ -160,6 +375,11 @@ const checkout = async (req, res) => {
         name: item.productId?.name,
         selectedSize: item.selectedSize,
         quantity: item.quantity,
+
+        // ADD THESE IF REQUIRED IN SCHEMA
+        originalPrice: Number(item.pricePerUnit) + Number(item.productDiscount || 0),
+        productDiscount: item.productDiscount || 0,
+
         pricePerUnit: item.pricePerUnit,
         totalPrice: item.pricePerUnit * item.quantity,
       })),
@@ -186,15 +406,15 @@ const checkout = async (req, res) => {
     });
   } catch (error) {
     console.error("Checkout Error:", error);
+
     return res.render("user/order-failed", {
       orderId: "N/A",
-      grandTotal: 0,
-      paymentMethod: "Unknown",
+      grandTotal: grandTotal || cart?.grandTotal || 0,
+      paymentMethod: paymentMethod || "Unknown",
       message: "Something went wrong during checkout",
     });
   }
 };
-
 
 
 
@@ -541,14 +761,14 @@ const cancelSingleItem = async (req, res) => {
           transactions: [],
         });
       }
-
+const refundTransactionId = "REF" + Math.floor(100000 + Math.random() * 900000);
       wallet.transactions.push({
         amount: refundAmount,
         type: "OrderRefund",
         status: "completed",
         transactionType: "Credit",
         transactionDetail: `Refund for cancelled product: ${productItem.productId.name}`,
-        transactionId: order._id.toString(),
+        transactionId: refundTransactionId,
         isOrderRedirect: false,
         orderId: order._id.toString(),
       })

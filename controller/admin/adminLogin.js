@@ -3,29 +3,31 @@ const Category = require("../../models/category")
 const mongoose = require("mongoose");
 const User = require('../../models/userSchema')
 const Order = require('../../models/order')
+const Product = require('../../models/productModel')
+
 
 
 async function signIn(req, res, next) {
   try {
     const { email, password } = req.body;
-    console.log('Login attempt -> Email:', email, 'Password:', password);
-    console.log('Env -> Email:', process.env.ADMIN_EMAIL, 'Password:', process.env.ADMIN_PASSWORD);
 
     if (!email || !password) {
-      return res.render('admin/AdminSignup');
+      return res.render('admin/AdminSignup', { message: "Please enter all fields" });
     }
 
     if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
       req.session.isAdminLogged = true; 
       return res.redirect('/admin/dashboard');
-    } else {
-      return res.render('admin/AdminSignup');
     }
+
+    return res.render('admin/AdminSignup', { message: "Invalid email or password" });
+
   } catch (error) {
     console.error(error);
     next(new AppError('Sorry...Something went wrong', 500));
   }
 }
+
 
 
 async function renderSignInPage(req, res, next) {

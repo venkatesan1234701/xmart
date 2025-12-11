@@ -7,25 +7,145 @@ const Coupon = require("../../models/couponSchema ");
 
 
 
+// const applyCoupon = async (req, res) => {
+//   try {
+//     const user = req.session.user;
+//     if (!user) {
+//       return res.status(401).json({ success: false, message: "Please log in first" });
+//     }
+
+//     const { couponCode } = req.body;
+//     if (!couponCode || !couponCode.trim()) {
+//       return res.status(400).json({ success: false, message: "Enter a coupon code" });
+//     }
+
+//     const coupon = await Coupon.findOne({
+//       couponCode: { $regex: new RegExp(`^${couponCode.trim()}$`, "i") },
+//       isListed: true
+//     });
+
+//     if (!coupon) {
+//       return res.status(404).json({ success: false, message: "Invalid coupon code" });
+//     }
+
+//     const now = new Date();
+//     if (
+//       (coupon.couponStartDate && now < coupon.couponStartDate) ||
+//       (coupon.couponExpiryDate && now > coupon.couponExpiryDate)
+//     ) {
+//       return res.status(400).json({ success: false, message: "Coupon is not active now" });
+//     }
+
+//     if (coupon.currentStatus !== "active") {
+//       return res.status(400).json({ success: false, message: "Coupon is not active" });
+//     }
+
+//     const cart = await Cart.findOne({ userId: user.id });
+//     if (!cart || cart.products.length === 0) {
+//       return res.status(400).json({ success: false, message: "Your cart is empty" });
+//     }
+
+//     const subtotal = cart.subtotal || 0;
+//     const shipping = cart.shippingCost || 40;
+
+//     if (subtotal < coupon.minimumPurchase) {
+//       return res.status(400).json({
+//         success: false,
+//         message: `Minimum purchase should be ₹${coupon.minimumPurchase} to use this coupon`,
+//       });
+//     }
+
+//     let discount = Math.round((subtotal * coupon.discountPercentage) / 100);
+//     let isMax = false;
+
+//     if (discount > coupon.maximumDiscount) {
+//       discount = Math.round(coupon.maximumDiscount);
+//       isMax = true;
+//     }
+
+
+//     let distributed = 0;
+
+//     cart.products.forEach((item) => {
+//       const originalPrice = Number(item.pricePerUnit) || 0;
+//       const share = subtotal > 0 ? originalPrice / subtotal : 0;
+
+//       const productDiscount = Math.round(discount * share); 
+
+//       item.productDiscount = productDiscount;
+//       item.pricePerUnit = Math.round(originalPrice - productDiscount);
+
+//       distributed += productDiscount;
+//     })
+
+//     const diff = discount - distributed;
+//     if (Math.abs(diff) > 0) {
+//       cart.products[0].productDiscount += diff;
+//       cart.products[0].pricePerUnit -= diff;
+//     }
+
+//     let newSubtotal = 0;
+//     cart.products.forEach((p) => {
+//       newSubtotal += Number(p.pricePerUnit);
+//     });
+//     cart.subtotal = Math.round(newSubtotal);
+
+//     const grandTotal = Math.round(cart.subtotal + shipping);
+
+//     cart.coupon = {
+//       name: coupon.couponCode,
+//       discount,
+//       isMax,
+//       maxPurchase: coupon.maximumDiscount,
+//     };
+//     cart.grandTotal = grandTotal;
+
+//     await cart.save();
+
+//     return res.status(200).json({
+//       success: true,
+//       message: `Coupon applied successfully! You saved ₹${discount}.`,
+//       newGrandTotal: grandTotal,
+//       discount,
+//       couponCode: coupon.couponCode,
+//     });
+
+//   } catch (error) {
+//     console.error("Error applying coupon:", error);
+//     res.status(500).json({ success: false, message: "Server error while applying coupon" });
+//   }
+// };
+
+
 const applyCoupon = async (req, res) => {
   try {
     const user = req.session.user;
     if (!user) {
-      return res.status(401).json({ success: false, message: "Please log in first" });
+      return res.status(401).json({
+        success: false,
+        message: "Please log in first"
+      });
     }
 
     const { couponCode } = req.body;
     if (!couponCode || !couponCode.trim()) {
-      return res.status(400).json({ success: false, message: "Enter a coupon code" });
+      return res.status(400).json({
+        success: false,
+        message: "Enter a coupon code"
+      });
     }
 
     const coupon = await Coupon.findOne({
       couponCode: { $regex: new RegExp(`^${couponCode.trim()}$`, "i") },
-      isListed: true
+      isListed: true,
+      currentStatus: "active"
     });
 
     if (!coupon) {
-      return res.status(404).json({ success: false, message: "Invalid coupon code" });
+      return res.status(404).json({
+        success: false,
+        message: "Invalid coupon code"
+      });
     }
 
     const now = new Date();
@@ -33,91 +153,208 @@ const applyCoupon = async (req, res) => {
       (coupon.couponStartDate && now < coupon.couponStartDate) ||
       (coupon.couponExpiryDate && now > coupon.couponExpiryDate)
     ) {
-      return res.status(400).json({ success: false, message: "Coupon is not active now" });
-    }
-
-    if (coupon.currentStatus !== "active") {
-      return res.status(400).json({ success: false, message: "Coupon is not active" });
+      return res.status(400).json({
+        success: false,
+        message: "Coupon is not active now"
+      });
     }
 
     const cart = await Cart.findOne({ userId: user.id });
     if (!cart || cart.products.length === 0) {
-      return res.status(400).json({ success: false, message: "Your cart is empty" });
-    }
-
-    const subtotal = cart.subtotal || 0;
-    const shipping = cart.shippingCost || 40;
-
-    if (subtotal < coupon.minimumPurchase) {
       return res.status(400).json({
         success: false,
-        message: `Minimum purchase should be ₹${coupon.minimumPurchase} to use this coupon`,
+        message: "Your cart is empty"
       });
     }
 
-    let discount = Math.round((subtotal * coupon.discountPercentage) / 100);
+    let originalSubtotal = 0;
+    cart.products.forEach(item => {
+      originalSubtotal += item.originalPrice * item.quantity;
+    });
+
+    if (originalSubtotal < coupon.minimumPurchase) {
+      return res.status(400).json({
+        success: false,
+        message: `Minimum purchase should be ₹${coupon.minimumPurchase} to use this coupon`
+      });
+    }
+
+    let discount = Math.round((originalSubtotal * coupon.discountPercentage) / 100);
     let isMax = false;
 
     if (discount > coupon.maximumDiscount) {
-      discount = Math.round(coupon.maximumDiscount);
+      discount = coupon.maximumDiscount;
       isMax = true;
     }
 
-
     let distributed = 0;
 
-    cart.products.forEach((item) => {
-      const originalPrice = Number(item.pricePerUnit) || 0;
-      const share = subtotal > 0 ? originalPrice / subtotal : 0;
+    cart.products.forEach(item => {
+      const contribution = (item.originalPrice * item.quantity) / originalSubtotal;
 
-      const productDiscount = Math.round(discount * share); 
+      const productDiscount = Math.round(discount * contribution);
+
+      const perItemDiscount = productDiscount / item.quantity;
 
       item.productDiscount = productDiscount;
-      item.pricePerUnit = Math.round(originalPrice - productDiscount);
+      item.pricePerUnit = Math.round(item.originalPrice - perItemDiscount);
 
       distributed += productDiscount;
-    })
+    });
 
     const diff = discount - distributed;
-    if (Math.abs(diff) > 0) {
-      cart.products[0].productDiscount += diff;
-      cart.products[0].pricePerUnit -= diff;
+    if (diff !== 0 && cart.products.length > 0) {
+      const item = cart.products[0];
+      item.productDiscount += diff;
+
+      const perItemDiscount = item.productDiscount / item.quantity;
+      item.pricePerUnit = Math.round(item.originalPrice - perItemDiscount);
     }
 
     let newSubtotal = 0;
-    cart.products.forEach((p) => {
-      newSubtotal += Number(p.pricePerUnit);
+    cart.products.forEach(p => {
+      newSubtotal += p.pricePerUnit * p.quantity;
     });
+
     cart.subtotal = Math.round(newSubtotal);
 
-    const grandTotal = Math.round(cart.subtotal + shipping);
+    cart.grandTotal = cart.subtotal + (cart.shippingCost || 40);
 
     cart.coupon = {
       name: coupon.couponCode,
       discount,
       isMax,
-      maxPurchase: coupon.maximumDiscount,
+      maxPurchase: coupon.maximumDiscount
     };
-    cart.grandTotal = grandTotal;
 
     await cart.save();
 
     return res.status(200).json({
       success: true,
       message: `Coupon applied successfully! You saved ₹${discount}.`,
-      newGrandTotal: grandTotal,
+      newGrandTotal: cart.grandTotal,
       discount,
-      couponCode: coupon.couponCode,
+      couponCode: coupon.couponCode
     });
 
   } catch (error) {
     console.error("Error applying coupon:", error);
-    res.status(500).json({ success: false, message: "Server error while applying coupon" });
+    return res.status(500).json({
+      success: false,
+      message: "Server error while applying coupon"
+    });
   }
 };
 
 
 
+
+// const getCartPage = async (req, res) => {
+//   try {
+//     const user = req.session.user;
+//     if (!user) return res.redirect("/signin");
+
+//     let cart = await Cart.findOne({ userId: user.id }).populate({
+//       path: "products.productId",
+//       model: "Product",
+//       select: "name productPic prices sizes",
+//     });
+
+//     if (!cart) {
+//       cart = new Cart({
+//         userId: user.id,
+//         products: [],
+//         subtotal: 0,
+//         shippingCost: 40,
+//         grandTotal: 40,
+//         coupon: {
+//           name: null,
+//           discount: 0,
+//           isMax: false,
+//           maxPurchase: 0,
+//         },
+//       });
+//       await cart.save();
+//     }
+
+
+//     if (cart.coupon?.name) {
+//       cart.products.forEach((item) => {
+//         const originalPrice =
+//           Number(item.pricePerUnit) + Number(item.productDiscount);
+
+//         item.pricePerUnit = originalPrice;
+//         item.productDiscount = 0;
+//       });
+
+//       let newSubtotal = 0;
+//       cart.products.forEach((p) => {
+//         newSubtotal += Number(p.pricePerUnit);
+//       });
+//       cart.subtotal = Number(newSubtotal.toFixed(2));
+
+//       cart.grandTotal = Number(
+//         (cart.subtotal + (cart.shippingCost || 40)).toFixed(2)
+//       );
+
+//       cart.coupon = {
+//         name: null,
+//         discount: 0,
+//         isMax: false,
+//         maxPurchase: 0,
+//       };
+
+//       await cart.save();
+//     }
+
+//     const cartItems =
+//       cart.products.length > 0
+//         ? cart.products.map((item) => ({
+//             name: item.productId?.name || "Unknown Product",
+//             image: item.productId?.productPic?.[0] || "/assets/images/default.jpg",
+//             size: item.selectedSize,
+//             quantity: item.quantity,
+//             price: item.pricePerUnit,
+//             total: item.pricePerUnit * item.quantity,
+//             id: item.productId?._id,
+//           }))
+//         : [];
+
+//     const subtotal = cart.subtotal;
+//     const serviceFee = cart.shippingCost || 40;
+//     const grandTotal = cart.grandTotal;
+
+//     const now = new Date();
+
+//     const coupons = await Coupon.find({
+//       isListed: true,
+//       currentStatus: "active",
+//       couponStartDate: { $lte: now },
+//       couponExpiryDate: { $gte: now },
+//     });
+
+//     res.render("user/card", {
+//       user,
+//       cart,
+//       cartItems,
+//       subtotal,
+//       serviceFee,
+//       grandTotal,
+//       coupon: cart.coupon,
+//       coupons,
+//       isEmpty: cartItems.length === 0,
+//       message: { type: "", text: "" },
+//     });
+
+//   } catch (error) {
+//     console.error("Error loading cart page:", error);
+//     res.status(500).send("Server Error - Cannot load cart page");
+//   }
+// };
+
+
+
+/////////////////////////////////////////////                           its currct get card page 
 
 
 
@@ -133,7 +370,7 @@ const getCartPage = async (req, res) => {
     });
 
     if (!cart) {
-      cart = new Cart({
+      cart = await Cart.create({
         userId: user.id,
         products: [],
         subtotal: 0,
@@ -146,51 +383,40 @@ const getCartPage = async (req, res) => {
           maxPurchase: 0,
         },
       });
-      await cart.save();
     }
 
-
     if (cart.coupon?.name) {
-      cart.products.forEach((item) => {
-        const originalPrice =
-          Number(item.pricePerUnit) + Number(item.productDiscount);
-
-        item.pricePerUnit = originalPrice;
+      cart.products.forEach(item => {
+        item.pricePerUnit = item.originalPrice;
         item.productDiscount = 0;
       });
 
-      let newSubtotal = 0;
-      cart.products.forEach((p) => {
-        newSubtotal += Number(p.pricePerUnit);
-      });
-      cart.subtotal = Number(newSubtotal.toFixed(2));
-
-      cart.grandTotal = Number(
-        (cart.subtotal + (cart.shippingCost || 40)).toFixed(2)
+      cart.subtotal = cart.products.reduce(
+        (sum, p) => sum + p.originalPrice * p.quantity,
+        0
       );
+
+      cart.grandTotal = cart.subtotal + (cart.shippingCost || 40);
 
       cart.coupon = {
         name: null,
         discount: 0,
         isMax: false,
-        maxPurchase: 0,
+        maxPurchase: 0
       };
 
       await cart.save();
     }
 
-    const cartItems =
-      cart.products.length > 0
-        ? cart.products.map((item) => ({
-            name: item.productId?.name || "Unknown Product",
-            image: item.productId?.productPic?.[0] || "/assets/images/default.jpg",
-            size: item.selectedSize,
-            quantity: item.quantity,
-            price: item.pricePerUnit,
-            total: item.pricePerUnit * item.quantity,
-            id: item.productId?._id,
-          }))
-        : [];
+    const cartItems = cart.products.map(item => ({
+      name: item.productId?.name || "Unknown Product",
+      image: item.productId?.productPic?.[0] || "/assets/images/default.jpg",
+      size: item.selectedSize,
+      quantity: item.quantity,
+      price: item.pricePerUnit,
+      total: item.pricePerUnit * item.quantity,
+      id: item.productId?._id,
+    }));
 
     const subtotal = cart.subtotal;
     const serviceFee = cart.shippingCost || 40;
@@ -224,103 +450,6 @@ const getCartPage = async (req, res) => {
   }
 };
 
-
-
-/////////////////////////////////////////////                           its currct get card page 
-
-
-
-// const getCartPage = async (req, res) => {
-//   try {
-//     const user = req.session.user;
-//     if (!user) return res.redirect("/login");
-
-//     const cart = await Cart.findOne({ userId: user.id }).populate({
-//       path: "products.productId",
-//       model: "Product",
-//       select: "name productPic prices sizes",
-//     });
-
-//     const cartItems =
-//       cart && cart.products && cart.products.length > 0
-//         ? cart.products.map((item) => ({
-//             name: item.productId?.name || "Unknown Product",
-//             image: item.productId?.productPic?.[0] || "/assets/images/default.jpg",
-//             size: item.selectedSize,
-//             quantity: item.quantity,
-//             price: item.pricePerUnit,
-//             total: item.pricePerUnit * item.quantity,
-//             id: item.productId?._id,
-//           }))
-//         : [];
-
-//     const subtotal = cartItems.reduce((sum, item) => sum + (item.total || 0), 0);
-//     const serviceFee = subtotal > 0 ? 50 : 0;
-
-//     let grandTotal = subtotal + serviceFee;
-
-//     let coupon = { name: null, discount: 0, isMax: false, maxPurchase: 0 };
-
-//     if (cart?.coupon?.name) {
-//       const appliedCoupon = await Coupon.findOne({
-//         couponCode: cart.coupon.name,
-//       });
-
-//       const couponUsedByUser =
-//         appliedCoupon &&
-//         appliedCoupon.user &&
-//         appliedCoupon.user.toString() === user.id;
-
-//       if (
-//         !appliedCoupon ||
-//         appliedCoupon.currentStatus === "expired" ||
-//         couponUsedByUser
-//       ) {
-//         cart.coupon = {
-//           name: null,
-//           discount: 0,
-//           isMax: false,
-//           maxPurchase: 0,
-//         };
-//         await cart.save();
-//       } else {
-//         coupon = cart.coupon;
-//         grandTotal = subtotal + serviceFee - coupon.discount;
-//       }
-//     }
-
-//     const now = new Date();
-
-//     const coupons = await Coupon.find({
-//       isListed: true,
-//       currentStatus: "active",
-//       couponStartDate: { $lte: now },
-//       couponExpiryDate: { $gte: now },
-//     });
-
-//     const message =
-//       req.flash && req.flash("message").length
-//         ? req.flash("message")[0]
-//         : { type: "", text: "" };
-
-//     res.render("user/card", {
-//       user,
-//       cart: cart || { products: [], subtotal, grandTotal, coupon },
-//       cartItems,
-//       subtotal,
-//       serviceFee,
-//       grandTotal,
-//       coupon,
-//       coupons,
-//       isEmpty: cartItems.length === 0,
-//       message,
-//     });
-
-//   } catch (error) {
-//     console.error(" Error loading cart page:", error);
-//     res.status(500).send("Server Error - Cannot load cart page");
-//   }
-// };
 
 const moveToCart = async (req, res) => {
   try {
@@ -744,33 +873,6 @@ const validateBeforeCheckout = async (req, res) => {
 
 
 
-// const cancelCoupon = async (req, res) => {
-//   try {
-//     const userId = req.session.user.id;
-//     const cart = await Cart.findOne({ userId });
-
-//     cart.coupon = {
-//       name: null,
-//       discount: 0,
-//       isMax: false,
-//       maxPurchase: 0
-//     };
-
-//     cart.grandTotal = cart.subtotal + cart.shippingCost;
-
-//     await cart.save();
-
-//     res.json({
-//       success: true,
-//       grandTotal: cart.grandTotal
-//     });
-    
-//   } catch (err) {
-//     res.json({ success: false });
-//   }
-// }
-
-
 const cancelCoupon = async (req, res) => {
   try {
     const userId = req.session.user.id;
@@ -780,21 +882,22 @@ const cancelCoupon = async (req, res) => {
       return res.json({ success: false, message: "Cart not found" });
     }
 
+    // Reset each product to ORIGINAL PRICE
     cart.products.forEach((item) => {
-      const originalPrice = Number(item.pricePerUnit) + Number(item.productDiscount);
-
-      item.pricePerUnit = Number(originalPrice.toFixed(2))
-      item.productDiscount = 0;                              
-    })
-    let newSubtotal = 0;
-    cart.products.forEach((p) => {
-      newSubtotal += Number(p.pricePerUnit);
+      item.pricePerUnit = Number(item.originalPrice); 
+      item.productDiscount = 0;
     });
 
-    cart.subtotal = Number(newSubtotal.toFixed(2));
+    // Recalculate subtotal
+    cart.subtotal = cart.products.reduce(
+      (sum, item) => sum + item.pricePerUnit * item.quantity,
+      0
+    );
 
-    cart.grandTotal = Number((cart.subtotal + cart.shippingCost).toFixed(2));
+    // Recalculate grand total
+    cart.grandTotal = cart.subtotal + (cart.shippingCost || 40);
 
+    // Remove coupon
     cart.coupon = {
       name: null,
       discount: 0,
@@ -816,6 +919,55 @@ const cancelCoupon = async (req, res) => {
     return res.json({ success: false, message: "Error canceling coupon" });
   }
 };
+
+
+
+
+// const cancelCoupon = async (req, res) => {
+//   try {
+//     const userId = req.session.user.id;
+//     const cart = await Cart.findOne({ userId });
+
+//     if (!cart) {
+//       return res.json({ success: false, message: "Cart not found" });
+//     }
+
+//     cart.products.forEach((item) => {
+//       const originalPrice = Number(item.pricePerUnit) + Number(item.productDiscount);
+
+//       item.pricePerUnit = Number(originalPrice.toFixed(2))
+//       item.productDiscount = 0;                              
+//     })
+//     let newSubtotal = 0;
+//     cart.products.forEach((p) => {
+//       newSubtotal += Number(p.pricePerUnit);
+//     });
+
+//     cart.subtotal = Number(newSubtotal.toFixed(2));
+
+//     cart.grandTotal = Number((cart.subtotal + cart.shippingCost).toFixed(2));
+
+//     cart.coupon = {
+//       name: null,
+//       discount: 0,
+//       isMax: false,
+//       maxPurchase: 0
+//     };
+
+//     await cart.save();
+
+//     return res.json({
+//       success: true,
+//       subtotal: cart.subtotal,
+//       grandTotal: cart.grandTotal,
+//       products: cart.products
+//     });
+
+//   } catch (err) {
+//     console.error("Cancel coupon error:", err);
+//     return res.json({ success: false, message: "Error canceling coupon" });
+//   }
+// };
 
 
 

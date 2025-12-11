@@ -822,10 +822,18 @@ const searchInput = document.getElementById("searchInput");
   const tableBody = document.querySelector("#productsTable tbody");
 
   //  Show/Hide cancel icon & trigger live search
-  searchInput.addEventListener("input", () => {
-    clearBtn.classList.toggle("hidden", searchInput.value.trim() === "");
+let debounceTimer;
+
+searchInput.addEventListener("input", () => {
+  clearBtn.classList.toggle("hidden", searchInput.value.trim() === "");
+
+  clearTimeout(debounceTimer);
+
+  debounceTimer = setTimeout(() => {
     liveSearch();
-  });
+  }, 1000); // 5 seconds delay
+});
+
 
   //  Clear input and reload full product list
   clearBtn.addEventListener("click", () => {
@@ -1312,17 +1320,34 @@ document.addEventListener("DOMContentLoaded", () => {
   // const nameValue = productName.value.trim();
 
 // PRODUCT NAME VALIDATION
+// const nameValue = productName.value.trim();
+
+// if (!nameValue) {
+//   errors.push("Please enter product name.");
+// } else {
+
+//   // Word count check
+//   const nameWords = nameValue.split(/\s+/).filter(w => w).length;
+
+//   if (nameWords > 25) {
+//     errors.push("Product name cannot exceed 25 words.");
+//   }
+// }
+
 const nameValue = productName.value.trim();
 
 if (!nameValue) {
   errors.push("Please enter product name.");
 } else {
 
-  // Word count check
-  const nameWords = nameValue.split(/\s+/).filter(w => w).length;
+  // MIN 7 characters
+  if (nameValue.length < 7) {
+    errors.push("Product name must be at least 7 characters.");
+  }
 
-  if (nameWords > 25) {
-    errors.push("Product name cannot exceed 25 words.");
+  // MAX 25 characters
+  if (nameValue.length > 30) {
+    errors.push("Product name cannot exceed 30 characters.");
   }
 }
 
@@ -1339,9 +1364,11 @@ if (!nameValue) {
     if (wordCount > 50) {
       errors.push("Description cannot exceed 50 words.");
     }
-
-    if (descText.length > 130) {
-      errors.push("Description cannot exceed 130 characters.");
+  if (descText.length < 40) {
+    errors.push("Description must be at least 40 characters.");
+  }
+   else if (descText.length > 250) {
+      errors.push("Description cannot exceed 250 characters.");
     }
   }
 
