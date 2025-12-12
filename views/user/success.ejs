@@ -3,6 +3,97 @@
   <head>
     <meta charset="UTF-8" />
     <title>Payment Success</title>
+    <style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Inter", sans-serif;
+    background: #f9fafb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .success-card {
+    background: white;
+    width: 90%;
+    max-width: 450px;
+    padding: 35px 30px;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.10);
+    animation: slideUp 0.6s ease-out;
+  }
+
+  /* Success Icon */
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #16a34a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 20px auto;
+    box-shadow: 0px 6px 15px rgba(22,163,74,0.35);
+  }
+
+  .success-icon i {
+    font-size: 40px;
+    color: white;
+  }
+
+  h2 {
+    font-size: 26px;
+    margin-bottom: 10px;
+    color: #111827;
+  }
+
+  p {
+    font-size: 15px;
+    color: #374151;
+  }
+
+  .payment-id {
+    background: #ecfdf5;
+    color: #047857;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 12px;
+    font-weight: 600;
+  }
+
+  .btn-home {
+    display: inline-block;
+    margin-top: 25px;
+    padding: 12px 20px;
+    background: #16a34a;
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: 0.3s ease;
+  }
+
+  .btn-home:hover {
+    background: #15803d;
+    box-shadow: 0px 4px 10px rgba(22,163,74,0.4);
+  }
+
+  /* Animation */
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
   </head>
   <body>
     <h2>Payment Successful!</h2>

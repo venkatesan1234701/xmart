@@ -26,6 +26,179 @@
 
 
 <style>
+
+	/* ===========================
+   SHOP PAGE SUPER PREMIUM UI
+=========================== */
+
+/* Product Card Smooth Polish */
+.card-product {
+  border-radius: 16px !important;
+  border: none;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  transition: 0.3s ease-in-out;
+}
+
+.card-product:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+}
+
+/* Product Image Zoom */
+.card-product img {
+  transition: 0.3s ease-in-out;
+}
+.card-product:hover img {
+  transform: scale(1.1);
+}
+
+/* Discount Badge */
+.product-card .absolute {
+  border-radius: 8px !important;
+  font-size: 11px !important;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+/* Product Title */
+.card-product h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Price Tag */
+.card-product p {
+  font-size: 1rem;
+}
+
+/* Add / View Button */
+.card-product button {
+  padding: 10px 24px;
+  border-radius: 10px;
+  background: #059669 !important;
+  transition: 0.25s ease-in-out;
+}
+.card-product button:hover {
+  background: #047857 !important;
+}
+
+/* ===========================
+   FILTER BAR POLISH
+=========================== */
+#filtersBox {
+  backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.7);
+  border-radius: 18px;
+  padding: 20px;
+  border: 1.5px solid #e5e7eb;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+/* Filter Dropdowns */
+#filtersBox select {
+  border-radius: 10px;
+  padding: 10px 14px;
+  border: 2px solid #d1d5db;
+  transition: 0.3s;
+}
+#filtersBox select:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5,150,105,0.25);
+}
+
+/* Filter Buttons */
+.filter-btn {
+  border-radius: 10px;
+  padding: 8px 18px;
+  background: #f3f4f6;
+  transition: 0.2s;
+  font-weight: 500;
+}
+.filter-btn:hover {
+  background: #059669;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Price Slider */
+#maxPriceRange {
+  accent-color: #059669;
+}
+
+/* Apply Button */
+#filterPriceBtn {
+  border-radius: 10px;
+  padding: 8px 16px;
+  background: #059669;
+}
+#filterPriceBtn:hover {
+  background: #047857;
+}
+
+/* ===========================
+   SEARCH BAR POLISH
+=========================== */
+#searchProducts {
+  border-radius: 14px;
+  padding: 14px 18px;
+  border: 2px solid #d1d5db;
+  transition: 0.25s ease;
+}
+
+#searchProducts:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 4px rgba(5,150,105,0.2);
+}
+
+#searchResults {
+  border-radius: 14px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* ===========================
+   PAGINATION PREMIUM STYLE
+=========================== */
+#paginationBox a {
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 10px 18px;
+}
+#paginationBox a:hover {
+  background: #f3f4f6;
+}
+
+/* Active Page */
+#paginationBox .bg-green-600 {
+  border-radius: 12px !important;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(5,150,105,0.4);
+}
+
+/* ===========================
+   CATEGORY BADGE
+=========================== */
+.product-card p.text-gray-500 {
+  font-size: 12px;
+  background: #f3f4f6;
+  padding: 4px 10px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+/* ===========================
+   NO PRODUCTS SECTION POLISH
+=========================== */
+.no-products-box {
+  animation: fadeIn 0.3s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 #searchResults {
   max-height: 200px;
   overflow-y: auto;
@@ -1014,7 +1187,7 @@
   <% } %>
 </div> -->
 
-
+<!-- 
  <% if (query && query.trim()) { %>
       <div class="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-xl">
         <h1 class="text-2xl font-bold text-blue-900">
@@ -1030,7 +1203,7 @@
           </p>
         <% } %>
       </div>
-    <% } %>
+    <% } %> -->
 
     <!-- Products Grid -->
     <div id="productContainer" class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 mb-8">

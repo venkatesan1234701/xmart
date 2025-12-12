@@ -4,7 +4,179 @@
   <meta charset="UTF-8">
   <title>Order Details - <%= order.orderId %></title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  /* ---------------------------------------------------
+   GLOBAL BASE SETUP
+--------------------------------------------------- */
+body {
+  background-color: #f9fafb;
+  font-family: 'Inter', sans-serif;
+}
 
+.container {
+  max-width: 1100px;
+}
+
+/* ---------------------------------------------------
+   CARDS
+--------------------------------------------------- */
+.order-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 3px 18px rgba(0, 0, 0, 0.06);
+  margin-bottom: 25px;
+  transition: transform .2s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-3px);
+}
+
+.order-card h5 {
+  font-size: 1rem;
+  color: #374151;
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------
+   CUSTOMER & ORDER INFO TEXT
+--------------------------------------------------- */
+.order-card p {
+  margin-bottom: 6px;
+  color: #4b5563;
+}
+
+.order-card strong {
+  color: #111827;
+}
+
+/* ---------------------------------------------------
+   TABLE STYLES
+--------------------------------------------------- */
+.table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table thead th {
+  background: #1f2937 !important;
+  color: #ffffff !important;
+  font-size: 0.85rem;
+  letter-spacing: .4px;
+  padding: 12px;
+}
+
+.table td {
+  padding: 14px;
+  color: #374151;
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.table tbody tr:hover {
+  background-color: #f3f4f6;
+}
+
+/* Product image */
+.object-cover {
+  object-fit: cover;
+}
+
+.badge {
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+/* ---------------------------------------------------
+   STATUS SELECT & BUTTON
+--------------------------------------------------- */
+.form-select {
+  border-radius: 6px;
+  font-size: 0.85rem;
+  padding: 6px 8px;
+}
+
+.save-btn {
+  background-color: #16a34a;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.save-btn:hover {
+  background-color: #15803d;
+  transform: scale(1.03);
+}
+
+.save-btn:active {
+  transform: scale(0.97);
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---------------------------------------------------
+   BACK BUTTON
+--------------------------------------------------- */
+.btn-primary {
+  font-weight: 500;
+  padding: 8px 20px;
+  border-radius: 8px;
+}
+
+/* ---------------------------------------------------
+   GRAND TOTAL
+--------------------------------------------------- */
+.grand-total {
+  font-size: 1.4rem;
+  color: #16a34a;
+  font-weight: 700;
+}
+
+/* ---------------------------------------------------
+   RETURN APPROVAL BUTTON
+--------------------------------------------------- */
+.btn-success {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+}
+
+/* ---------------------------------------------------
+   RESPONSIVE FIXES
+--------------------------------------------------- */
+@media (max-width: 768px) {
+  .order-card {
+    padding: 18px;
+  }
+
+  .table td img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .d-flex.gap-2 {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .save-btn {
+    width: 100%;
+  }
+}
+
+</style>
+
+<!-- 
   <style>
     body {
       background-color: #f9fafb;
@@ -53,7 +225,7 @@
 }
 
 
-  </style>
+  </style> -->
 </head>
 <body class="container py-4">
 

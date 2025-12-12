@@ -18,6 +18,107 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
   <title>OTP Verification - Bro Basket</title>
+  <style>
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f8fafc;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Navbar */
+  nav {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  nav img {
+    width: 150px;
+  }
+
+  /* Page Layout */
+  section {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  /* OTP Card */
+  .otp-card {
+    background: white;
+    border-radius: 18px;
+    padding: 40px;
+    max-width: 420px;
+    width: 100%;
+    margin: auto;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+  }
+
+  /* OTP Inputs */
+  .otp-input {
+    width: 48px;
+    height: 56px;
+    font-size: 22px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+
+  .otp-input:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.25);
+    outline: none;
+  }
+
+  /* Verify Button */
+  .verify-btn {
+    width: 100%;
+    padding: 12px;
+    font-weight: 600;
+    background: #16a34a;
+    color: white;
+    border-radius: 10px;
+    transition: 0.2s ease;
+    box-shadow: 0 4px 15px rgba(22, 163, 74, 0.35);
+  }
+
+  .verify-btn:hover {
+    background: #15803d;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(22, 163, 74, 0.45);
+  }
+
+  /* Resend OTP Button */
+  #resendBtn {
+    background: transparent;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+
+  #resendBtn:not(:disabled):hover {
+    color: #0f9d58;
+    transform: scale(1.05);
+  }
+
+  #resendBtn:disabled {
+    color: #9ca3af;
+    cursor: not-allowed;
+  }
+
+  /* Footer Styles */
+  footer {
+    background: #f1f5f9;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  /* Fade Animation */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
 </head>
 
 <body>

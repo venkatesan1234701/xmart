@@ -6,6 +6,54 @@
 
   <!-- ✅ SweetAlert2 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <style>
+    /* Popup box */
+.swal2-popup {
+  border-radius: 20px !important;
+  padding: 25px !important;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+  animation: popupFade 0.4s ease;
+}
+
+/* Header text */
+.swal2-title {
+  font-size: 26px !important;
+  font-weight: 700 !important;
+  color: #1f2937 !important;
+}
+
+/* Description text */
+.swal2-html-container {
+  font-size: 16px !important;
+  color: #4b5563 !important;
+}
+
+/* Confirm button */
+.swal2-confirm {
+  border-radius: 8px !important;
+  padding: 10px 25px !important;
+  background-color: #2563eb !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+.swal2-confirm:hover {
+  background-color: #1d4ed8 !important;
+}
+
+/* Warning icon animation */
+.swal2-icon.swal2-warning {
+  border-color: #f59e0b !important;
+  color: #d97706 !important;
+}
+
+/* Fade animation */
+@keyframes popupFade {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+  </style>
 </head>
 <body>
 

@@ -20,6 +20,87 @@
 <!-- Theme CSS -->
  <!-- <link rel="stylesheet" href="public/assets/css/theme.min.css"> -->
   <link rel="stylesheet" href="/public/assets/css/theme.min.css">
+  <style>
+	/* Smooth page fade-in */
+body {
+  animation: fadeIn .35s ease-in-out;
+  background-color: #f9fafb;
+}
+
+/* Container card styling */
+.max-w-md {
+  animation: slideUp .35s ease-in-out;
+}
+
+.bg-white {
+  border-radius: 1rem !important;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+/* Header title */
+h2 {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+/* Input Field Styling */
+input[type="email"],
+input[type="text"] {
+  transition: .2s ease-in-out;
+}
+
+input:focus {
+  border-color: #22c55e !important;
+  box-shadow: 0 0 0 .25rem rgba(34,197,94,0.25);
+}
+
+/* Send OTP / Verify OTP button animation */
+button {
+  font-weight: 600;
+  transition: 0.2s ease-in-out;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Disabled button look */
+.opacity-50 {
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* OTP Section smooth reveal */
+#otpSection {
+  animation: fadeIn .4s ease-in-out;
+}
+
+/* Cute animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Placeholder style improve */
+input::placeholder {
+  color: #9ca3af;
+}
+
+/* Mobile padding fix */
+@media (max-width: 640px) {
+  .p-6 {
+    padding: 1.4rem !important;
+  }
+}
+
+  </style>
  <!-- Analytics Code -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M8S4MT3EYG"></script>
 <script>

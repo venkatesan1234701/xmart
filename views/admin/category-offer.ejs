@@ -9,6 +9,247 @@
   <link rel="stylesheet" href="../assets/css/theme.min.css">
 
   <style>
+    /* -------------------------------
+   GLOBAL STYLING
+--------------------------------*/
+body {
+  font-family: "Inter", sans-serif;
+  background: #f8fafc;
+  margin: 0;
+  padding: 0;
+  color: #1e293b;
+}
+
+h2 {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* -------------------------------
+   TOP NAVBAR
+--------------------------------*/
+nav.w-full {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  background: white;
+}
+
+nav ul li a {
+  font-weight: 500;
+  transition: 0.25s;
+}
+
+nav ul li a:hover {
+  color: #16a34a !important;
+}
+
+.main-content-wrapper {
+  margin-top: 100px !important;
+}
+
+/* -------------------------------
+   SEARCH BAR
+--------------------------------*/
+#category-search {
+  border-radius: 8px;
+  padding: 7px 12px;
+  border: 1px solid #cbd5e1;
+  transition: 0.25s ease;
+}
+
+#category-search:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.25);
+}
+
+/* Search Button */
+button[type="submit"] {
+  border-radius: 8px;
+}
+
+/* -------------------------------
+   ADD OFFER BUTTON
+--------------------------------*/
+#openModalBtn {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  box-shadow: 0 2px 8px rgba(34,197,94,0.3);
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  transition: 0.3s;
+}
+
+#openModalBtn:hover {
+  background: linear-gradient(135deg, #15803d, #16a34a);
+  transform: translateY(-2px);
+}
+
+/* -------------------------------
+   TABLE DESIGN
+--------------------------------*/
+.table-responsive {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+table {
+  background: white;
+}
+
+table thead {
+  background: #f1f5f9;
+}
+
+table thead th {
+  font-weight: 600;
+  padding: 14px;
+  font-size: 14px;
+}
+
+table tbody td {
+  padding: 12px;
+  font-size: 14px;
+}
+
+table tbody tr {
+  transition: 0.2s ease;
+}
+
+table tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* -------------------------------
+   ACTION BUTTONS (EDIT / DELETE)
+--------------------------------*/
+.btn-primary.btn-sm {
+  background: linear-gradient(135deg, #1976d2, #1565c0);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  color: white;
+  font-weight: 500;
+  transition: 0.25s ease;
+}
+
+.btn-primary.btn-sm:hover {
+  background: linear-gradient(135deg, #2196f3, #0d47a1);
+  transform: translateY(-2px);
+}
+
+.btn-danger.btn-sm {
+  background: linear-gradient(135deg, #e53935, #d32f2f);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  color: white;
+  font-weight: 500;
+  transition: 0.25s ease;
+}
+
+.btn-danger.btn-sm:hover {
+  background: linear-gradient(135deg, #f44336, #c62828);
+  transform: translateY(-2px);
+}
+
+/* -------------------------------
+   BADGES
+--------------------------------*/
+.badge.bg-success {
+  background: #16a34a !important;
+}
+
+.badge.bg-danger {
+  background: #dc2626 !important;
+}
+
+.badge.bg-warning {
+  background: #f59e0b !important;
+  color: #1f2937 !important;
+}
+
+/* -------------------------------
+   MODAL STYLE
+--------------------------------*/
+.modal-content {
+  border-radius: 12px !important;
+  padding: 20px;
+  border: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.modal-title {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Modal Inputs */
+.modal-body input,
+.modal-body select {
+  border-radius: 10px !important;
+  border: 1px solid #cbd5e1 !important;
+  padding: 10px !important;
+  transition: 0.2s ease;
+}
+
+.modal-body input:focus,
+.modal-body select:focus {
+  border-color: #22c55e !important;
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.25);
+}
+
+/* Modal Buttons */
+.modal-body .btn-success {
+  background: #16a34a !important;
+  border-radius: 8px;
+  padding: 8px 18px;
+}
+
+.modal-body .btn-success:hover {
+  background: #15803d !important;
+}
+
+.modal-body .btn-secondary {
+  border-radius: 8px;
+  padding: 8px 18px;
+}
+
+/* -------------------------------
+   PAGINATION
+--------------------------------*/
+.pagination .page-link {
+  border-radius: 8px;
+  margin: 0 3px;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+  transition: 0.2s ease;
+}
+
+.pagination .page-link:hover {
+  background: #e2e8f0;
+}
+
+.pagination .active .page-link {
+  background: #16a34a !important;
+  border-color: #16a34a !important;
+  color: white !important;
+}
+
+/* -------------------------------
+   ANIMATIONS
+--------------------------------*/
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-content {
+  animation: fadeIn 0.3s ease;
+}
+
+  </style>
+
+
+  <!-- <style>
 
     .btn.btn-primary.btn-sm {
   background: linear-gradient(135deg, #1976d2, #1565c0);
@@ -90,7 +331,7 @@
     .btn-edit:hover { background-color: #0d6efd; color: white; }
     .btn-delete { color: #dc3545; border: 1px solid #dc3545; }
     .btn-delete:hover { background-color: #dc3545; color: white; }
-  </style>
+  </style> -->
 </head>
 <body class="bg-light">
 

@@ -23,6 +23,154 @@
 <link rel="stylesheet" href="../assets/css/theme.min.css">
  <!-- Analytics Code -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M8S4MT3EYG"></script>
+
+<style>
+	/* ===========================
+   GLOBAL UI POLISH
+=========================== */
+body {
+  background: #f9fafb !important;
+  font-family: "Inter", sans-serif;
+}
+
+/* Smooth transitions */
+*, button {
+  transition: 0.25s ease-in-out !important;
+}
+
+/* ===========================
+   NAVBAR ENHANCED LOOK
+=========================== */
+.navbar, header {
+  background: #ffffff;
+  border-bottom: 2px solid #e5e9f0;
+}
+
+.nav-link {
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: 6px;
+}
+
+.nav-link:hover {
+  background: #e8f7ef;
+  color: #059669 !important;
+}
+
+/* User dropdown */
+#userDropdown {
+  border-radius: 12px;
+  overflow: hidden;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* ===========================
+   SEARCH BAR PREMIUM LOOK
+=========================== */
+#searchProducts {
+  border: 2px solid #d1d5db;
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+
+#searchProducts:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.25);
+}
+
+#searchResults {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* ===========================
+   HOMEPAGE BANNER GLOW
+=========================== */
+.swiper-slide h2 {
+  text-shadow: 0 2px 14px rgba(0,0,0,0.35);
+}
+
+.swiper-slide span {
+  text-shadow: 0 1px 6px rgba(0,0,0,0.35);
+}
+
+.btn {
+  border-radius: 10px !important;
+}
+
+/* ===========================
+   FEATURED CATEGORY BANNERS
+=========================== */
+.category-banner {
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0px 6px 16px rgba(0,0,0,0.08);
+}
+
+.category-banner:hover {
+  transform: translateY(-4px);
+  box-shadow: 0px 10px 20px rgba(0,0,0,0.12);
+}
+
+/* ===========================
+   PRODUCT CARD DESIGN BOOST
+=========================== */
+.card-product {
+  border-radius: 14px;
+  border: none !important;
+  background: #fff;
+  box-shadow: 0px 4px 14px rgba(0,0,0,0.08);
+  transition: 0.3s ease;
+}
+
+.card-product:hover {
+  transform: translateY(-6px);
+  box-shadow: 0px 10px 24px rgba(0,0,0,0.15);
+}
+
+/* Product image container */
+.card-product img {
+  border-radius: 10px;
+}
+
+/* Product name */
+.card-product h3 {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+/* Add button */
+.card-product button {
+  padding: 8px 26px;
+  border-radius: 8px;
+  background-color: #059669 !important;
+}
+.card-product button:hover {
+  background-color: #047857 !important;
+}
+
+/* ===========================
+   FOOTER POLISH
+=========================== */
+footer {
+  background: #f3f4f6;
+}
+
+footer a:hover {
+  color: #059669 !important;
+}
+
+/* ===========================
+   ANIMATIONS
+=========================== */
+@keyframes fadeIn {
+  from { opacity:0; transform: translateY(-6px); }
+  to { opacity:1; transform: translateY(0); }
+}
+
+</style>
+
 <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() {

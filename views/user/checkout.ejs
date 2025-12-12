@@ -19,6 +19,204 @@
 
 <!-- Theme CSS -->
 <link rel="stylesheet" href="../assets/css/theme.min.css">
+
+
+
+<style>
+
+/* Global Page Polish */
+body {
+  background: #f9fafb;
+  font-family: "Inter", sans-serif;
+}
+
+/* Card Shadow - Smooth Premium Look */
+.card {
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  transition: 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 6px 22px rgba(0,0,0,0.1);
+}
+
+/* Checkout Titles */
+h1, h3, h5 {
+  font-weight: 700;
+  color: #111827;
+}
+
+/* -----------------------------------------
+   ADDRESS CARDS
+----------------------------------------- */
+.card-body {
+  border-radius: 14px !important;
+  transition: 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.card-body:hover {
+  border-color: #16a34a;
+  box-shadow: 0 8px 24px rgba(34,197,94,0.20);
+  background: #f0fdf4;
+}
+
+.card-body input[type="radio"]:checked ~ * {
+  border-color: #16a34a !important;
+}
+
+/* Selected Address Highlight */
+input[type="radio"]:checked + label {
+  font-weight: 600;
+  color: #15803d !important;
+}
+
+/* -----------------------------------------
+   PAYMENT METHOD CARDS
+----------------------------------------- */
+.card.p-4 {
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  transition: 0.25s ease;
+}
+
+.card.p-4:hover {
+  border-color: #16a34a;
+  background: #f0fdf4;
+  box-shadow: 0 6px 18px rgba(34,197,94,0.2);
+}
+
+input[type="radio"]:checked + label span {
+  color: #16a34a !important;
+  font-weight: 600;
+}
+
+/* Disabled Payment (COD / Wallet limit exceeded) */
+input:disabled + label {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* -----------------------------------------
+   ORDER SUMMARY RIGHT SIDE
+----------------------------------------- */
+.shadow-sm {
+  border-radius: 16px !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08) !important;
+}
+
+.order-list li {
+  padding: 16px 10px;
+  transition: 0.2s ease;
+}
+
+.order-list li:hover {
+  background: #f3f4f6;
+  border-radius: 12px;
+}
+
+/* Prices Styling */
+.font-bold {
+  font-weight: 700;
+}
+
+.text-green-700 {
+  color: #15803d !important;
+}
+
+/* -----------------------------------------
+   BUTTONS
+----------------------------------------- */
+.btn {
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+}
+
+.btn-green {
+  background: #16a34a;
+  color: white;
+}
+
+.btn-green:hover {
+  background: #15803d;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(34,197,94,0.3);
+}
+
+.btn-outline-gray {
+  border: 2px solid #d1d5db;
+}
+
+.btn-outline-gray:hover {
+  background: #111827;
+  color: #fff;
+}
+
+/* Prev Button */
+.btn-prev {
+  border-radius: 12px;
+  border: 1px solid #9ca3af;
+}
+
+.btn-prev:hover {
+  background: #1f2937;
+  color: white;
+}
+
+/* -----------------------------------------
+    SEARCH BAR DROPDOWN
+----------------------------------------- */
+#searchResults {
+  border-radius: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+#searchResults li {
+  transition: 0.2s ease;
+}
+
+#searchResults li:hover {
+  background: #e5e7eb;
+}
+
+/* -----------------------------------------
+    NAVBAR POLISH
+----------------------------------------- */
+header {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+nav .nav-link {
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+nav .nav-link:hover {
+  color: #16a34a !important;
+}
+
+/* -----------------------------------------
+    RESPONSIVE
+----------------------------------------- */
+
+@media (max-width: 768px) {
+  .card-body {
+    padding: 12px !important;
+  }
+
+  .card.p-4 {
+    padding: 14px !important;
+  }
+}
+
+</style>
+
+
+
+
  <!-- Analytics Code -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M8S4MT3EYG"></script>
 <script>

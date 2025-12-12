@@ -19,6 +19,255 @@
 
 <!-- Theme CSS -->
 <link rel="stylesheet" href="../assets/css/theme.min.css">
+<style>/* -------------------------
+   GENERAL LAYOUT
+--------------------------*/
+body {
+  font-family: "Inter", sans-serif;
+  background: #f8fafc;
+  margin: 0;
+  padding: 0;
+  color: #1e293b;
+}
+
+/* Fix Top Navbar */
+nav.w-full {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  padding: 10px 0;
+}
+
+/* Space below navbar */
+.main-content-wrapper {
+  margin-top: 30px !important;
+}
+
+/* -------------------------
+   PAGE TITLES
+--------------------------*/
+h2.text-xl {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Breadcrumb */
+nav[aria-label="breadcrumb"] ol li {
+  font-size: 14px;
+}
+
+/* -------------------------
+   SEARCH BAR
+--------------------------*/
+#categorySearchInput {
+  border-radius: 10px;
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+  transition: 0.25s ease;
+}
+
+#categorySearchInput:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.25);
+}
+
+/* Search Button */
+#categorySearchForm button {
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: #16a34a;
+  color: #fff;
+  transition: 0.2s ease;
+}
+
+#categorySearchForm button:hover {
+  background: #15803d;
+}
+
+/* -------------------------
+   TABLE DESIGN
+--------------------------*/
+table {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+table thead {
+  background: #f1f5f9;
+}
+
+table th {
+  font-weight: 600;
+  padding: 14px;
+}
+
+table td {
+  padding: 16px;
+  font-size: 15px;
+}
+
+table tbody tr {
+  transition: 0.2s ease;
+}
+
+table tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* Description cell scroll */
+td div.max-h-24 {
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #f8fafc;
+}
+
+td div.max-h-24::-webkit-scrollbar {
+  width: 6px;
+}
+td div.max-h-24::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 10px;
+}
+
+/* -------------------------
+   BUTTONS
+--------------------------*/
+button {
+  font-size: 14px;
+}
+
+/* Edit */
+.editCategoryBtn {
+  background: #2563eb !important;
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+.editCategoryBtn:hover {
+  background: #1e40af !important;
+}
+
+/* Delete / Unlist */
+.deleteCategoryBtn,
+.toggleCategoryBtn {
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+/* Active → Red */
+.toggleCategoryBtn.bg-red-600:hover {
+  background: #b91c1c !important;
+}
+
+/* Inactive → Green */
+.toggleCategoryBtn.bg-green-600:hover {
+  background: #15803d !important;
+}
+
+/* Add Category Button */
+#addCategoryBtn {
+  background: #16a34a;
+  padding: 10px 20px;
+  border-radius: 10px;
+}
+#addCategoryBtn:hover {
+  background: #15803d;
+}
+
+/* -------------------------
+   MODAL DESIGN
+--------------------------*/
+#addCategoryModal,
+#editCategoryModal {
+  backdrop-filter: blur(3px);
+  animation: fadeIn 0.35s ease;
+}
+
+#addCategoryModal .bg-white,
+#editCategoryModal .bg-white {
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  animation: scaleIn 0.3s ease;
+}
+
+/* Modal Inputs */
+#addCategoryModal input,
+#addCategoryModal textarea,
+#editCategoryModal input,
+#editCategoryModal textarea {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  padding: 10px 12px;
+  border-radius: 10px;
+  transition: 0.2s ease;
+}
+
+#addCategoryModal input:focus,
+#editCategoryModal input:focus,
+#addCategoryModal textarea:focus,
+#editCategoryModal textarea:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.25);
+}
+
+/* Cancel Button */
+#closeCategoryModal,
+#closeEditModal {
+  background: #e2e8f0;
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+#closeCategoryModal:hover,
+#closeEditModal:hover {
+  background: #cbd5e1;
+}
+
+/* Save / Update buttons */
+#addCategoryModal button[type="submit"],
+#editCategoryModal button[type="submit"] {
+  background: #16a34a;
+  color: white;
+  border-radius: 8px;
+  padding: 8px 16px;
+}
+#addCategoryModal button[type="submit"]:hover,
+#editCategoryModal button[type="submit"]:hover {
+  background: #15803d;
+}
+
+/* -------------------------
+   PAGINATION
+--------------------------*/
+.pagination a {
+  border-radius: 8px;
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  transition: 0.2s ease;
+}
+
+.pagination a:hover {
+  background: #f1f5f9;
+}
+
+.pagination .active {
+  background: #16a34a !important;
+  color: white !important;
+}
+
+/* -------------------------
+   ANIMATIONS
+--------------------------*/
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+</style>
 
 	<title>TailwindCSS Dashboard eCommerce HTML Template - FreshCart</title>
 </head>
@@ -234,7 +483,7 @@
 			</a>
 			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 		</div>
-		<div class="navbar-vertical-content flex-grow-1" data-simplebar="">
+		<div class="navbar-vertical-content flex-grow-" data-simplebar="">
 			<ul class="navbar-nav flex-col">
 				<li class="nav-item">
 					<a class="nav-link " href="index.html">

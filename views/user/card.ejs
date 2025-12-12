@@ -19,6 +19,176 @@
 
 <!-- Theme CSS -->
 <link rel="stylesheet" href="../assets/css/theme.min.css">
+
+<style>
+
+/* ================================
+   GLOBAL POLISH
+================================ */
+body {
+  background: #f8fafc;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ================================
+   CART ITEM CARD RE-DESIGN
+================================ */
+.cart-item {
+  border-radius: 14px;
+  background: white;
+  padding: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+  transition: 0.25s ease;
+}
+
+.cart-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.10);
+}
+
+/* Product Image */
+.cart-item img {
+  border-radius: 12px;
+}
+
+/* Product Title */
+.cart-item h6 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Remove Button */
+.remove-from-cart {
+  color: #dc2626 !important;
+  font-weight: 500;
+}
+
+.remove-from-cart:hover {
+  color: white !important;
+  background: #dc2626;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+/* ================================
+   QUANTITY BUTTON DESIGN
+================================ */
+.button-minus,
+.button-plus {
+  background: #f3f4f6;
+  color: #111827;
+  font-size: 18px;
+  border-radius: 8px;
+  transition: 0.2s ease;
+}
+
+.button-minus:hover,
+.button-plus:hover {
+  background: #059669;
+  color: white;
+}
+
+.quantity-field {
+  font-weight: bold;
+  color: #111827;
+}
+
+/* ================================
+   SIDEBAR SUMMARY BOX
+================================ */
+.card {
+  border-radius: 18px !important;
+  border: none !important;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.card-body {
+  padding: 22px;
+}
+
+.card ul li {
+  background: white;
+  padding: 12px;
+  font-size: 15px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+/* Grand Total highlight */
+#grandTotalValue {
+  font-size: 18px;
+  font-weight: 700;
+  color: #047857;
+}
+
+/* ================================
+   COUPON BOX UI UPGRADE
+================================ */
+
+#couponInput {
+  border-radius: 12px;
+  padding: 12px;
+  border: 2px solid #d1d5db;
+  transition: 0.25s;
+}
+#couponInput:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 4px rgba(16,185,129,0.20);
+}
+
+#couponDropdown {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+#couponDropdown li {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Coupon Hover */
+#couponDropdown li:hover {
+  background: #f0fdf4;
+}
+
+/* Apply Button */
+#couponForm button {
+  border-radius: 10px;
+}
+
+/* ================================
+   CHECKOUT BUTTON
+================================ */
+#grandTotalButton {
+  font-weight: 700;
+}
+
+.btn {
+  border-radius: 10px !important;
+}
+
+/* ================================
+   EMPTY CART DESIGN
+================================ */
+.empty-cart {
+  padding: 50px;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+/* Smooth Fade Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+</style>
+
  <!-- Analytics Code -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M8S4MT3EYG"></script>
 <script>

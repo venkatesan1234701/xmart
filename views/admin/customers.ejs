@@ -20,6 +20,183 @@
 <!-- Theme CSS -->
 <link rel="stylesheet" href="../assets/css/theme.min.css">
 
+<style>
+  /* ================================
+   GLOBAL PAGE STYLE
+================================ */
+body {
+  font-family: "Inter", sans-serif;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* ================================
+   NAVBAR (Top)
+================================ */
+nav {
+  background: #ffffff;
+  box-shadow: 0px 3px 12px rgba(0,0,0,0.07);
+}
+
+nav .nav-link {
+  font-weight: 500;
+  transition: 0.25s ease;
+}
+
+nav .nav-link:hover {
+  color: #16a34a !important;
+}
+
+/* ================================
+   SEARCH BAR
+================================ */
+#searchInput {
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  padding: 10px 14px;
+  transition: 0.25s ease;
+}
+
+#searchInput:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.25);
+}
+
+#searchForm button {
+  border-radius: 10px;
+  background: #16a34a;
+  padding: 8px 20px;
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+#searchForm button:hover {
+  background: #15803d;
+}
+
+/* ================================
+   TABLE WRAPPER
+================================ */
+.card {
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0px 4px 14px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+/* ================================
+   TABLE HEADER
+================================ */
+table thead {
+  background: #e2e8f0;
+}
+
+table thead th {
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* ================================
+   TABLE BODY
+================================ */
+table tbody tr {
+  transition: 0.2s ease;
+}
+
+table tbody tr:hover {
+  background: #f1f5f9;
+}
+
+table tbody td {
+  padding: 14px 18px;
+  font-size: 14px;
+}
+
+/* ================================
+   BLOCK / UNBLOCK BUTTON STYLING
+================================ */
+button.bg-red-500 {
+  background: #dc2626 !important;
+}
+
+button.bg-red-500:hover {
+  background: #b91c1c !important;
+}
+
+button.bg-green-500 {
+  background: #16a34a !important;
+}
+
+button.bg-green-500:hover {
+  background: #15803d !important;
+}
+
+button {
+  transition: 0.25s ease;
+}
+
+/* ================================
+   PAGINATION SECTION
+================================ */
+.pagination button,
+nav.pagination button {
+  border-radius: 8px !important;
+  padding: 6px 14px;
+  font-weight: 500;
+  transition: 0.25s ease;
+}
+
+.pagination .active {
+  background: #15803d !important;
+  color: white !important;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #86efac !important;
+}
+
+/* Disabled state */
+button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ================================
+   BREADCRUMB
+================================ */
+nav[aria-label="breadcrumb"] ol {
+  font-size: 14px;
+  gap: 6px;
+}
+
+/* ================================
+   SMOOTH CARD ANIMATION
+================================ */
+.card {
+  animation: fadeInUp .4s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+</style>
+
 	<title>TailwindCSS Dashboard eCommerce HTML Template - FreshCart</title>
 </head>
 

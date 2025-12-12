@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../assets/css/theme.min.css">
  <!-- Analytics Code -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M8S4MT3EYG"></script>
-<style>
+<!-- <style>
   .size-box {
   border: 2px solid #ccc;
   padding: 8px 12px;
@@ -48,7 +48,266 @@
   background-color: #bbf7d0;
 }
 
+</style> -->
+
+
+
+<style>
+
+/* ==========================================================
+    GLOBAL
+========================================================== */
+body {
+  background: #f9fafb;
+  font-family: "Inter", sans-serif;
+}
+
+/* Smooth shadow for all cards */
+.card, .shadow-box {
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+/* ==========================================================
+    PRODUCT IMAGE SECTION
+========================================================== */
+#zoomContainer {
+  border-radius: 14px;
+  overflow: hidden;
+  transition: 0.3s ease;
+}
+
+#zoomContainer:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+#mainProductImage {
+  border-radius: 14px;
+}
+
+/* Thumbnails */
+#zoomContainer + div img {
+  border-radius: 12px;
+  border: 2px solid transparent;
+  transition: transform 0.25s ease, border 0.25s ease;
+}
+
+#zoomContainer + div img:hover {
+  transform: scale(1.06);
+  border-color: #22c55e;
+}
+
+/* ==========================================================
+    SIZE BOXES
+========================================================== */
+.size-box {
+  border: 2px solid #d4d4d8;
+  padding: 10px 16px;
+  min-width: 55px;
+  text-align: center;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: 0.25s ease;
+}
+
+.size-box.available:hover {
+  border-color: #22c55e;
+  background: #e7fee6;
+}
+
+.size-box.selected {
+  border-color: #16a34a !important;
+  background: #bbf7d0 !important;
+  box-shadow: 0 4px 10px rgba(34,197,94,0.4);
+}
+
+.size-box.unavailable {
+  opacity: 0.4;
+  cursor: not-allowed !important;
+}
+
+/* ==========================================================
+    PRICE BLOCK
+========================================================== */
+#priceDisplay {
+  font-size: 32px;
+  font-weight: 800;
+  color: #15803d;
+}
+
+#mrpDisplay {
+  font-size: 18px;
+  color: #9ca3af;
+}
+
+#offerPercent {
+  font-size: 14px;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+/* ==========================================================
+    QUANTITY BUTTONS
+========================================================== */
+#decreaseQty, #increaseQty {
+  background: #e5e7eb;
+  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  transition: 0.25s;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+#decreaseQty:hover, #increaseQty:hover {
+  background: #d1d5db;
+}
+
+/* Input */
+#orderQty {
+  border-radius: 10px;
+  font-size: 16px;
+  border: 2px solid #d4d4d8;
+}
+
+/* ==========================================================
+    ADD TO CART + WISHLIST
+========================================================== */
+#addToCartBtn {
+  background: #16a34a;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  transition: 0.25s ease;
+}
+
+#addToCartBtn:hover {
+  background: #15803d;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(34,197,94,0.3);
+}
+
+.wishlist-btn {
+  background: #ef4444 !important;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  transition: 0.25s ease;
+}
+
+.wishlist-btn:hover {
+  background: #dc2626 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(220,38,38,0.3);
+}
+
+/* ==========================================================
+    REVIEWS SECTION
+========================================================== */
+.review-item {
+  border-radius: 14px;
+  padding: 16px;
+  transition: 0.3s ease;
+}
+
+.review-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.star {
+  font-size: 22px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.star:hover {
+  transform: scale(1.2);
+}
+
+#reviewForm {
+  border-radius: 14px;
+}
+
+textarea {
+  border-radius: 10px;
+  border: 2px solid #d4d4d8;
+}
+
+textarea:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 4px rgba(34,197,94,0.25);
+}
+
+/* ==========================================================
+    RELATED PRODUCTS
+========================================================== */
+.card-product {
+  border-radius: 16px;
+  transition: 0.3s ease;
+}
+
+.card-product:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+}
+
+/* ==========================================================
+    DROPDOWN USER MENU
+========================================================== */
+#userDropdown {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+#userDropdown a,
+#userDropdown button {
+  transition: 0.2s ease;
+}
+
+#userDropdown a:hover,
+#userDropdown button:hover {
+  background: #f3f4f6;
+}
+
+/* ==========================================================
+    BREADCRUMB
+========================================================== */
+nav ol li a {
+  transition: 0.2s;
+  font-weight: 500;
+}
+
+nav ol li a:hover {
+  color: #16a34a;
+}
+
+/* ==========================================================
+    MOBILE RESPONSIVE IMPROVEMENTS
+========================================================== */
+@media(max-width:768px) {
+  #zoomContainer {
+    width: 100% !important;
+    height: 340px !important;
+  }
+
+  .size-box {
+    padding: 10px;
+    min-width: 45px;
+  }
+
+  #priceDisplay {
+    font-size: 26px;
+  }
+}
+
 </style>
+
+
+
+
 
 <script>
     window.dataLayer = window.dataLayer || [];

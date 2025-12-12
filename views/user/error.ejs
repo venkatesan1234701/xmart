@@ -3,6 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <title>404 - Page Not Found</title>
+  <style>
+/* Page background */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  background: #f9fafb;
+  color: #374151;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  animation: fadeIn 0.7s ease;
+}
+
+/* Fade-in effect */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Big 404 text */
+.error-code {
+  font-size: 120px;
+  font-weight: 800;
+  color: #ef4444;
+  text-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  margin-bottom: 10px;
+}
+
+/* Message */
+.error-text {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.error-desc {
+  font-size: 18px;
+  color: #6b7280;
+  margin-bottom: 25px;
+}
+
+/* Buttons */
+.btn {
+  padding: 12px 25px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  transition: 0.25s ease-in-out;
+  margin: 5px;
+}
+
+.btn-home {
+  background: #10b981;
+  color: white;
+}
+
+.btn-home:hover {
+  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+}
+
+.btn-back {
+  background: #6b7280;
+  color: white;
+}
+
+.btn-back:hover {
+  background: #4b5563;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(107,114,128,0.3);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .error-code {
+    font-size: 80px;
+  }
+  .error-text {
+    font-size: 20px;
+  }
+}
+</style>
+
 </head>
 <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
 

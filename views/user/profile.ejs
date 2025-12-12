@@ -12,6 +12,119 @@
 <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+
+/* ---------------------------
+   GLOBAL PAGE STYLING
+----------------------------*/
+body {
+  background: #f4f6f9;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Navbar */
+.navbar {
+  border-bottom: 2px solid #e8e8e8;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+}
+
+.nav-link {
+  font-weight: 500;
+  color: #333 !important;
+  transition: 0.2s;
+}
+
+.nav-link:hover {
+  color: #0d6efd !important;
+}
+
+
+/* ---------------------------
+   PROFILE CARD
+----------------------------*/
+.card {
+  border-radius: 15px;
+}
+
+.card-title {
+  font-size: 1.7rem;
+  font-weight: 700;
+}
+
+#profilePreview {
+  border: 4px solid #0d6efd !important;
+  transition: 0.3s;
+}
+
+#profilePreview:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Upload button */
+#profileForm button {
+  border-radius: 25px;
+}
+
+/* Input fields */
+.form-control {
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.15rem rgba(13,110,253,.25);
+}
+
+/* ---------------------------
+   ADDRESS CARDS
+----------------------------*/
+#addresses-container .card {
+  border-radius: 12px;
+  transition: 0.25s;
+}
+
+#addresses-container .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+/* Buttons inside address card */
+#addresses-container .btn-warning,
+#addresses-container .btn-danger {
+  border-radius: 8px;
+  padding: 6px 14px;
+}
+
+/* Title */
+h4 {
+  margin-top: 25px;
+  font-weight: 600;
+  border-left: 4px solid #0d6efd;
+  padding-left: 10px;
+}
+
+/* ---------------------------
+   MODAL CROP UI
+----------------------------*/
+.modal-content {
+  border-radius: 12px !important;
+}
+
+.modal-title {
+  font-weight: 600;
+}
+
+.modal-footer button {
+  border-radius: 8px;
+}
+
+</style>
+
 </head>
 <body class="bg-light">
 

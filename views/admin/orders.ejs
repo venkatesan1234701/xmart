@@ -20,6 +20,219 @@
 <!-- Theme CSS -->
 <link rel="stylesheet" href="../assets/css/theme.min.css">
 
+<style>
+  /* ===========================================
+   GLOBAL
+=========================================== */
+
+body {
+  background: #f5f7fa;
+  font-family: "Inter", sans-serif;
+}
+
+h2 {
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* ===========================================
+   NAVBAR
+=========================================== */
+
+
+.navbar {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  padding: 12px 18px;
+}
+
+.nav-link {
+  font-weight: 500;
+  transition: 0.25s ease;
+}
+
+.nav-link:hover {
+  color: #16a34a !important;
+}
+
+/* ===========================================
+   SEARCH BOX
+=========================================== */
+
+input[type="search"] {
+  border-radius: 10px !important;
+  border: 1px solid #cbd5e1 !important;
+  transition: 0.3s ease;
+}
+
+input[type="search"]:focus {
+  border-color: #22c55e !important;
+  box-shadow: 0 0 6px rgba(34,197,94,0.4);
+}
+
+/* Search Button */
+button[type="submit"] {
+  border-radius: 10px;
+  padding: 8px 20px;
+  transition: 0.25s ease;
+}
+
+button[type="submit"]:hover {
+  transform: translateY(-2px);
+  background: #059669;
+}
+
+/* ===========================================
+   TABLE
+=========================================== */
+
+table {
+  border-radius: 14px !important;
+  overflow: hidden;
+}
+
+thead {
+  background: #f3f4f6;
+}
+
+thead th {
+  padding: 16px;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+tbody tr {
+  transition: 0.25s ease;
+}
+
+tbody tr:hover {
+  background: #f9fafb;
+  transform: translateX(3px);
+}
+
+tbody td {
+  padding: 16px;
+  font-size: 15px;
+}
+
+/* Product Image */
+tbody img {
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}
+
+/* ===========================================
+   STATUS BADGES
+=========================================== */
+
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.status-delivered {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-pending {
+  background: #fef9c3;
+  color: #ca8a04;
+}
+
+.status-cancelled {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.status-other {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+/* ===========================================
+   DETAILS BUTTON
+=========================================== */
+
+.green-btn {
+  background: #16a34a;
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: 0.25s ease;
+}
+
+.green-btn:hover {
+  background: #15803d;
+  transform: translateY(-2px);
+}
+
+/* ===========================================
+   PAGINATION
+=========================================== */
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+.pagination a {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  transition: 0.25s ease;
+}
+
+.pagination a:hover {
+  background: #f3f4f6;
+}
+
+.pagination .active {
+  background: #16a34a !important;
+  color: white !important;
+  border-color: #16a34a !important;
+  font-weight: 600;
+}
+
+/* ===========================================
+   RESPONSIVE
+=========================================== */
+
+@media (max-width: 768px) {
+  thead {
+    display: none;
+  }
+
+  tbody tr {
+    display: block;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+
+  tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 5px;
+  }
+
+  tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #6b7280;
+  }
+}
+
+</style>
+
 	<title>TailwindCSS Dashboard eCommerce HTML Template - FreshCart</title>
 
 

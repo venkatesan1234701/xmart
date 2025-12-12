@@ -32,6 +32,314 @@
 <link rel="stylesheet" href="../assets/css/theme.min.css">
 
 
+<style>
+  /* ==========================================================
+   GLOBAL PAGE STYLING
+========================================================== */
+body {
+  background: #f5f7fa;
+  font-family: "Inter", sans-serif;
+}
+
+/* Page title */
+h2 {
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Breadcrumb */
+.breadcrumb a {
+  color: #16a34a;
+  font-weight: 500;
+}
+
+/* ==========================================================
+   NAVBAR
+========================================================== */
+.navbar {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  padding: 12px 18px;
+}
+
+.nav-link {
+  font-weight: 500;
+  transition: 0.25s ease;
+}
+
+.nav-link:hover {
+  color: #16a34a !important;
+}
+
+/* ==========================================================
+   SEARCH BAR
+========================================================== */
+#searchInput {
+  border-radius: 10px !important;
+  border: 1px solid #d1d5db !important;
+  transition: 0.25s ease;
+}
+
+#searchInput:focus {
+  border-color: #22c55e !important;
+  box-shadow: 0 0 6px rgba(34,197,94,0.4);
+}
+
+#clearSearch {
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+#clearSearch:hover {
+  color: #111827;
+}
+
+/* Search button */
+#productsSearchForm button {
+  border-radius: 10px;
+  transition: 0.25s ease;
+}
+
+#productsSearchForm button:hover {
+  transform: translateY(-2px);
+  background: #059669 !important;
+}
+
+/* ==========================================================
+   ADD PRODUCT BUTTON
+========================================================== */
+#addProductBtn {
+  border-radius: 8px;
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+#addProductBtn:hover {
+  transform: translateY(-2px);
+}
+
+/* ==========================================================
+   TABLE DESIGN
+========================================================== */
+table {
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+thead {
+  background: #e8f5e9 !important;
+}
+
+table th {
+  font-weight: 600;
+  padding: 12px 10px;
+  font-size: 14px;
+}
+
+table tbody tr {
+  transition: 0.25s ease;
+  background: #fff;
+}
+
+table tbody tr:hover {
+  background: #f3f4f6;
+  transform: translateX(3px);
+}
+
+table td {
+  padding: 14px 12px !important;
+}
+
+/* ==========================================================
+   ACTION BUTTONS
+========================================================== */
+.editBtn {
+  background: #2563eb;
+  border-radius: 7px;
+  transition: 0.25s ease;
+}
+
+.editBtn:hover {
+  background: #1e40af;
+  transform: translateY(-2px);
+}
+
+.delete-btn, .deleteBtn {
+  background: #dc2626 !important;
+  border-radius: 7px;
+  transition: 0.25s ease;
+}
+
+.deleteBtn:hover {
+  background: #b91c1c !important;
+  transform: translateY(-2px);
+}
+
+.detailsBtn {
+  background: #4b5563;
+  border-radius: 7px;
+}
+
+.detailsBtn:hover {
+  background: #374151;
+  transform: translateY(-2px);
+}
+
+/* ==========================================================
+   PRODUCT IMAGE BOX
+========================================================== */
+.product-image-box {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+/* ==========================================================
+   ADD PRODUCT MODAL
+========================================================== */
+#addProductModal, #editProductModal, #cropModal {
+  backdrop-filter: blur(3px);
+}
+
+.modal-content {
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+
+#modalTitle {
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.form-control, .form-select {
+  border-radius: 8px;
+  transition: 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #22c55e !important;
+  box-shadow: 0 0 6px rgba(34,197,94,0.4);
+}
+
+/* Image preview slots */
+.imageInputBox {
+  border: 2px dashed #9ca3af;
+  border-radius: 10px;
+  transition: 0.3s ease;
+}
+
+.imageInputBox:hover {
+  border-color: #22c55e;
+}
+
+/* Remove X */
+.removeX {
+  background: #dc2626;
+  color: white;
+  border-radius: 50%;
+  font-size: 10px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ==========================================================
+   SIZE ROW
+========================================================== */
+.size-row {
+  background: #f8fafc;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.sizePrice, .sizeQty {
+  border-radius: 6px;
+  width: 70px;
+}
+
+/* Remove Button */
+.removeSizeBtn {
+  color: #dc2626;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.removeSizeBtn:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================
+   DETAILS MODAL
+========================================================== */
+#detailsModal .modal-box {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  width: 90%;
+  max-width: 480px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+
+#detailsImages img {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+/* ==========================================================
+   PAGINATION
+========================================================== */
+.pagination button {
+  border-radius: 8px !important;
+  transition: 0.2s ease;
+}
+
+.pagination button:hover {
+  background: #e5e7eb !important;
+}
+
+.pagination .active {
+  background: #16a34a !important;
+  border-color: #16a34a !important;
+  color: white !important;
+}
+
+/* ==========================================================
+   RESPONSIVE TABLE (Mobile)
+========================================================== */
+@media (max-width: 768px) {
+
+  table thead {
+    display: none;
+  }
+
+  table tbody tr {
+    display: block;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 5px;
+  }
+
+  table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #6b7280;
+  }
+}
+
+</style>
+
+
 	<title>TailwindCSS Dashboard eCommerce HTML Template - FreshCart</title>
 </head>
 

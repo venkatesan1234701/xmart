@@ -4,6 +4,88 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #f9fafb;
+    font-family: "Inter", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .success-card {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0px 12px 30px rgba(0,0,0,0.08);
+    animation: fadeSlide 0.7s ease-out;
+  }
+
+  .success-icon {
+    font-size: 4rem;
+    color: #16a34a;
+    text-shadow: 0px 4px 10px rgba(22,163,74,0.4);
+    animation: pop 0.5s ease-out;
+  }
+
+  h2 {
+    color: #15803d;
+    font-weight: 700;
+    margin-top: 15px;
+  }
+
+  p {
+    color: #374151;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  .btn-success-custom {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #16a34a;
+    padding: 12px 26px;
+    color: white;
+    border-radius: 10px;
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s ease;
+    box-shadow: 0px 4px 12px rgba(22,163,74,0.35);
+  }
+
+  .btn-success-custom:hover {
+    background: #15803d;
+    box-shadow: 0px 6px 14px rgba(22,163,74,0.45);
+  }
+
+  /* Animation for card */
+  @keyframes fadeSlide {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Icon pop animation */
+  @keyframes pop {
+    0% { transform: scale(0.7); }
+    100% { transform: scale(1); }
+  }
+</style>
+
 </head>
 <body>
     <div class="container py-5 text-center">

@@ -8,7 +8,225 @@
   <link rel="stylesheet" href="../assets/css/theme.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <style>
+<style>
+  /* ----------------------------------------
+   GLOBAL PAGE STYLING
+-----------------------------------------*/
+body {
+  font-family: "Inter", sans-serif;
+  background: #f8fafc;
+  margin: 0;
+  color: #1e293b;
+}
+
+h2 {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* ----------------------------------------
+   NAVBAR
+-----------------------------------------*/
+.navbar {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  padding: 12px 18px;
+}
+
+.nav-link {
+  font-weight: 500;
+  transition: 0.25s ease;
+}
+
+.nav-link:hover {
+  color: #16a34a !important;
+}
+
+/* ----------------------------------------
+   SEARCH BAR
+-----------------------------------------*/
+#coupon-search {
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  padding: 7px 12px;
+  transition: 0.25s ease;
+}
+
+#coupon-search:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.25);
+}
+
+/* Search Button */
+button[type="submit"] {
+  border-radius: 8px;
+}
+
+/* ----------------------------------------
+   ADD COUPON BUTTON
+-----------------------------------------*/
+#openModalBtn {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  box-shadow: 0 2px 6px rgba(34,197,94,0.3);
+  padding: 8px 18px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+#openModalBtn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #15803d, #16a34a);
+}
+
+/* ----------------------------------------
+   TABLE DESIGN
+-----------------------------------------*/
+.table-responsive {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0px 4px 14px rgba(0,0,0,0.06);
+}
+
+table thead {
+  background: #eef2f7;
+}
+
+table thead th {
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px;
+}
+
+table tbody td {
+  font-size: 14px;
+  padding: 10px;
+}
+
+table tbody tr:hover {
+  background: #f8fafc;
+  transition: 0.2s ease;
+}
+
+/* ----------------------------------------
+   EDIT + DELETE BUTTONS
+-----------------------------------------*/
+.btn-edit {
+  color: #0d6efd;
+  border: 1px solid #0d6efd;
+  border-radius: 6px;
+  padding: 4px 12px;
+  transition: all .3s ease;
+}
+
+.btn-edit:hover {
+  background: #0d6efd;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btn-delete {
+  color: #dc2626;
+  border: 1px solid #dc2626;
+  border-radius: 6px;
+  padding: 4px 12px;
+  transition: all .3s ease;
+}
+
+.btn-delete:hover {
+  background: #dc2626;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* ----------------------------------------
+   STATUS BADGES
+-----------------------------------------*/
+.badge.bg-success {
+  background: #16a34a !important;
+}
+
+.badge.bg-danger {
+  background: #dc2626 !important;
+}
+
+.badge.bg-warning {
+  background: #fbbf24 !important;
+  color: #1f2937 !important;
+}
+
+/* ----------------------------------------
+   MODAL DESIGN
+-----------------------------------------*/
+.modal-content {
+  border-radius: 14px !important;
+  padding: 16px;
+  border: none;
+  animation: fadeIn .3s ease;
+}
+
+.modal-title {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.modal-body input,
+.modal-body select {
+  border-radius: 10px !important;
+  border: 1px solid #cbd5e1 !important;
+  padding: 10px;
+  transition: .2s ease;
+}
+
+.modal-body input:focus,
+.modal-body select:focus {
+  border-color: #22c55e !important;
+  box-shadow: 0 0 0 3px rgba(34,197,94,.25);
+}
+
+/* Modal buttons */
+.modal-body .btn-success {
+  background: #16a34a !important;
+  border-radius: 8px;
+  padding: 8px 14px;
+}
+
+.modal-body .btn-secondary {
+  border-radius: 8px;
+  padding: 8px 14px;
+}
+
+/* ----------------------------------------
+   PAGINATION
+-----------------------------------------*/
+.pagination .page-link {
+  border-radius: 8px;
+  padding: 6px 12px;
+  border: 1px solid #cbd5e1;
+  transition: .2s ease;
+}
+
+.pagination .page-link:hover {
+  background: #e2e8f0;
+}
+
+.pagination .active .page-link {
+  background: #16a34a !important;
+  border-color: #16a34a !important;
+  color: white !important;
+}
+
+/* ----------------------------------------
+   ANIMATIONS
+-----------------------------------------*/
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0px); }
+}
+
+</style>
+
+
+  <!-- <style>
      .btn-success {
     background: linear-gradient(135deg, #16a34a, #22c55e); /* Soft green gradient */
     color: white;
@@ -100,7 +318,7 @@
     transform: translateY(0);
     box-shadow: 0 2px 5px rgba(22, 163, 74, 0.3);
   }
-</style>
+</style> -->
 
 </head>
 
