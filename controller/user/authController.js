@@ -452,7 +452,6 @@ const postSignin = async (req, res) => {
       });
     }
 
-    // 🚨 Google signup check
     if (user.loginType === "google") {
       return res.json({
         ok: false,
@@ -490,64 +489,8 @@ const postSignin = async (req, res) => {
     console.error(err);
     return res.status(500).json({ ok: false, msg: 'Server error' });
   }
-};
+}
 
-
-
-// const postSignin = async (req, res) => {
-//   try {
-//     if (req.session.user) {
-//       return res.json({ ok: true, redirect: "/" });
-//     }
-
-//     const { email, password, returnUrl } = req.body; 
-
-//     if (!email || !password) {
-//       return res.json({ ok: false, msg: 'Please fill all fields' });
-//     }
-
-//     const user = await User.findOne({ email: email.toLowerCase() });
-//     if (!user) return res.json({ ok: false, msg: 'Invalid credentials' });
-
-//     if (user.isBlocked) {
-//       return res.json({
-//         ok: false,
-//         blocked: true,
-//         msg: 'Your account is blocked. Contact support.'
-//       });
-//     }
-
-//     const match = await bcrypt.compare(password, user.password);
-//     if (!match) return res.json({ ok: false, msg: 'INCURRCT PASSWORD' });
-
-//     if (!user.isVerified) {
-//       return res.json({
-//         ok: false,
-//         verify: false,
-//         msg: 'Your account is not verified. Please verify your email.'
-//       });
-//     }
-
-// req.session.user = {
-//   id: user._id.toString(),
-//   email: user.email,
-//   firstName: user.firstName,
-//   secondName: user.secondName,
-//   loginType: user.loginType
-// };
-
-
-//     return res.json({
-//       ok: true,
-//       verify: true,
-//       redirect: returnUrl || req.session.returnUrl || '/'
-//     });
-
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ ok: false, msg: 'Server error' });
-//   }
-// }
 
 
 const resendVerification = async (req, res) => {
@@ -566,12 +509,6 @@ const resendVerification = async (req, res) => {
     return res.json({ ok: false, msg: 'Server error' });
   }
 }
-
-
-
-
-
-
 
 
 
@@ -619,6 +556,8 @@ const postForgotPassword = async (req, res) => {
     res.status(500).send("Server Error")
   }
 }
+
+
 
 const postResetforgotPassword = async (req, res) => {
   try {
@@ -708,8 +647,6 @@ cron.schedule("0 0 * * *", async () => {
     console.error("Error deleting unverified accounts:", error)
   }
 })
-
-
 
 
 

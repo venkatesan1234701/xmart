@@ -891,7 +891,7 @@
 
       <!-- Coupon Input Box -->
 
-
+<!-- 
 	  <div class="mt-4">
   <form id="couponForm" class="flex gap-3 mt-4 items-center">
 
@@ -915,10 +915,6 @@
         required
       />
 
-      <!-- Dropdown Arrow -->
-
-
-      <!-- Dropdown -->
       <ul 
         id="couponDropdown" 
         class="hidden absolute z-50 w-full bg-white border border-gray-200 rounded-lg mt-1 shadow-md max-h-40 overflow-y-auto"
@@ -966,10 +962,99 @@
   </form>
 
   <p id="couponMessage" class="mt-2 text-sm"></p>
+</div> -->
+
+
+<% if (usedCoupons.length === 0 || true) { %> 
+<!-- NOTE: if you want to hide whole coupon UI when ANY coupon used, remove '|| true' -->
+
+<div class="mt-4">
+  <form id="couponForm" class="flex gap-3 mt-4 items-center">
+
+    <div class="relative w-full z-10">
+
+      <!-- Dropdown Arrow -->
+      <div 
+        id="dropdownButton"
+        class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
+      >
+        ▼
+      </div>
+
+      <!-- Coupon Input -->
+      <input 
+        type="text" 
+        name="couponCode" 
+        id="couponInput"
+        placeholder="Select or enter coupon code"
+        class="w-full border border-gray-300 rounded-lg px-3 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-green-400"
+        autocomplete="off"
+      />
+
+      <!-- Dropdown List -->
+      <ul 
+        id="couponDropdown" 
+        class="hidden absolute z-50 w-full bg-white border border-gray-200 rounded-lg mt-1 shadow-md max-h-40 overflow-y-auto"
+      >
+        <% coupons.forEach(c => { %>
+
+          <!-- ❌ Skip coupon if already used -->
+          <% if (usedCoupons.includes(c.couponCode)) { return; } %>
+
+          <% const eligible = subtotal >= c.minimumPurchase; %>
+
+          <li 
+            class="px-3 py-2 text-sm 
+              <%= eligible ? 'hover:bg-gray-100 cursor-pointer' : 'bg-gray-100 text-gray-400 cursor-not-allowed' %>"
+            <% if (eligible) { %>
+              onclick="
+                document.getElementById('couponInput').value = '<%= c.couponCode %>';
+                document.getElementById('couponDropdown').classList.add('hidden');
+              "
+            <% } %>
+          >
+            <div class="flex justify-between">
+              <strong><%= c.couponCode %></strong>
+              <span><%= c.discountPercentage %>% OFF</span>
+            </div>
+
+            <p class="text-xs">Min Purchase: ₹<%= c.minimumPurchase %></p>
+
+            <% if (!eligible) { %>
+              <p class="text-red-500 text-xs">Not eligible</p>
+            <% } %>
+
+          </li>
+
+        <% }) %>
+      </ul>
+
+    </div>
+
+    <!-- Apply Button -->
+    <button type="submit"
+      class="bg-green-600 text-white px-5 py-3 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300">
+      Apply
+    </button>
+
+    <!-- Cancel Button -->
+    <button 
+      type="button"
+      id="cancelCoupon"
+      class="hidden bg-red-500 text-white px-5 py-3 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300"
+      onclick="cancelCouponCode()"
+    >
+      Cancel
+    </button>
+
+  </form>
+
+  <p id="couponMessage" class="mt-2 text-sm"></p>
 </div>
 
+<% } %>
 
-      <!-- Checkout Button -->
+
       <div class="mt-4">
         <a href="/checkout" class="btn flex justify-between bg-green-600 text-white border-green-600 w-full hover:bg-green-700 hover:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 rounded-lg py-2">
           Go to Checkout

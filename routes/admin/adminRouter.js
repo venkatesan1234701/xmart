@@ -31,11 +31,6 @@ router.post("/products/edit/:id", upload.fields(imageFields), productcontroller.
 router.get("/products/delete/:id", productcontroller.deleteProduct);
 
 
-// router.get('/search', productcontroller.searchProducts);
-// router.js
-// routes/admin.js
-// routes/admin.js
-
 router.get('/sales-report',adminAuth,authController.getSalesReport)
 
 router.get('/customers',adminAuth,authController.renderCustomers)

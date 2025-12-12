@@ -199,9 +199,9 @@ const getSingleOrder = async (req, res) => {
 
     res.render("admin/singleorder", { order: formattedOrder });
   } catch (err) {
-    console.error("Error loading single order:", err);
+    // console.error("Error loading single order:", err);
     res.status(500).render("admin/500", {
-      message: "Server error while loading order details",
+      message: "Order not found",
     });
   }
 };
@@ -301,13 +301,7 @@ const approveAllReturns = async (req, res) => {
     console.error("Approve Returns ERROR:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
-};
-
-
-
-
-
-
+}
 
 
 

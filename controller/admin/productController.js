@@ -96,22 +96,13 @@ const addProduct = async (req, res) => {
 }
 
 
-// const getAddProductPage = async (req, res) => {
-//   try {
-//     const categories = await Category.find({ isDeleted: false }).sort({ name: 1 }).lean();
-//     res.render("admin/addProduct", { categories });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send("Server Error");
-//   }
-// }
 
 
 const getAddProductPage = async (req, res) => {
   try {
     const categories = await Category.find({
       isDeleted: false,
-      isBlock: false,       // ⬅️ NEW FILTER added
+      isBlock: false,       
     })
     .sort({ name: 1 })
     .lean();

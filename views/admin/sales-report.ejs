@@ -439,36 +439,8 @@
   </div>
 
 
-  <!-- <div class="table-responsive">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>S.No</th>
-        <th>Name</th>
-        <th>Delivery Date</th>
-        <th>Product Name</th>
-        <th>Quantity</th>
-        <th>Total</th>
-        <th>Payment Method</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% orders.forEach((order, i) => { %>
-        <tr data-order-date="<%= order.orderDate %>" style="display:none;">
-          <td><%= i + 1 %></td>
-          <td><%= order.userName %></td>
-          <td><%= order.orderDate %></td>
-          <td><%= order.productName %></td>
-          <td><%= order.quantity %></td>
-          <td>₹<%= order.grandTotal %></td>
-          <td><%= order.paymentMethod %></td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
-</div> -->
 
-<div class="table-responsive">
+<!-- <div class="table-responsive">
   <table class="table" id="ordersTable">
     <thead>
       <tr>
@@ -483,11 +455,11 @@
     </thead>
     <tbody>
       <% orders.forEach((order, i) => { %>
-        <!-- add data-order-status attribute; remove inline display:none -->
+
         <tr data-order-date="<%= order.orderDate %>" data-order-status="<%= order.orderStatus %>">
           <td><%= i + 1 %></td>
           <td><%= order.userName %></td>
-          <!-- <td><%= order.orderDate %></td> -->
+      
            <td><%= new Date(order.orderDate).toISOString().split("T")[0] %></td>
 
           <td><%= order.productName %></td>
@@ -498,7 +470,45 @@
       <% }) %>
     </tbody>
   </table>
+</div> -->
+
+
+<div class="table-responsive">
+  <table class="table" id="ordersTable">
+    <thead>
+      <tr>
+        <th>S.No</th>
+        <th>Name</th>
+        <th>Delivery Date</th>
+        <th>Product Name</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th>Discount</th>   
+        <th>Payment Method</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% orders.forEach((order, i) => { %>
+        <tr data-order-date="<%= order.orderDate %>" data-order-status="<%= order.orderStatus %>">
+          <td><%= i + 1 %></td>
+          <td><%= order.userName %></td>
+          <td><%= new Date(order.orderDate).toISOString().split("T")[0] %></td>
+
+          <td><%= order.productName %></td>
+          <td><%= order.quantity %></td>
+
+          <td>₹<%= order.grandTotal %></td>
+
+          <td>₹<%= order.discount %></td>  
+
+          <td><%= order.paymentMethod %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
 </div>
+
 
 
 <p id="no-data" style="display:none; text-align:center; font-weight:bold;">No orders found for this period</p>

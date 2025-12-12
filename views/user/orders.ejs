@@ -234,9 +234,11 @@
       <div class="modal-body">
         <h6 class="font-semibold text-lg mb-3">🧾 Order Info</h6>
         <p><strong>Order ID:</strong> <span id="modalOrderId"></span></p>
+        
         <p><strong>Payment Method:</strong> <span id="modalPayment"></span></p>
         <p><strong>Status:</strong> <span id="modalStatus"></span></p>
         <p><strong>Total Amount:</strong> ₹<span id="modalTotal"></span></p>
+         <p><strong>Discount:</strong> ₹<span id="modalDiscount"></span></p>
         <p><strong>Date:</strong> <span id="modalDate"></span></p>
 
         <hr class="my-3">
@@ -366,199 +368,126 @@ document.getElementById("orderDetailsModal").addEventListener("shown.bs.modal", 
   });
 
 
-// document.getElementById("downloadInvoiceBtn").addEventListener("click", function () {
-//   const { jsPDF } = window.jspdf;
-//   const doc = new jsPDF();
-
-//   // --- COMPANY INFO ---
-//   const companyName = "Xmart";
-//   const companyAddress = "From: Olivia Wilson\n123 Anywhere St., Any City";
-//   const companyEmail = "hello@xmart.com";
-
-//   doc.setFontSize(16);
-//   doc.setTextColor(0, 0, 0);
-//   doc.text("Invoice", 14, 20);
-
-//   doc.setFontSize(10);
-//   doc.setTextColor(100, 100, 100);
-//   doc.text(companyName, 14, 30);
-//   doc.text(companyAddress, 14, 35);
-//   doc.text(`Email: ${companyEmail}`, 14, 45);
-
-//   // --- ORDER INFO ---
-//   const orderId = document.getElementById("modalOrderId")?.innerText || "N/A";
-//   const paymentMethod = document.getElementById("modalPayment")?.innerText || "N/A";
-//   const status = document.getElementById("modalStatus")?.innerText || "N/A";
-//   const total = document.getElementById("modalTotal")?.innerText || "0";
-//   const date = document.getElementById("modalDate")?.innerText || "N/A";
-
-//   doc.setTextColor(0, 0, 0);
-//   doc.text(`Order ID: ${orderId}`, 140, 30);
-//   doc.text(`Order Date: ${date}`, 140, 35);
-//   doc.text(`Payment Method: ${paymentMethod}`, 140, 40);
-//   doc.text(`Status: ${status}`, 140, 45);
-//   doc.text(`Total: ₹${total}`, 140, 50);
-
-//   // --- PRODUCTS ---
-//   const productsMap = {};
-//   document.querySelectorAll("#modalProducts div").forEach(item => {
-//     const name = item.querySelector("strong")?.innerText || "Unknown";
-//     const qtyMatch = item.innerText.match(/Qty:\s*(\d+)/);
-//     const qty = qtyMatch ? parseInt(qtyMatch[1]) : 1;
-//     const pStatus = item.dataset.status || "Delivery";
-
-//     if (productsMap[name]) {
-//       productsMap[name].qty += qty;
-//       if (!productsMap[name].status.includes(pStatus)) productsMap[name].status += ", " + pStatus;
-//     } else {
-//       productsMap[name] = { qty, status: pStatus };
-//     }
-//   });
-
-//   const tableBody = Object.entries(productsMap).map(([name, data], idx) => [
-//     idx + 1,
-//     name,
-//     data.qty,
-//     data.status,
-//     "" // Total column left blank
-//   ]);
-
-//   doc.autoTable({
-//     startY: 60,
-//     head: [['#', 'Product', 'Qty', 'Status']],
-//     body: tableBody,
-//     theme: 'grid',
-//     headStyles: { fillColor: [41, 128, 185], textColor: 255 },
-//     styles: { fontSize: 10, cellPadding: 5 },
-//     margin: { left: 14, right: 14 }
-//   });
-
-//   // --- SHIPPING ADDRESS ---
-//   const address = document.getElementById("modalAddress")?.innerText || "N/A";
-//   const startY = doc.lastAutoTable.finalY + 10;
-//   doc.setFontSize(10);
-//   doc.text("🏠 Shipping Address:", 14, startY);
-//   address.split("\n").forEach((line, i) => doc.text(line.trim(), 14, startY + 7 + i * 6));
-
-//   // --- SUMMARY ---
-//   const summaryStartY = startY + 30;
-//   doc.text(`Amount to Pay: ₹${total}`, 140, summaryStartY);
-//   doc.text(`Payment Method: ${paymentMethod}`, 140, summaryStartY + 7);
-//   doc.text(`Status: ${status}`, 140, summaryStartY + 14);
-
-//   // --- FOOTER ---
-//   doc.setFontSize(8);
-//   doc.setTextColor(150, 150, 150);
-//   doc.text("Thank you for shopping with Xmart!", 14, doc.internal.pageSize.height - 10);
-//   doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 140, doc.internal.pageSize.height - 10);
-
-//   doc.save(`Invoice_${orderId.replace(/[^a-zA-Z0-9]/g, "")}_${Date.now()}.pdf`);
-// });
-
-
 
 document.getElementById("downloadInvoiceBtn").addEventListener("click", function () {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
-  // --- COMPANY INFO ---
-  const companyName = "Xmart";
-  const companyAddress = "From: Olivia Wilson\n123 Anywhere St., Any City";
-  const companyEmail = "hello@xmart.com";
-
-  doc.setFontSize(16);
-  doc.setTextColor(0, 0, 0);
+  // ---------------------------------------------------
+  // 1. COMPANY DETAILS
+  // ---------------------------------------------------
+  doc.setFontSize(20);
   doc.text("Invoice", 14, 20);
 
   doc.setFontSize(10);
-  doc.setTextColor(100, 100, 100);
-  doc.text(companyName, 14, 30);
-  doc.text(companyAddress, 14, 35);
-  doc.text(`Email: ${companyEmail}`, 14, 45);
+  doc.text("Xmart", 14, 30);
+  doc.text("From: Olivia Wilson", 14, 35);
+  doc.text("123 Anywhere St., Any City", 14, 40);
+  doc.text("Email: hello@xmart.com", 14, 45);
 
-  // --- ORDER INFO ---
+  // ---------------------------------------------------
+  // 2. ORDER DETAILS
+  // ---------------------------------------------------
   const orderId = document.getElementById("modalOrderId")?.innerText || "N/A";
   const paymentMethod = document.getElementById("modalPayment")?.innerText || "N/A";
   const status = document.getElementById("modalStatus")?.innerText || "N/A";
-  const total = parseFloat(document.getElementById("modalTotal")?.innerText) || 0;
   const date = document.getElementById("modalDate")?.innerText || "N/A";
+  const total = document.getElementById("modalTotal")?.innerText || "0";
+  const discount = document.getElementById("modalDiscount")?.innerText || "0"; 
 
-  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(10);
   doc.text(`Order ID: ${orderId}`, 140, 30);
-  doc.text(`Order Date: ${date}`, 140, 35);
-  doc.text(`Payment Method: ${paymentMethod}`, 140, 40);
+  doc.text(`Date: ${date}`, 140, 35);
+  doc.text(`Payment: ${paymentMethod}`, 140, 40);
   doc.text(`Status: ${status}`, 140, 45);
-  doc.text(`Total: ₹${total}`, 140, 50);
+  doc.text(`Total Amount: ₹${total}`, 140, 50);
+  doc.text(`Discount: ₹${discount}`, 140, 55);
+  
 
-  // --- PRODUCTS ---
-  const productsMap = {};
-  document.querySelectorAll("#modalProducts > div").forEach(item => {
-    const nameTag = item.querySelector("strong") || item.querySelector(".product-name");
-    const productName = nameTag?.innerText.trim() || "Unknown Product";
+  // ---------------------------------------------------
+  // 3. PRODUCT EXTRACTION (UNIVERSAL, PERFECT FOR YOUR UI)
+  // ---------------------------------------------------
+  const products = [];
 
+  document.querySelectorAll("#modalProducts > div").forEach((item, index) => {
+    
+    // Product Name
+    const productName =
+      item.querySelector("strong")?.innerText ||
+      item.querySelector(".product-name")?.innerText ||
+      item.innerText.split("\n")[0].trim();
+
+    // Size
+    const sizeMatch = item.innerText.match(/Size:\s*([A-Za-z0-9]+)/);
+    const size = sizeMatch ? sizeMatch[1] : "N/A";
+
+    // Qty
     const qtyMatch = item.innerText.match(/Qty:\s*(\d+)/);
-    const qty = qtyMatch ? parseInt(qtyMatch[1]) : 1;
+    const qty = qtyMatch ? qtyMatch[1] : "1";
 
-    const statusValue = item.dataset.status || "Delivery";
+    // Price
+    const priceMatch = item.innerText.match(/₹\s*([0-9.]+)/);
+    const price = priceMatch ? priceMatch[1] : "0";
 
-    const totalMatch = item.innerText.match(/Total:\s*₹?(\d+(\.\d+)?)/);
-    const productTotal = totalMatch ? parseFloat(totalMatch[1]) : 0;
+    // Status badge (Returned / Delivered / Cancelled etc.)
+    const badge = item.querySelector(".badge")?.innerText || "N/A";
 
-    if (!productsMap[productName]) {
-      productsMap[productName] = {
-        qty,
-        status: statusValue,
-        total: productTotal
-      };
-    } else {
-      productsMap[productName].qty += qty;
-      productsMap[productName].total += productTotal;
-      const stArr = productsMap[productName].status.split(",").map(s => s.trim());
-      if (!stArr.includes(statusValue)) stArr.push(statusValue);
-      productsMap[productName].status = stArr.join(", ");
-    }
+    products.push([
+      index + 1,
+      productName,
+      size,
+      qty,
+      `₹${price}`,
+      badge
+    ]);
   });
 
-  const tableBody = Object.entries(productsMap).map(([name, data], idx) => [
-    idx + 1,
-    name,
-    data.qty,
-    data.status,
-    `₹${data.total}`
-  ]);
-
+  // ---------------------------------------------------
+  // 4. PRODUCT TABLE
+  // ---------------------------------------------------
   doc.autoTable({
     startY: 60,
-    head: [['#', 'Product', 'Qty', 'Status']],
-    body: tableBody,
-    theme: 'grid',
+    head: [["#", "Product", "Size", "Qty", "Price", "Status"]],
+    body: products,
+    theme: "grid",
     headStyles: { fillColor: [41, 128, 185], textColor: 255 },
-    styles: { fontSize: 10, cellPadding: 5 },
-    margin: { left: 14, right: 14 }
+    styles: { fontSize: 10, cellPadding: 5 }
   });
 
-  // --- GRAND TOTAL BELOW TABLE ---
-  const grandTotalY = doc.lastAutoTable.finalY + 10;
+  // ---------------------------------------------------
+  // 5. GRAND TOTAL
+  // ---------------------------------------------------
+  const finalY = doc.lastAutoTable.finalY + 10;
   doc.setFontSize(12);
-  doc.setTextColor(0, 0, 0);
-  doc.text(`Grand Total: ₹${total}`, 150, grandTotalY, { align: "right" });
+  doc.text(`Grand Total: ₹${total}`, 150, finalY, { align: "right" });
 
-  // --- SHIPPING ADDRESS ---
+  // ---------------------------------------------------
+  // 6. SHIPPING ADDRESS
+  // ---------------------------------------------------
   const address = document.getElementById("modalAddress")?.innerText || "N/A";
-  const addressStartY = grandTotalY + 10;
-  doc.setFontSize(10);
-  doc.text("🏠 Shipping Address:", 14, addressStartY);
-  address.split("\n").forEach((line, i) => doc.text(line.trim(), 14, addressStartY + 7 + i * 6));
+  const addressStart = finalY + 10;
 
-  // --- FOOTER ---
-  const footerY = doc.internal.pageSize.height - 10;
+  doc.setFontSize(12);
+  doc.text("Shipping Address:", 14, addressStart);
+
+  const addrLines = address.split("\n");
+  addrLines.forEach((line, i) => {
+    doc.setFontSize(10);
+    doc.text(line.trim(), 14, addressStart + 6 + i * 5);
+  });
+
+  // ---------------------------------------------------
+  // 7. FOOTER
+  // ---------------------------------------------------
   doc.setFontSize(8);
-  doc.setTextColor(150, 150, 150);
-  doc.text("Thank you for shopping with Xmart!", 14, footerY);
-  doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 140, footerY);
+  doc.text("Thank you for shopping with Xmart!", 14, 285);
+  doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 140, 285);
 
-  // --- SAVE PDF ---
-  doc.save(`Invoice_${orderId.replace(/[^a-zA-Z0-9]/g, "")}_${Date.now()}.pdf`);
+  // ---------------------------------------------------
+  // 8. SAVE PDF
+  // ---------------------------------------------------
+  const safeId = orderId.replace(/[^a-zA-Z0-9]/g, "");
+  doc.save(`Invoice.pdf`);
 });
 
 
@@ -578,99 +507,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 🧾 Show order details inside modal
-//   function showOrderDetails(order) {
-//     document.getElementById("modalOrderId").innerText = order.orderId;
-//     document.getElementById("modalPayment").innerText = order.paymentMethod || "N/A";
-//     document.getElementById("modalStatus").innerText = order.orderStatus;
-//     document.getElementById("modalTotal").innerText = order.grandTotal;
-//     document.getElementById("modalDate").innerText = new Date(order.createdAt).toLocaleString();
-
-//     // 🏠 Shipping address
-//     const addr = order.shippingAddress;
-//     document.getElementById("modalAddress").innerHTML = addr
-//       ? `${addr.firstName || ""} ${addr.lastName || ""}<br>${addr.addressLine1 || ""}<br>${addr.city || ""}, ${addr.state || ""} - ${addr.zipCode || ""}`
-//       : "No address available.";
-
-//     // 🛒 Product list
-//     const productsContainer = document.getElementById("modalProducts");
-//     productsContainer.innerHTML = "";
-
-//     order.products.forEach(item => {
-//       const prod = item.productId || {};
-//       const img = prod.productPic?.[0] || prod.images?.[0] || prod.image || "/images/default-product.jpg";
-
-//    order.products.forEach(item => {
-//   const prod = item.productId || {};
-//   const img = prod.productPic?.[0] || prod.images?.[0] || prod.image || "/images/default-product.jpg";
-
-//   let actionBtns = "";
-
-//   const itemStatus = item.itemStatus;      // item-level status
-//   const orderStatus = order.orderStatus;  // overall order status
-
-//   // 1️⃣ Already Returned → only Returned badge
-//   if (itemStatus === "Returned") {
-//     actionBtns = `<span class="badge bg-secondary">Returned</span>`;
-//   }
-
-//   // 2️⃣ Already Cancelled → only Cancelled badge
-//   else if (itemStatus === "Cancelled") {
-//     actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
-//   }
-
-//   // 3️⃣ Order Delivered → show Return button (only if item not returned/cancelled earlier)
-//   else if (orderStatus === "Delivered") {
-//     actionBtns = `
-//       <button class="btn btn-sm btn-outline-warning"
-//         onclick="returnProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
-//           Return
-//       </button>`;
-//   }
-
-//   // 4️⃣ Order not delivered → show Cancel button
-//   else {
-//     actionBtns = `
-//       <button class="btn btn-sm btn-outline-danger"
-//         onclick="cancelProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
-//           Cancel
-//       </button>`;
-//   }
-
-//   // ---- PRODUCT HTML UI ----
-//   const productHtml = `
-//     <div class="d-flex align-items-center justify-content-between border p-2 rounded mb-2">
-//       <div class="d-flex align-items-center gap-3">
-//         <img src="${img}" width="60" height="60" class="rounded border" style="object-fit:cover;">
-//         <div>
-//           <p class="fw-semibold mb-1">${prod.name || "Product"}</p>
-//           <small class="text-muted">Size: ${item.selectedSize || "-"} | Qty: ${item.quantity}</small><br>
-//           <small class="text-muted">₹${item.paidPrice ?? item.totalPrice}</small>
-//         </div>
-//       </div>
-//       <div>${actionBtns}</div>
-//     </div>`;
-
-//   productsContainer.insertAdjacentHTML("beforeend", productHtml);
-// });
-
-//     });
-
-//     // 🧩 Hide Cancel Order button if Delivered or Cancelled
-//     const cancelOrderBtn = document.getElementById("cancelOrderBtn");
-//     if (order.orderStatus === "Delivered" || order.orderStatus === "Cancelled") {
-//       cancelOrderBtn.style.display = "none";
-//     } else {
-//       cancelOrderBtn.style.display = "inline-block";
-//     }
-//   }
-
 
 function showOrderDetails(order) {
   document.getElementById("modalOrderId").innerText = order.orderId;
   document.getElementById("modalPayment").innerText = order.paymentMethod || "N/A";
   document.getElementById("modalStatus").innerText = order.orderStatus;
   document.getElementById("modalTotal").innerText = order.grandTotal;
+
+  // document.getElementById("modalDiscount").innerText = order.discount || 0;
+  document.getElementById("modalDiscount").innerText =
+  order.coupon?.discount || 0;
+
+
   document.getElementById("modalDate").innerText = new Date(order.createdAt).toLocaleString();
 
   // Address
@@ -682,7 +530,6 @@ function showOrderDetails(order) {
   const productsContainer = document.getElementById("modalProducts");
   productsContainer.innerHTML = "";
 
-  // 🚀 ONLY ONE LOOP — FIXED
   order.products.forEach(item => {
     const prod = item.productId || {};
     const img = prod.productPic?.[0] || prod.images?.[0] || prod.image || "/images/default-product.jpg";

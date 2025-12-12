@@ -421,7 +421,7 @@ const addToCart = async (req, res) => {
       const newQty = existingProduct.quantity + quantity;
 
       if (existingProduct.quantity >= 8) {
-        return res.json({ success: false, message: "Max 8 per product allowed" });
+        return res.json({ success: false, message: "Max 8 per product " });
       }
 
       if (newQty > 8) {
@@ -612,36 +612,6 @@ const searchProducts = async (req, res) => {
 
 
 
-
-// const searchProducts = async (req, res) => {
-//   try {
-//     const { query = "", category } = req.query;
-
-//     if (!query.trim()) return res.json([]);
-
-//     let filter = {
-//       name: { $regex: `^${query}`, $options: "i" },
-//       isDeleted: false
-//     }
-
-//     if (category && category !== "all") {
-//       filter.category = category;
-//     }
-
-//     let products = await Product.find(filter).limit(50);
-
-//     if (query.trim().toLowerCase().startsWith('v')) {
-//       products = products.filter(prod => prod.name.toLowerCase() !== 'siva');
-//     }
-
-//     res.json(products)
-
-//   } catch (err) {
-//     console.error("Search error:", err);
-//     res.status(500).json({ message: "Server error", products: [] })
-//   }
-// }
-
 const getProfilePage = async (req, res) => {
   try {
      const googleBlock = req.query.googleBlock
@@ -663,22 +633,6 @@ const getProfilePage = async (req, res) => {
   }
 }
 
-
-
-// const getEditProfile = async (req, res) => {
-//   try {
-//     const userId = req.session.user.id;
-//     if (!userId) return res.redirect("/signin");
-
-//     const user = await User.findById(userId).lean();
-//     if (!user) return res.redirect("/signin");
-
-//     res.render("user/editProfile", { user });
-//   } catch (err) {
-//     console.error(err);
-//     res.redirect("/user/profile");
-//   }
-// };
 
 
 

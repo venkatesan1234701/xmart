@@ -4,117 +4,7 @@ const Product = require("../../models/productModel");
 const Wishlist = require("../../models/wishlistModel");
 // const Coupon = require("../../models/couponSchema ")
 const Coupon = require("../../models/couponSchema ");
-
-
-
-// const applyCoupon = async (req, res) => {
-//   try {
-//     const user = req.session.user;
-//     if (!user) {
-//       return res.status(401).json({ success: false, message: "Please log in first" });
-//     }
-
-//     const { couponCode } = req.body;
-//     if (!couponCode || !couponCode.trim()) {
-//       return res.status(400).json({ success: false, message: "Enter a coupon code" });
-//     }
-
-//     const coupon = await Coupon.findOne({
-//       couponCode: { $regex: new RegExp(`^${couponCode.trim()}$`, "i") },
-//       isListed: true
-//     });
-
-//     if (!coupon) {
-//       return res.status(404).json({ success: false, message: "Invalid coupon code" });
-//     }
-
-//     const now = new Date();
-//     if (
-//       (coupon.couponStartDate && now < coupon.couponStartDate) ||
-//       (coupon.couponExpiryDate && now > coupon.couponExpiryDate)
-//     ) {
-//       return res.status(400).json({ success: false, message: "Coupon is not active now" });
-//     }
-
-//     if (coupon.currentStatus !== "active") {
-//       return res.status(400).json({ success: false, message: "Coupon is not active" });
-//     }
-
-//     const cart = await Cart.findOne({ userId: user.id });
-//     if (!cart || cart.products.length === 0) {
-//       return res.status(400).json({ success: false, message: "Your cart is empty" });
-//     }
-
-//     const subtotal = cart.subtotal || 0;
-//     const shipping = cart.shippingCost || 40;
-
-//     if (subtotal < coupon.minimumPurchase) {
-//       return res.status(400).json({
-//         success: false,
-//         message: `Minimum purchase should be ₹${coupon.minimumPurchase} to use this coupon`,
-//       });
-//     }
-
-//     let discount = Math.round((subtotal * coupon.discountPercentage) / 100);
-//     let isMax = false;
-
-//     if (discount > coupon.maximumDiscount) {
-//       discount = Math.round(coupon.maximumDiscount);
-//       isMax = true;
-//     }
-
-
-//     let distributed = 0;
-
-//     cart.products.forEach((item) => {
-//       const originalPrice = Number(item.pricePerUnit) || 0;
-//       const share = subtotal > 0 ? originalPrice / subtotal : 0;
-
-//       const productDiscount = Math.round(discount * share); 
-
-//       item.productDiscount = productDiscount;
-//       item.pricePerUnit = Math.round(originalPrice - productDiscount);
-
-//       distributed += productDiscount;
-//     })
-
-//     const diff = discount - distributed;
-//     if (Math.abs(diff) > 0) {
-//       cart.products[0].productDiscount += diff;
-//       cart.products[0].pricePerUnit -= diff;
-//     }
-
-//     let newSubtotal = 0;
-//     cart.products.forEach((p) => {
-//       newSubtotal += Number(p.pricePerUnit);
-//     });
-//     cart.subtotal = Math.round(newSubtotal);
-
-//     const grandTotal = Math.round(cart.subtotal + shipping);
-
-//     cart.coupon = {
-//       name: coupon.couponCode,
-//       discount,
-//       isMax,
-//       maxPurchase: coupon.maximumDiscount,
-//     };
-//     cart.grandTotal = grandTotal;
-
-//     await cart.save();
-
-//     return res.status(200).json({
-//       success: true,
-//       message: `Coupon applied successfully! You saved ₹${discount}.`,
-//       newGrandTotal: grandTotal,
-//       discount,
-//       couponCode: coupon.couponCode,
-//     });
-
-//   } catch (error) {
-//     console.error("Error applying coupon:", error);
-//     res.status(500).json({ success: false, message: "Server error while applying coupon" });
-//   }
-// };
+const Order = require("../../models/order")
 
 
 const applyCoupon = async (req, res) => {
@@ -385,6 +275,8 @@ const getCartPage = async (req, res) => {
       });
     }
 
+
+
     if (cart.coupon?.name) {
       cart.products.forEach(item => {
         item.pricePerUnit = item.originalPrice;
@@ -407,6 +299,10 @@ const getCartPage = async (req, res) => {
 
       await cart.save();
     }
+
+       const usedCoupons = await Order.find({ userId: user.id })
+                                  .distinct("coupon.name");
+     const filteredUsedCoupons = usedCoupons.filter(c => c !== null);
 
     const cartItems = cart.products.map(item => ({
       name: item.productId?.name || "Unknown Product",
@@ -440,6 +336,7 @@ const getCartPage = async (req, res) => {
       grandTotal,
       coupon: cart.coupon,
       coupons,
+      usedCoupons: filteredUsedCoupons,
       isEmpty: cartItems.length === 0,
       message: { type: "", text: "" },
     });
@@ -882,22 +779,18 @@ const cancelCoupon = async (req, res) => {
       return res.json({ success: false, message: "Cart not found" });
     }
 
-    // Reset each product to ORIGINAL PRICE
     cart.products.forEach((item) => {
       item.pricePerUnit = Number(item.originalPrice); 
       item.productDiscount = 0;
     });
 
-    // Recalculate subtotal
     cart.subtotal = cart.products.reduce(
       (sum, item) => sum + item.pricePerUnit * item.quantity,
       0
     );
 
-    // Recalculate grand total
     cart.grandTotal = cart.subtotal + (cart.shippingCost || 40);
 
-    // Remove coupon
     cart.coupon = {
       name: null,
       discount: 0,

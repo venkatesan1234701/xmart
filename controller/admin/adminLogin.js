@@ -325,11 +325,6 @@ const getDashboard = async (req, res) => {
 
 
 
-
-
-
-
-
 async function renderProductsPage(req, res, next) {
   try {
     if (req.session.isAdminLogged) {
@@ -356,10 +351,6 @@ async function renderProductsPage(req, res) {
 
 
 
-
-
-
-
 const getSalesReport = async (req, res) => {
   try {
     const orders = await Order.find({ orderStatus: "Delivered" })
@@ -374,40 +365,78 @@ const getSalesReport = async (req, res) => {
 
     const addedOrderIds = new Set();
 
-    orders.forEach(order => {
-      let totalMRP = 0;
+    // orders.forEach(order => {
+    //   let totalMRP = 0;
 
-      order.products.forEach(product => {
-        const sizeIndex = ["S", "M", "L"].indexOf(product.selectedSize);
-        const productPrice = product.productId?.prices[sizeIndex] || 0;
-        totalMRP += productPrice * product.quantity;
-      })
-      const orderDiscount = totalMRP - order.grandTotal;
-      totalDiscount += orderDiscount;
+    //   order.products.forEach(product => {
+    //     const sizeIndex = ["S", "M", "L"].indexOf(product.selectedSize);
+    //     const productPrice = product.productId?.prices[sizeIndex] || 0;
+    //     totalMRP += productPrice * product.quantity;
+    //   })
+    //   const orderDiscount = totalMRP - order.grandTotal;
+    //   totalDiscount += orderDiscount;
 
       
-      if (!addedOrderIds.has(order._id.toString())) {
-        totalOrderRevenue += (order.grandTotal || 0);
-        addedOrderIds.add(order._id.toString());
-      }
-      order.products.forEach(product => {
-        const sizeIndex = ["S", "M", "L"].indexOf(product.selectedSize);
-        const productPrice = product.productId?.prices[sizeIndex] || 0;
-        const productMRP = productPrice * product.quantity;
+    //   if (!addedOrderIds.has(order._id.toString())) {
+    //     totalOrderRevenue += (order.grandTotal || 0);
+    //     addedOrderIds.add(order._id.toString());
+    //   }
+    //   order.products.forEach(product => {
+    //     const sizeIndex = ["S", "M", "L"].indexOf(product.selectedSize);
+    //     const productPrice = product.productId?.prices[sizeIndex] || 0;
+    //     const productMRP = productPrice * product.quantity;
 
-        flattenedOrders.push({
-          userName: order.userId?.firstName || "Unknown",
-          orderDate: new Date(order.createdAt).toISOString().split("T")[0],
-          productName: product.productId?.name || "",
-          quantity: product.quantity,
-          productMRP: productMRP,
-          productPaid: product.totalPrice,
-          grandTotal: order.grandTotal,
-          discount: orderDiscount,  
-          paymentMethod: order.paymentDetails.method
-        });
-      });
+    //     flattenedOrders.push({
+    //       userName: order.userId?.firstName || "Unknown",
+    //       orderDate: new Date(order.createdAt).toISOString().split("T")[0],
+    //       productName: product.productId?.name || "",
+    //       quantity: product.quantity,
+    //       productMRP: productMRP,
+    //       productPaid: product.totalPrice,
+    //       grandTotal: order.grandTotal,
+    //       discount: orderDiscount,  
+    //       paymentMethod: order.paymentDetails.method
+    //     });
+    //   });
+    // });
+
+
+    orders.forEach(order => {
+  let totalMRP = 0;
+
+  order.products.forEach(product => {
+    const sizeIndex = ["S", "M", "L"].indexOf(product.selectedSize);
+    const productPrice = product.productId?.prices[sizeIndex] || 0;
+    totalMRP += productPrice * product.quantity;
+  });
+
+  const orderDiscount = order.coupon?.discount || 0;
+  totalDiscount += orderDiscount;
+
+  if (!addedOrderIds.has(order._id.toString())) {
+    totalOrderRevenue += (order.grandTotal || 0);
+    addedOrderIds.add(order._id.toString());
+  }
+
+  order.products.forEach(product => {
+    const sizeIndex = ["S", "M", "L"].indexOf(product.selectedSize);
+    const productPrice = product.productId?.prices[sizeIndex] || 0;
+    const productMRP = productPrice * product.quantity;
+
+    flattenedOrders.push({
+      userName: order.userId?.firstName || "Unknown",
+      orderDate: new Date(order.createdAt).toISOString().split("T")[0],
+      productName: product.productId?.name || "",
+      quantity: product.quantity,
+      productMRP: productMRP,
+      productPaid: product.totalPrice,
+      grandTotal: order.grandTotal,
+      discount: orderDiscount,   
+      paymentMethod: order.paymentDetails.method
     });
+  });
+});
+
 
     const totalEarnings = totalOrderRevenue;
 
