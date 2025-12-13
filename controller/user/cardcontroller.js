@@ -410,6 +410,7 @@ const moveToCart = async (req, res) => {
       quantity: 1,
       selectedSize: size,
       pricePerUnit,
+      originalPrice: product.prices[sizeIndex],
       productDiscount: 0,
     });
 
