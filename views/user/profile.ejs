@@ -132,12 +132,12 @@ h4 {
  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
   <div class="container d-flex justify-content-between align-items-center">
   
-    <a class="navbar-brand text-primary fw-bold" href="/user/profile">Profile</a>
+    <a class="navbar-brand text-primary fw-bold" href="/profile">Profile</a>
 
     <ul class="navbar-nav flex-row gap-4 mb-0">
-      <li class="nav-item"><a class="nav-link" href="/user/orders">Order History</a></li>
-      <li class="nav-item"><a class="nav-link" href="/user/wallet">Wallet</a></li>
-      <li class="nav-item"><a class="nav-link" href="/user/add-address">Add Address</a></li>
+      <li class="nav-item"><a class="nav-link" href="/orders">Order History</a></li>
+      <li class="nav-item"><a class="nav-link" href="/wallet">Wallet</a></li>
+      <li class="nav-item"><a class="nav-link" href="/add-address">Add Address</a></li>
     </ul>
 
     <div class="d-flex align-items-center">
@@ -158,7 +158,7 @@ h4 {
 
           <!-- Profile Image Upload -->
 <div class="col-md-4 text-center mb-3">
-  <form id="profileForm" action="/user/profile/upload" method="POST" enctype="multipart/form-data">
+  <form id="profileForm" action="/profile/upload" method="POST" enctype="multipart/form-data">
     <img src="<%= user.profile || '/images/default-user.png' %>" 
          id="profilePreview"
          alt="Profile" 
@@ -201,8 +201,8 @@ h4 {
 
         <!-- Actions -->
         <div class="text-center mt-4">
-          <a href="/user/edit-profile" class="btn btn-primary me-2">Edit Profile</a>
-          <a href="/user/changepassword" class="btn btn-success">Change Password</a>
+          <a href="/edit-profile" class="btn btn-primary me-2">Edit Profile</a>
+          <a href="/changepassword" class="btn btn-success">Change Password</a>
         </div>
       </div>
     </div>
@@ -343,7 +343,7 @@ profileUpload.addEventListener('change', (e) => {
         cancelButtonText: 'No'
       }).then((result) => {
         if (result.isConfirmed) {
-          fetch('/user/delete-address/' + addressId, {
+          fetch('/delete-address/' + addressId, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
           }).then(() => {

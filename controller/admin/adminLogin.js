@@ -489,26 +489,69 @@ const renderCustomers = async (req, res, next) => {
 
 
 
+// const toggleBlockUser = async (req, res, next) => {
+//   try {
+//     const userId = req.params.id;
+//     const action = req.body?.action;
 
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).json({ success: false, message: "User not found" });
+//     }
 
+//     if (action === "block") {
+//       user.isBlocked = true;
+//       user.blockedAt = new Date();
+//     } else if (action === "unblock") {
+//       user.isBlocked = false;
+//       user.blockedAt = null;
+//     }
+
+//     await user.save();
+
+//     res.json({
+//       success: true,
+//       isBlocked: user.isBlocked,
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// }
 
 
 const toggleBlockUser = async (req, res, next) => {
   try {
-    const userId = req.params.id;
-    const user = await User.findById(userId);
+    const { id } = req.params;
+    const { action } = req.body;
 
-    if (!user) return res.status(404).send("User not found")
+    if (!["block", "unblock"].includes(action)) {
+      return res.json({ success: false, message: "Invalid action" });
+    }
 
-    user.isBlocked = !user.isBlocked; 
-    await user.save();
+    const updateData =
+      action === "block"
+        ? { isBlocked: true, blockedAt: new Date() }
+        : { isBlocked: false, blockedAt: null };
 
-    res.json({ success: true, isBlocked: user.isBlocked })
+    const user = await User.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true, runValidators: false } 
+    );
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    res.json({
+      success: true,
+      isBlocked: user.isBlocked
+    });
+
   } catch (err) {
     next(err);
   }
-}
-
+};
 
 
 
@@ -529,7 +572,9 @@ const earchCustomers = async (req, res) => {
     console.error("Search Error:", err);
     return res.status(500).json({ success: false, message: "Server error" });
   }
-};
+}
+
+
 
 async function adminLogout(req, res, next) {
   try {

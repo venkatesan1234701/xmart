@@ -110,7 +110,7 @@ body {
     <div class="card-body">
       <h1 class="card-title text-center mb-4">Edit Profile</h1>
 
-      <form id="editProfileForm" action="/user/edit-profile" method="POST" novalidate>
+      <form id="editProfileForm" action="/edit-profile" method="POST" novalidate>
 
         <div class="mb-3">
           <label for="firstName" class="form-label">First Name</label>
@@ -150,7 +150,7 @@ body {
         </div>
 
         <div class="d-flex justify-content-between align-items-center mt-4">
-          <a href="/user/profile" class="btn btn-link">&larr; Back to Profile</a>
+          <a href="/profile" class="btn btn-link">&larr; Back to Profile</a>
           <button type="submit" class="btn btn-primary">Save Changes</button>
         </div>
 
@@ -214,7 +214,7 @@ body {
       phoneError.classList.add("d-none");
     }
 
-    const response = await fetch("/user/edit-profile", {
+    const response = await fetch("/edit-profile", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -248,7 +248,7 @@ body {
       timer: 1500,
       showConfirmButton: false
     }).then(() => {
-      window.location.href = "/user/profile";
+      window.location.href = "/profile";
     });
   });
 </script>

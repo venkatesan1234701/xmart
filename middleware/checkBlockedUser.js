@@ -1,18 +1,24 @@
+const User = require("../models/userSchema");
 
-module.exports = (req, res, next) => {
+const checkBlockedUser = async (req, res, next) => {
   try {
-    if (req.user && req.user.isBlocked) { 
-      req.logout(err => {
-        if (err) return next(err);
-        req.session.destroy(() => {
-          return res.redirect('/signin?blocked=true');
-        })
-      })
-    } else {
-      next()
+    if (!req.session.user) return next();
+
+    const user = await User.findById(req.session.user.id).select("isBlocked");
+
+    if (!user || user.isBlocked) {
+      req.session.destroy(() => {
+        res.clearCookie("connect.sid");
+        return res.redirect("/blocked");
+      });
+      return;
     }
+
+    next();
   } catch (err) {
-    console.error("Blocked middleware error:", err);
-    next(err);
+    console.error("checkBlockedUser error:", err);
+    next();
   }
 };
+
+module.exports = checkBlockedUser;

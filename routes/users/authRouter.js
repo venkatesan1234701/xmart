@@ -11,6 +11,7 @@ const checkoutController = require('../../controller/user/checkout')
 const WishlistCotroller= require('../../controller/user/wishlistController')
 const walletController = require('../../controller/user/walletController')
 const mailcontroller = require('../../controller/user/mailcontroller')
+const AuthPagesForLoggedInUsers = require('../../middleware/auth')
 
 // const orderController = require('../../controller/user/orderController')
 const upload = require("../../config/multer");
@@ -25,31 +26,31 @@ const {isAuthenticated} = require('../../middleware/userAuth')
 
 
 router.get('/',authController.gethomepage)
-router.get('/signin', authController.getSigninPage)
+router.get('/signin',AuthPagesForLoggedInUsers, authController.getSigninPage)
 router.post("/logout", authController.logout)
 router.post('/signin', authController.postSignin)
 router.post('/resend-verification',isAuthenticated, authController.resendVerification)
 
-router.get('/signup', authController.getSignupPage)
-router.post('/signup', authController.postSignup)
+router.get('/signup',AuthPagesForLoggedInUsers, authController.getSignupPage)
+router.post('/signup',AuthPagesForLoggedInUsers, authController.postSignup)
 
-router.get('/forgot-password', authController.getForgotPassword)
-router.post('/forgot-password', authController.postForgotPassword)
+router.get('/forgot-password',AuthPagesForLoggedInUsers,authController.getForgotPassword)
+router.post('/forgot-password',AuthPagesForLoggedInUsers, authController.postForgotPassword)
 router.post('/api/check-password-match', authController.checkPasswordMatch)
 
-router.post("/resend-otp", authController.resendOtp)
-router.post("/verify-otp",authController.verifyOtp)
+router.post("/resend-otp",AuthPagesForLoggedInUsers, authController.resendOtp)
+router.post("/verify-otp",AuthPagesForLoggedInUsers,authController.verifyOtp)
 
-router.get("/reset-password", authController.getResetPassword)
-router.post("/reset-password", authController.postResetPassword)
+router.get("/reset-password",AuthPagesForLoggedInUsers, authController.getResetPassword)
+router.post("/reset-password",AuthPagesForLoggedInUsers,authController.postResetPassword)
 
 // router.get('/auth/google/signup', passport.authenticate('google', { scope: ['profile', 'email'] }))
 // router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
 //   res.redirect('/')
 // })
 
-router.get("/auth/google", authController.authenticateGoogle);
-router.get("/auth/google/callback", authController.googleCallBack);
+router.get("/auth/google",AuthPagesForLoggedInUsers, authController.authenticateGoogle);
+router.get("/auth/google/callback",AuthPagesForLoggedInUsers, authController.googleCallBack);
 
 
 
@@ -126,7 +127,7 @@ router.post("/edit-address/:id",addresscontroller. postEditAddress);
 
 router.get('/changepassword',WishlistCotroller.changepassword)
 router.post("/changepassword",WishlistCotroller.postchangepass);
-
+router.post("/validate-checkout",cardController.validateBeforeCheckout)
 router.get("/change-mail", mailcontroller.renderChangeMail);
 router.post("/send-otp", mailcontroller.sendOtp);
 router.post("/verify-mailotp", mailcontroller.verifyOtp);
@@ -134,5 +135,9 @@ router.post("/verify-mailotp", mailcontroller.verifyOtp);
 
 
 router.get('/search-products',shopcontroller.searchProducts)
+router.get("/blocked", (req, res) => {
+  res.render("user/blocked");
+});
+
 
 module.exports = router

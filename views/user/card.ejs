@@ -262,7 +262,7 @@ body {
 						<div class="relative flex items-center gap-4">
 
 
-<a href="/user/wishlist" 
+<a href="/wishlist" 
    class="flex items-center gap-2 text-gray-700 font-medium cursor-pointer hover:text-red-600 transition">
 
   <!-- Wishlist (Heart) SVG Icon -->
@@ -279,7 +279,7 @@ body {
 
   
   <!-- My Cards Button -->
-<a href="/user/card" 
+<a href="/card" 
    class="flex items-center gap-2 text-gray-700 font-medium cursor-pointer hover:text-blue-600 transition">
 
   <!-- Card SVG Icon -->
@@ -323,7 +323,7 @@ body {
     <!-- Dropdown menu -->
     <% if (user) { %>
       <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50">
-        <a href="/user/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+        <a href="/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
           Account Settings
         </a>
      <form id="logoutForm" action="/logout" method="POST">
@@ -1472,6 +1472,18 @@ body {
 <!-- buy now template button
 Remove if you do not want.
 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<% if (message?.type === "warning") { %>
+<script>
+  Swal.fire({
+    icon: "warning",
+    title: "Product not available",
+    text: "<%= message.text %>",
+    confirmButtonColor: "#16a34a"
+  });
+</script>
+<% } %>
 
 
 
@@ -1848,52 +1860,6 @@ document.addEventListener('click', e => {
 
 
 
-// document.addEventListener('DOMContentLoaded', () => {
-
-//   const updateQuantity = async (productId, selectedSize, action) => {
-//     try {
-//       const res = await fetch('/user/cart/update-quantity', {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify({ productId, selectedSize, action }),
-//       });
-
-//       const data = await res.json();
-
-//       if (data.success) {
-//         location.reload(); // refresh to see updated totals
-//       } else {
-//         // Show SweetAlert popup on error
-//         Swal.fire({
-//           icon: 'warning',
-//           title: 'Oops!',
-//           text: data.message, // "Max limit 8 reached" or "Min limit 1 reached"
-//         });
-//       }
-
-//     } catch (err) {
-//       console.error(err);
-//       Swal.fire({
-//         icon: 'error',
-//         title: 'Server Error',
-//         text: 'Try again later',
-//       });
-//     }
-//   };
-
-//   document.querySelectorAll('.button-minus, .button-plus').forEach(btn => {
-//     btn.addEventListener('click', e => {
-//       const productId = e.target.dataset.id;
-//       const selectedSize = e.target.dataset.size;
-//       const action = e.target.dataset.action;
-
-//       updateQuantity(productId, selectedSize, action);
-//     });
-//   });
-
-// });
-
-
 document.addEventListener("DOMContentLoaded", () => {
 
   const updateQuantity = async (productId, selectedSize, action) => {
@@ -1959,41 +1925,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
-
-
-
-
-
-// document.addEventListener('DOMContentLoaded', () => {
-//   const updateQuantity = async (productId, selectedSize, action) => {
-//     try {
-//       const res = await fetch('/user/cart/update-quantity', {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify({ productId, selectedSize, action }),
-//       });
-//       const data = await res.json();
-
-//       if (data.success) {
-//         location.reload(); // refresh to see updated totals
-//       } else {
-//         alert(data.message || 'Error updating quantity');
-//       }
-//     } catch (err) {
-//       console.error('Update error:', err);
-//     }
-//   };
-
-//   document.querySelectorAll('.button-minus, .button-plus').forEach(btn => {
-//     btn.addEventListener('click', e => {
-//       const productId = e.target.dataset.id;
-//       const selectedSize = e.target.dataset.size;
-//       const action = e.target.dataset.action;
-//       updateQuantity(productId, selectedSize, action);
-//     });
-//   });
-// });
 
 
 

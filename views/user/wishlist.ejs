@@ -463,7 +463,7 @@ td.fw-semibold {
  
 <div class="relative flex items-center gap-4">
 
-<a href="/user/wishlist" 
+<a href="/wishlist" 
    class="flex items-center gap-2 text-gray-700 font-medium cursor-pointer hover:text-red-600 transition">
 
   <!-- Wishlist (Heart) SVG Icon -->
@@ -481,7 +481,7 @@ td.fw-semibold {
   
   <!-- My Cards Button -->
 
- <a href="/user/card" 
+ <a href="/card" 
      class="flex items-center gap-2 text-gray-700 font-medium cursor-pointer hover:text-blue-600 transition">
     
     <!-- Card SVG Icon -->
@@ -525,7 +525,7 @@ td.fw-semibold {
     <!-- Dropdown menu -->
     <% if (user) { %>
       <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50">
-        <a href="/user/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+        <a href="/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
           Account Settings
         </a>
         <form id="logoutForm" action="/logout" method="POST">
@@ -1328,7 +1328,7 @@ td.fw-semibold {
 
  async function moveToCart(productId, size, qty) {
     try {
-      const response = await fetch("/user/move-to-cart", {
+      const response = await fetch("/move-to-cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId, size, qty })
@@ -1348,7 +1348,7 @@ td.fw-semibold {
 
         // ✅ Redirect to /user/card after small delay
         setTimeout(() => {
-          window.location.href = data.redirectUrl || "/user/card";
+          window.location.href = data.redirectUrl || "/card";
         }, 1800);
 
       } else {

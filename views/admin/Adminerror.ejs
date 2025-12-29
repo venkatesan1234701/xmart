@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Error</title>
-  <style>/* 404 Page Global Style */
+  <!-- <style>/* 404 Page Global Style */
 body {
   font-family: "Inter", Arial, sans-serif;
   background: #f8fafc;
@@ -52,7 +52,98 @@ body {
   background: #374151;
   transform: translateY(-2px);
 }
+</style> -->
+
+<style>
+  /* ===== Base Reset ===== */
+* {
+  box-sizing: border-box;
+}
+
+/* ===== Page Layout ===== */
+body {
+  font-family: "Inter", Arial, sans-serif;
+  background: #f8fafc;
+  margin: 0;
+  padding: 40px 16px;
+  color: #1f2937;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+/* ===== 404 Number ===== */
+h1 {
+  font-size: 96px;
+  font-weight: 800;
+  color: #dc2626;
+  margin: 0 0 10px;
+}
+
+/* ===== Sub Heading ===== */
+h2 {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #374151;
+}
+
+/* ===== Message ===== */
+p {
+  font-size: 18px;
+  margin-bottom: 30px;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+/* ===== Button ===== */
+button {
+  padding: 12px 24px;
+  background: #4b5563;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background: #374151;
+  transform: translateY(-2px);
+}
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 600px) {
+  body {
+    padding: 24px 14px;
+  }
+
+  h1 {
+    font-size: 64px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  p {
+    font-size: 16px;
+  }
+
+  button {
+    width: 100%;
+    max-width: 220px;
+    font-size: 15px;
+    padding: 10px 18px;
+  }
+}
+
 </style>
+
 </head>
 <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
 

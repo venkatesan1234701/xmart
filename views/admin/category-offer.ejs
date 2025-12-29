@@ -7,7 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="../assets/css/theme.min.css">
-
+<!-- 
   <style>
     /* -------------------------------
    GLOBAL STYLING
@@ -146,6 +146,22 @@ table tbody tr:hover {
   transition: 0.25s ease;
 }
 
+@media (max-width: 640px) {
+  aside {
+    transform: translateX(-100%);
+    transition: 0.3s;
+  }
+
+  aside.open {
+    transform: translateX(0);
+  }
+
+  main {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+}
+
 .btn-danger.btn-sm:hover {
   background: linear-gradient(135deg, #f44336, #c62828);
   transform: translateY(-2px);
@@ -246,8 +262,407 @@ table tbody tr:hover {
   animation: fadeIn 0.3s ease;
 }
 
-  </style>
+  </style> -->
 
+
+  <style>
+    /* ===============================
+   GLOBAL
+================================ */
+body {
+  font-family: "Inter", sans-serif;
+  background: #f8fafc;
+  margin: 0;
+  padding: 0;
+  color: #1e293b;
+}
+
+h2 {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* ===============================
+   NAVBAR
+================================ */
+nav.w-full {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  background: white;
+}
+
+.main-content-wrapper {
+  margin-top: 100px !important;
+}
+
+/* ===============================
+   SEARCH BAR
+================================ */
+#category-search {
+  border-radius: 8px;
+  padding: 7px 12px;
+  border: 1px solid #cbd5e1;
+  transition: 0.25s ease;
+}
+
+#category-search:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.25);
+}
+
+/* ===============================
+   ADD OFFER BUTTON
+================================ */
+#openModalBtn {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  box-shadow: 0 2px 8px rgba(34,197,94,0.3);
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  transition: 0.3s;
+}
+
+#openModalBtn:hover {
+  background: linear-gradient(135deg, #15803d, #16a34a);
+  transform: translateY(-2px);
+}
+
+/* ===============================
+   TABLE RESPONSIVE (IMPORTANT)
+================================ */
+
+/* Horizontal scroll ONLY for table */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+}
+
+/* Table base */
+.table-responsive table {
+  background: #fff;
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+  .table-responsive table {
+    min-width: 800px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .table-responsive table {
+    min-width: 700px;
+  }
+}
+
+/* Header */
+.table-responsive thead {
+  background: #f1f5f9;
+}
+
+.table-responsive th {
+  font-weight: 600;
+  font-size: 14px;
+  padding: 14px;
+  white-space: nowrap;
+}
+
+/* Body cells */
+.table-responsive td {
+  font-size: 14px;
+  padding: 12px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Allow wrap only for Category column */
+.table-responsive td:nth-child(2) {
+  white-space: normal;
+  max-width: 200px;
+  word-break: break-word;
+}
+
+/* FIX: Edit & Delete button columns */
+.table-responsive td:nth-last-child(1),
+.table-responsive td:nth-last-child(2) {
+  min-width: 90px;
+  white-space: nowrap;
+}
+
+/* Buttons visible */
+.table-responsive td button {
+  display: inline-block;
+  margin: 2px 0;
+}
+
+/* Row hover */
+.table-responsive tbody tr {
+  transition: 0.2s ease;
+}
+
+.table-responsive tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* Mobile font & padding */
+@media (max-width: 576px) {
+  .table-responsive th,
+  .table-responsive td {
+    font-size: 13px;
+    padding: 8px;
+  }
+}
+
+
+/* =========================================
+   FORCE DESKTOP-LIKE TABLE ON MOBILE
+   (SCROLLABLE, NOT CARD VIEW)
+========================================= */
+
+/* Enable horizontal scroll */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Force real table structure */
+.table-responsive table {
+  width: 100%;
+  min-width: 900px; /* desktop width feel */
+  border-collapse: collapse;
+}
+
+/* VERY IMPORTANT: undo flex/card styles */
+@media (max-width: 1024px) {
+  .table-responsive table,
+  .table-responsive thead,
+  .table-responsive tbody,
+  .table-responsive tr {
+    display: table !important;
+  }
+
+  .table-responsive tr {
+    display: table-row !important;
+  }
+
+  .table-responsive th,
+  .table-responsive td {
+    display: table-cell !important;
+    white-space: nowrap;
+    vertical-align: middle;
+    text-align: center;
+  }
+}
+
+/* Allow product/category name wrap */
+.table-responsive td:nth-child(2) {
+  white-space: normal;
+  min-width: 180px;
+  word-break: break-word;
+}
+
+/* Fix Edit & Delete column width */
+.table-responsive td:nth-last-child(1),
+.table-responsive td:nth-last-child(2) {
+  min-width: 110px;
+}
+
+/* Button visibility */
+.table-responsive td button {
+  display: inline-block;
+  margin: 4px auto;
+}
+
+
+/* ==================================================
+   CATEGORY OFFER – RESPONSIVE CSS ONLY
+================================================== */
+
+/* ---------- SIDEBAR (MOBILE) ---------- */
+@media (max-width: 768px) {
+  aside {
+    transform: translateX(-100%);
+    transition: 0.3s ease;
+    z-index: 50;
+  }
+
+  aside.open {
+    transform: translateX(0);
+  }
+
+  main {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  #menuBtn {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 60;
+  }
+}
+
+/* ---------- TABLE SCROLL ---------- */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---------- TABLE BASE ---------- */
+.table-responsive table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+}
+
+/* ---------- HEAD / CELL ---------- */
+.table-responsive th,
+.table-responsive td {
+  white-space: nowrap;
+  vertical-align: middle;
+  text-align: center;
+}
+
+/* ---------- CATEGORY COLUMN (ALLOW WRAP) ---------- */
+.table-responsive td:nth-child(2) {
+  white-space: normal;
+  min-width: 200px;
+  word-break: break-word;
+}
+
+/* ---------- DATE / STATUS ---------- */
+.table-responsive td:nth-child(4),
+.table-responsive td:nth-child(5),
+.table-responsive td:nth-child(6) {
+  min-width: 120px;
+}
+
+/* ---------- EDIT / DELETE ---------- */
+.table-responsive td:nth-last-child(1),
+.table-responsive td:nth-last-child(2) {
+  min-width: 110px;
+}
+
+.table-responsive td button {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* ---------- MOBILE FONT ---------- */
+@media (max-width: 576px) {
+  .table-responsive th,
+  .table-responsive td {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .table-responsive table {
+    min-width: 800px;
+  }
+}
+
+/* Mobile font size tuning */
+@media (max-width: 576px) {
+  .table-responsive th,
+  .table-responsive td {
+    font-size: 13px;
+    padding: 8px;
+  }
+}
+
+/* ===============================
+   BUTTON STYLES
+================================ */
+.btn-primary.btn-sm {
+  background: linear-gradient(135deg, #1976d2, #1565c0);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  color: white;
+  font-weight: 500;
+  transition: 0.25s ease;
+}
+@media (max-width: 640px) {
+  aside {
+    transform: translateX(-100%);
+    transition: 0.3s;
+  }
+
+  aside.open {
+    transform: translateX(0);
+  }
+
+  main {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+}
+.btn-primary.btn-sm:hover {
+  background: linear-gradient(135deg, #2196f3, #0d47a1);
+  transform: translateY(-2px);
+}
+
+.btn-danger.btn-sm {
+  background: linear-gradient(135deg, #e53935, #d32f2f);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  color: white;
+  font-weight: 500;
+  transition: 0.25s ease;
+}
+
+.btn-danger.btn-sm:hover {
+  background: linear-gradient(135deg, #f44336, #c62828);
+  transform: translateY(-2px);
+}
+
+/* ===============================
+   BADGES
+================================ */
+.badge.bg-success {
+  background: #16a34a !important;
+}
+
+.badge.bg-danger {
+  background: #dc2626 !important;
+}
+
+.badge.bg-warning {
+  background: #f59e0b !important;
+  color: #1f2937 !important;
+}
+
+/* ===============================
+   MODAL
+================================ */
+.modal-content {
+  border-radius: 12px !important;
+  padding: 20px;
+  border: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-title {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* ===============================
+   ANIMATION
+================================ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+  </style>
 
   <!-- <style>
 
@@ -335,196 +750,104 @@ table tbody tr:hover {
 </head>
 <body class="bg-light">
 
-<!-- ✅ You can reuse your full navbar here -->
-<nav class="w-full bg-white shadow-md fixed top-0 left-0 z-50">
-  <div class="flex items-center justify-between px-6 py-3">
-    <!-- Logo -->
-    <a href="" class="navbar-brand flex items-center">
-      <img src="../assets/images/logo/Xe mart.png" alt="Logo" class="h-10" />
-    </a>
-
-    <!-- Nav Items -->
-    <ul class="flex items-center gap-x-6" id="topNavbar">
-
-      <!-- Dashboard -->
-      <li>
-        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="dashboard">
-          <span class="nav-link-icon">
-            <!-- Dashboard Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-              fill="none" stroke="currentColor" stroke-width="2" 
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
-              <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
-              <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
-            </svg>
-          </span>
-          <span>Dashboard</span>
-        </a>
-      </li>
-
-      <!-- Products -->
-      <li>
-        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="products">
-          <span class="nav-link-icon">
-            <!-- Products Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-              fill="none" stroke="currentColor" stroke-width="2" 
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-              <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-              <path d="M17 17h-11v-14h-2" />
-              <path d="M6 5l14 1l-1 7h-13" />
-            </svg>
-          </span>
-          <span>Products</span>
-        </a>
-      </li>
-
-      <!-- Categories -->
-      <li>
-        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="categories">
-          <span class="nav-link-icon">
-            <!-- Categories Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-              fill="none" stroke="currentColor" stroke-width="2" 
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 6l11 0" />
-              <path d="M9 12l11 0" />
-              <path d="M9 18l11 0" />
-              <path d="M5 6l0 .01" />
-              <path d="M5 12l0 .01" />
-              <path d="M5 18l0 .01" />
-            </svg>
-          </span>
-          <span>Categories</span>
-        </a>
-      </li>
-
-      <!-- Customers -->
-      <li>
-        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/customers">
-          <span class="nav-link-icon">
-            <!-- Customers Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-              fill="none" stroke="currentColor" stroke-width="2" 
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
-              <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
-            </svg>
-          </span>
-          <span>Customers</span>
-        </a>
-      </li>
-
-      <!-- Reviews -->
 
 
-
-      <li>
-  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/orders">
-    <span class="nav-link-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-        fill="none" stroke="currentColor" stroke-width="2" 
-        stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
-      </svg>
-    </span>
-    <span>Orders</span>
-  </a>
-</li>
+  
+<button id="menuBtn"
+  class="md:hidden px-3 py-2 bg-green-600 text-white rounded">
+  ☰
+</button>
 
 
-<li>
-  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/coupons">
-    <span class="nav-link-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-        fill="none" stroke="currentColor" stroke-width="2" 
-        stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
-      </svg>
-    </span>
-    <span>coupon</span>
-  </a>
-</li>
-
-  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/product-offer">
-    <span class="nav-link-icon">
-      <!-- Product Offer Icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-        fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 1v4" />
-        <path d="M6 7h12l-1 12H7L6 7z" />
-        <path d="M9 12h2v4H9zM13 12h2v4h-2z" />
-      </svg>
-    </span>
-    <span>Product Offer</span>
-  </a>
-</li>
-
-
-
-<li>
-  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/category-offer">
-    <span class="nav-link-icon">
-      <!-- Category Offer Icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-        fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="9" />
-        <path d="M9 10h6v4H9z" />
-        <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
-      </svg>
-    </span>
-    <span>Category Offer</span>
-  </a>
-</li>
-
-
-<li>
-  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/sales-report">
-    <span class="nav-link-icon">
-      <!-- Sales Report Icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-        fill="none" stroke="currentColor" stroke-width="2" 
-        stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 3h14v14H3z" /> <!-- Square/Report icon -->
-        <path d="M3 7h14" />
-        <path d="M7 3v14" />
-      </svg>
-    </span>
-    <span>Sales Report</span>
-  </a>
-</li>
-
-
-
-
-      <!-- Logout -->
-      <li>
-        <a class="flex items-center gap-2 text-red-600 hover:text-red-800" href="/admin/logout">
-          <span class="nav-link-icon">
-            <!-- Logout Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-              fill="none" stroke="currentColor" stroke-width="2" 
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
-              <path d="M9 12h12l-3 -3m0 6l3 -3" />
-            </svg>
-          </span>
-          <span>Log Out</span>
-        </a>
-      </li>
-
-    </ul>
+  <aside class="fixed top-0 left-0 h-screen w-64 bg-white shadow-lg z-40">
+  
+  <!-- Logo -->
+  <div class="flex items-center justify-center h-16 border-b">
+    <img src="../assets/images/logo/Xe mart.png" class="h-10" />
   </div>
-</nav>
+
+  <!-- Menu -->
+  <ul class="flex flex-col gap-2 p-4">
+
+    <li>
+      <a href="/admin/dashboard"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        🏠 <span>Dashboard</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/products"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        🛒 <span>Products</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/categories"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        📂 <span>Categories</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/customers"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        👥 <span>Customers</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/orders"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        📦 <span>Orders</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/coupons"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        🎟️ <span>Coupons</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/product-offer"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        💸 <span>Product Offer</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/category-offer"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        🏷️ <span>Category Offer</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/sales-report"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        📊 <span>Sales Report</span>
+      </a>
+    </li>
+
+    <li class="mt-6">
+      <a href="/admin/logout"
+         class="flex items-center gap-3 p-2 rounded text-red-600 hover:bg-red-100">
+        🚪 <span>Logout</span>
+      </a>
+    </li>
+
+  </ul>
+</aside>
 
 
-<main class="container pt-5 mt-5">
+
+
+	<div class="main-wrapper">
+<main class="pt-6 pt-20 min-h-screen overflow-y-auto"
+  style="margin-left:14rem; width:calc(100% - 16rem);">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-semibold text-dark">Category Offers</h2>
     <button class="btn btn-success" id="openModalBtn">+ Add Offer</button>
@@ -609,6 +932,9 @@ table tbody tr:hover {
     </table>
   </div>
 </main>
+  </div>
+
+
 
 <!-- Modal -->
 <div class="modal fade" id="offerModal" tabindex="-1">
@@ -869,6 +1195,15 @@ async function deleteOffer(offerId) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+
+
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.querySelector("aside");
+
+menuBtn.onclick = () => {
+  sidebar.classList.toggle("open");
+};
+
 document.addEventListener("DOMContentLoaded", function () {
   const offerForm = document.getElementById("offerForm");
   const modalEl = document.getElementById("offerModal");

@@ -224,11 +224,11 @@ table.table {
 <!-- ✅ Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
   <div class="container d-flex justify-content-between align-items-center">
-    <a class="navbar-brand text-primary fw-bold" href="/user/profile">Profile</a>
+    <a class="navbar-brand text-primary fw-bold" href="/profile">Profile</a>
     <ul class="navbar-nav flex-row gap-4 mb-0">
-      <li class="nav-item"><a class="nav-link" href="/user/orders">Order History</a></li>
-      <li class="nav-item"><a class="nav-link" href="/user/wallet">Wallet</a></li>
-      <li class="nav-item"><a class="nav-link" href="/user/add-address">Add Address</a></li>
+      <li class="nav-item"><a class="nav-link" href="/orders">Order History</a></li>
+      <li class="nav-item"><a class="nav-link" href="/wallet">Wallet</a></li>
+      <li class="nav-item"><a class="nav-link" href="/add-address">Add Address</a></li>
     </ul>
     <div class="d-flex align-items-center">
       <form id="logoutForm" action="/logout" method="POST" class="me-2 mb-0">
@@ -729,40 +729,44 @@ function showOrderDetails(order) {
     // 🚀 ITEM STATUS BASED BUTTONS
     // ---------------------------
 
-    // if (itemStatus === "Returned") {
-    //   actionBtns = `<span class="badge bg-secondary">Returned</span>`;
-    // }
-    // else if (itemStatus === "Cancelled") {
-    //   actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
-    // }
-    // else if (orderStatus === "Delivered") {
-    //   actionBtns = `
-    //     <button class="btn btn-sm btn-outline-warning"
-    //       onclick="returnProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
-    //         Return
-    //     </button>`;
-    // }
-    // else {
-    //   actionBtns = `
-    //     <button class="btn btn-sm btn-outline-danger"
-    //       onclick="cancelProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
-    //         Cancel
-    //     </button>`;
-    // }
+//     if (itemStatus === "Returned") {
+//   actionBtns = `<span class="badge bg-secondary">Returned</span>`;
+// } else if (itemStatus === "Cancelled") {
+//   actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
+// } else if(itemStatus === "Returning"){
+//   actionBtns = `<span class="badge bg-danger">Returning</span>`;
+// }
+// else if (orderStatus === "Delivered") {
+//   actionBtns = `
+//     <button class="btn btn-sm btn-outline-warning"
+//       onclick="returnProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
+//       Return
+//     </button>`;
+// } else {
+//   actionBtns = `
+//     <button class="btn btn-sm btn-outline-danger"
+//       onclick="cancelProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
+//       Cancel
+//     </button>`;
+// }
 
-    if (itemStatus === "Returned") {
+
+if (itemStatus === "Returned") {
   actionBtns = `<span class="badge bg-secondary">Returned</span>`;
+
 } else if (itemStatus === "Cancelled") {
   actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
-} else if(itemStatus === "Returning"){
-  actionBtns = `<span class="badge bg-danger">Returning</span>`;
-}
-else if (orderStatus === "Delivered") {
+
+} else if (itemStatus === "Returning") {
+  actionBtns = `<span class="badge bg-warning text-dark">Returning</span>`;
+
+} else if (itemStatus === "Delivered") {
   actionBtns = `
     <button class="btn btn-sm btn-outline-warning"
       onclick="returnProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
       Return
     </button>`;
+
 } else {
   actionBtns = `
     <button class="btn btn-sm btn-outline-danger"

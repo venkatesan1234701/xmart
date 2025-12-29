@@ -595,7 +595,7 @@ sendOtpBtn.addEventListener("click", async () => {
   sendOtpBtn.classList.add("opacity-50", "cursor-not-allowed");
   otpCooldown = true;
 
-  const res = await fetch("/user/send-otp", {
+  const res = await fetch("/send-otp", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ newEmail })
@@ -638,7 +638,7 @@ verifyOtpBtn.addEventListener("click", async () => {
   const otp = document.getElementById("otpInput").value.trim();
   if (!otp) return Swal.fire("Error!", "Please enter OTP", "error");
 
-  const res = await fetch("/user/verify-mailotp", {   // FIXED!!!
+  const res = await fetch("/verify-mailotp", {   // FIXED!!!
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ otp })
@@ -651,7 +651,7 @@ verifyOtpBtn.addEventListener("click", async () => {
       otpSection.style.display = "none";
       newEmailInput.value = "";
       newEmailInput.placeholder = data.email;
-      window.location.href = "/user/profile";
+      window.location.href = "/profile";
     });
   } else {
     Swal.fire("Error!", data.message, "error");

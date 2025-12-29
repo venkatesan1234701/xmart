@@ -271,7 +271,21 @@ table td {
     color: #6b7280;
   }
 }
+@media (max-width: 640px) {
+  aside {
+    transform: translateX(-100%);
+    transition: 0.3s;
+  }
 
+  aside.open {
+    transform: translateX(0);
+  }
+
+  main {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+}
 </style>
 
 </head>
@@ -279,192 +293,101 @@ table td {
 
   <!-- Navbar (shortened for brevity, keep your full navbar here) -->
  
-<nav class="w-full bg-white shadow-md fixed top-0 left-0 z-50">
-  <div class="flex items-center justify-between px-6 py-3">
-    <!-- Logo -->
-    <a href="" class="navbar-brand flex items-center">
-      <img src="../assets/images/logo/Xe mart.png" alt="Logo" class="h-10" />
-    </a>
 
-    <!-- Nav Items -->
-    <ul class="flex items-center gap-x-6" id="topNavbar">
-
-      <!-- Dashboard -->
-      <li>
-        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="dashboard">
-          <span class="nav-link-icon">
-            <!-- Dashboard Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-              fill="none" stroke="currentColor" stroke-width="2" 
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
-              <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
-              <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
-            </svg>
-          </span>
-          <span>Dashboard</span>
-        </a>
-      </li>
-
-      <!-- Products -->
-      <li>
-        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="products">
-          <span class="nav-link-icon">
-            <!-- Products Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-              fill="none" stroke="currentColor" stroke-width="2" 
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-              <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-              <path d="M17 17h-11v-14h-2" />
-              <path d="M6 5l14 1l-1 7h-13" />
-            </svg>
-          </span>
-          <span>Products</span>
-        </a>
-      </li>
-
-      <!-- Categories -->
-      <li>
-        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="categories">
-          <span class="nav-link-icon">
-            <!-- Categories Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-              fill="none" stroke="currentColor" stroke-width="2" 
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 6l11 0" />
-              <path d="M9 12l11 0" />
-              <path d="M9 18l11 0" />
-              <path d="M5 6l0 .01" />
-              <path d="M5 12l0 .01" />
-              <path d="M5 18l0 .01" />
-            </svg>
-          </span>
-          <span>Categories</span>
-        </a>
-      </li>
-
-      <!-- Customers -->
-      <li>
-        <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/customers">
-          <span class="nav-link-icon">
-            <!-- Customers Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-              fill="none" stroke="currentColor" stroke-width="2" 
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
-              <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
-            </svg>
-          </span>
-          <span>Customers</span>
-        </a>
-      </li>
-
-      <!-- Reviews -->
+  
+<button id="menuBtn"
+  class="md:hidden px-3 py-2 bg-green-600 text-white rounded">
+  ☰
+</button>
 
 
 
-      <li>
-  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/orders">
-    <span class="nav-link-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-        fill="none" stroke="currentColor" stroke-width="2" 
-        stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
-      </svg>
-    </span>
-    <span>Orders</span>
-  </a>
-</li>
-
-
-<li>
-  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/coupons">
-    <span class="nav-link-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-        fill="none" stroke="currentColor" stroke-width="2" 
-        stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
-      </svg>
-    </span>
-    <span>coupon</span>
-  </a>
-</li>
-
-  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/product-offer">
-    <span class="nav-link-icon">
-      <!-- Product Offer Icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-        fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 1v4" />
-        <path d="M6 7h12l-1 12H7L6 7z" />
-        <path d="M9 12h2v4H9zM13 12h2v4h-2z" />
-      </svg>
-    </span>
-    <span>Product Offer</span>
-  </a>
-</li>
-
-
-<li>
-  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/category-offer">
-    <span class="nav-link-icon">
-      <!-- Category Offer Icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-        fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="9" />
-        <path d="M9 10h6v4H9z" />
-        <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
-      </svg>
-    </span>
-    <span>Category Offer</span>
-  </a>
-</li>
-
-
-<li>
-  <a class="flex items-center gap-2 text-gray-700 hover:text-green-600" href="/admin/sales-report">
-    <span class="nav-link-icon">
-      <!-- Sales Report Icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-        fill="none" stroke="currentColor" stroke-width="2" 
-        stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 3h14v14H3z" /> <!-- Square/Report icon -->
-        <path d="M3 7h14" />
-        <path d="M7 3v14" />
-      </svg>
-    </span>
-    <span>Sales Report</span>
-  </a>
-</li>
-
-
-      <!-- Logout -->
-      <li>
-        <a class="flex items-center gap-2 text-red-600 hover:text-red-800" href="/admin/logout">
-          <span class="nav-link-icon">
-            <!-- Logout Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-              fill="none" stroke="currentColor" stroke-width="2" 
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
-              <path d="M9 12h12l-3 -3m0 6l3 -3" />
-            </svg>
-          </span>
-          <span>Log Out</span>
-        </a>
-      </li>
-
-    </ul>
+  <aside class="fixed top-0 left-0 h-screen w-64 bg-white shadow-lg z-40">
+  
+  <!-- Logo -->
+  <div class="flex items-center justify-center h-16 border-b">
+    <img src="../assets/images/logo/Xe mart.png" class="h-10" />
   </div>
-</nav>
+
+  <!-- Menu -->
+  <ul class="flex flex-col gap-2 p-4">
+
+    <li>
+      <a href="/admin/dashboard"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        🏠 <span>Dashboard</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/products"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        🛒 <span>Products</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/categories"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        📂 <span>Categories</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/customers"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        👥 <span>Customers</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/orders"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        📦 <span>Orders</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/coupons"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        🎟️ <span>Coupons</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/product-offer"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        💸 <span>Product Offer</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/category-offer"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        🏷️ <span>Category Offer</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="/admin/sales-report"
+         class="flex items-center gap-3 p-2 rounded hover:bg-green-100 text-gray-700">
+        📊 <span>Sales Report</span>
+      </a>
+    </li>
+
+    <li class="mt-6">
+      <a href="/admin/logout"
+         class="flex items-center gap-3 p-2 rounded text-red-600 hover:bg-red-100">
+        🚪 <span>Logout</span>
+      </a>
+    </li>
+
+  </ul>
+</aside>
 
 
-  <main class="container pt-5 mt-5">
+  <main class="pt-6 pt-20 min-h-screen overflow-y-auto"
+  style="margin-left:14rem; width:calc(100% - 16rem);">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2 class="fw-semibold text-dark">Product Offers</h2>
       <button class="btn btn-success" id="openModalBtn">+ Add Offer</button>
@@ -937,6 +860,16 @@ function openEditModalFromButton(btn) {
     Swal.fire("Error", "Unable to open edit modal", "error");
   }
 }
+
+
+
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.querySelector("aside");
+
+menuBtn.onclick = () => {
+  sidebar.classList.toggle("open");
+}
+
 
 async function deleteOffer(id) {
 

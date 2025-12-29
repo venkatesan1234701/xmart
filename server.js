@@ -6,7 +6,6 @@ const session = require("express-session");
 const passport = require("./config/passport");
 const cron = require('node-cron'); 
 const ProductOffer = require('./models/productOfferModel')
-// const passport = require("passport");
 const authRouter = require("./routes/users/authRouter");
 const adminRouter = require("./routes/admin/adminRouter");
 const authMiddlewar = require('./middleware/adminAuth')
@@ -16,7 +15,6 @@ const app = express();
 
 
 
-// Cache prevent
 app.use((req, res, next) => {
   res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, private");
   res.setHeader("Pragma", "no-cache");
@@ -24,7 +22,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Admin session
 app.use('/admin', session({
   name: 'admin.sid',
   secret: 'yourAdminSecret',
@@ -34,7 +31,6 @@ app.use('/admin', session({
 }));
 
 
-// User session
 app.use('/', session({
   name: 'user.sid',
   secret: 'yourUserSecret',
@@ -46,10 +42,10 @@ app.use('/', session({
 
 app.use(session({
   name: 'user.sid',
-  secret: 'yourStrongSecretKey',  // replace with a secure secret
+  secret: 'yourStrongSecretKey', 
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
+  cookie: { maxAge: 1000 * 60 * 60 * 24 } 
 }));
 
 
@@ -62,8 +58,6 @@ mongoose
   .catch((err) => console.error("Connection error:", err))
 
 app.use(express.static(path.join(__dirname, "public")))
-// app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
-// app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 app.use(express.static('public'));
 app.set("view engine", "ejs")
 app.set('views', path.join(__dirname, 'views'));
@@ -71,8 +65,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.use("/uploads", express.static("uploads"));
 app.use("/images", express.static("public/images"));
 
-
-// app.use(express.static('public'));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use("/admin/orders", adminRouter)
@@ -84,12 +76,13 @@ app.use("/admin/orders", adminRouter)
 // app.use("/", authRouter)
 // app.use("/admin", adminRouter)
 
+app.use(checkblock); 
 app.use("/", authRouter);               
 app.use("/user", authRouter);           
 app.use("/wishlist", authRouter);           
 app.use("/payment", authRouter);             
 app.use("/admin", adminRouter);              
-app.use(checkblock); 
+
 
 
 app.use((req, res, next) => {
@@ -107,7 +100,7 @@ cron.schedule('0 0 * * *', async () => {
     { endDate: { $lt: now }, isListed: true },
     { $set: { isListed: false } }
   );
-  console.log('🕛 Auto-unlisted expired product offers');
+  console.log(' Auto-unlisted expired product offers');
 });
 
 

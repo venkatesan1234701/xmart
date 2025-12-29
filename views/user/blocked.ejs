@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Account Blocked</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<script>
+  Swal.fire({
+    icon: "error",
+    title: "Account Blocked",
+    text: "Your account has been blocked by admin.",
+    confirmButtonText: "OK",
+    allowOutsideClick: false
+  }).then(() => {
+    window.location.replace("/signin");
+  });
+</script>
+
+</body>
+</html>

@@ -1,9 +1,6 @@
 const User = require("../../models/userSchema")
 const mongoose = require("mongoose");
 const Address = require('../../models/address')
-const Otp = require("../../models/otpSchema")
-const Referral = require("../../models/referralSchema")
-const nodemailer = require("nodemailer")
 const Category = require('../../models/category')
 const Product = require("../../models/productModel")
 const CategoryOffer = require("../../models/categoryOffer.js");
@@ -243,6 +240,10 @@ const getShopPage = async (req, res) => {
 const getSingleProductPage = async (req, res) => {
   try {
     const productId = req.params.id;
+
+       if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.render("user/error")
+    }
 
     const product = await Product.findById(productId)
       .populate("category")

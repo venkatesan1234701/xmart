@@ -96,8 +96,13 @@ const getProductDetails = async (req, res) => {
 
 
 const getSignupPage = (req, res) => {
-  res.render("user/signup")
+   if (req.session.user) {
+    return res.redirect("/");
+  }
+  res.render("user/signup",{user:null})
 }
+
+
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
@@ -143,7 +148,12 @@ const postSignup = async (req, res) => {
       user.phone = String(phoneNumber);
       user.password = hashedPass;
       user.loginType = "manual"
+
+         if (!user.referralCode) {
+        user.referralCode = await generateUniqueReferralCode();
+      }
       await user.save();
+
     } else {
       if (referralCode && referralCode.trim().length > 0) {
         // console.log(" cheking reffral code :", referralCode);
@@ -261,6 +271,28 @@ const verifyOtp = async (req, res) => {
     if (flowType === "signup") {
       user.isVerified = true;
       await user.save();
+if (user.referredBy && !user.referralBonusGiven) {
+  let wallet = await Wallet.findOne({ userId: user._id });
+
+  if (!wallet) {
+    wallet = await Wallet.create({ userId: user._id, balance: 0 });
+  }
+
+  const referralTransactionId =
+    "REF" + Math.floor(100000 + Math.random() * 900000);
+
+  await wallet.addTransaction({
+    amount: 100,
+    type: "Referral",
+    status: "completed",
+    transactionType: "Credit",
+    transactionDetail: "Referral bonus",
+    transactionId: referralTransactionId,
+  });
+
+  user.referralBonusGiven = true;
+  await user.save();
+}
 
 if (user.referredBy) {
   let wallet = await Wallet.findOne({ userId: user.referredBy });
@@ -658,6 +690,89 @@ const authenticateGoogle = (req, res, next) => {
 
 
 
+// const googleCallBack = (req, res, next) => {
+//   passport.authenticate(
+//     "google",
+//     { failureRedirect: "/signin" },
+//     async (err, googleUser) => {
+//       if (err) return next(err);
+//       if (!googleUser) return res.redirect("/signin");
+
+//       try {
+//         const email = googleUser.emails[0].value;
+
+//         let user = await User.findOne({ google_id: googleUser.id });
+
+//         if (!user) {
+//           user = await User.findOne({ email });
+//         }
+
+//           if (user.isBlocked) {
+//     return res.send(`
+//       <script>
+//         alert("Your account has been blocked by admin.");
+//         window.location.replace('/signin');
+//       </script>
+//     `);
+//   }
+
+//         if (user) {
+//           if (user.loginType !== "google") {
+//             return res.send(`
+//               <script>
+//                 alert("This email is already registered. Please login using email & password.");
+//                 window.location.replace('/signin');
+//               </script>
+//             `);
+//           }
+
+//           req.session.user = {
+//             id: user._id.toString(),
+//             email: user.email,
+//             firstName: user.firstName,
+//             secondName: user.secondName,
+//             loginType: "google"
+//           };
+
+//           return res.send(`<script>window.location.replace('/');</script>`);
+//         }
+
+//         const referralCode = await generateUniqueReferralCode();
+
+//         const newUser = new User({
+//           google_id: googleUser.id,
+//           firstName: googleUser.name.givenName,
+//           secondName: googleUser.name.familyName,
+//           email,
+//           isVerified: true,
+//           referralCode,
+//           loginType: "google"
+//         });
+
+//         await newUser.save();
+
+//         await Wallet.create({ userId: newUser._id, balance: 0, transactions: [] });
+//         await Referral.create({ code: referralCode, userId: newUser._id });
+
+//         req.session.user = {
+//           id: newUser._id.toString(),
+//           email: newUser.email,
+//           firstName: newUser.firstName,
+//           secondName: newUser.secondName,
+//           loginType: "google"
+//         };
+
+//         return res.send(`<script>window.location.replace('/');</script>`);
+
+//       } catch (error) {
+//         console.error("Google Auth Error:", error);
+//         return next(error);
+//       }
+//     }
+//   )(req, res, next);
+// };
+
+
 const googleCallBack = (req, res, next) => {
   passport.authenticate(
     "google",
@@ -667,7 +782,8 @@ const googleCallBack = (req, res, next) => {
       if (!googleUser) return res.redirect("/signin");
 
       try {
-        const email = googleUser.emails[0].value;
+        const email = googleUser.emails?.[0]?.value;
+        if (!email) return res.redirect("/signin");
 
         let user = await User.findOne({ google_id: googleUser.id });
 
@@ -675,7 +791,20 @@ const googleCallBack = (req, res, next) => {
           user = await User.findOne({ email });
         }
 
+        // ✅ IMPORTANT FIX: user exists ah nu FIRST check
         if (user) {
+
+          // ✅ NOW SAFE TO CHECK isBlocked
+          if (user.isBlocked) {
+            return res.send(`
+              <script>
+                alert("Your account has been blocked by admin.");
+                window.location.replace('/signin');
+              </script>
+            `);
+          }
+
+          // ❌ Email user trying Google login
           if (user.loginType !== "google") {
             return res.send(`
               <script>
@@ -685,6 +814,7 @@ const googleCallBack = (req, res, next) => {
             `);
           }
 
+          // ✅ LOGIN SUCCESS
           req.session.user = {
             id: user._id.toString(),
             email: user.email,
@@ -696,22 +826,32 @@ const googleCallBack = (req, res, next) => {
           return res.send(`<script>window.location.replace('/');</script>`);
         }
 
+        // 🆕 USER NOT FOUND → CREATE NEW GOOGLE USER
         const referralCode = await generateUniqueReferralCode();
 
         const newUser = new User({
           google_id: googleUser.id,
-          firstName: googleUser.name.givenName,
-          secondName: googleUser.name.familyName,
+          firstName: googleUser.name?.givenName || "",
+          secondName: googleUser.name?.familyName || "",
           email,
           isVerified: true,
           referralCode,
-          loginType: "google"
+          loginType: "google",
+          isBlocked: false
         });
 
         await newUser.save();
 
-        await Wallet.create({ userId: newUser._id, balance: 0, transactions: [] });
-        await Referral.create({ code: referralCode, userId: newUser._id });
+        await Wallet.create({
+          userId: newUser._id,
+          balance: 0,
+          transactions: []
+        });
+
+        await Referral.create({
+          code: referralCode,
+          userId: newUser._id
+        });
 
         req.session.user = {
           id: newUser._id.toString(),
@@ -730,7 +870,6 @@ const googleCallBack = (req, res, next) => {
     }
   )(req, res, next);
 };
-
 
 
 const logout = (req, res) => {

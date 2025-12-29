@@ -13,6 +13,12 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
+.return-disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .container {
   max-width: 1100px;
 }
@@ -445,23 +451,7 @@ body {
     <!-- RIGHT SIDE STATUS + BUTTON -->
     <div class="d-flex align-items-center gap-2">
 
-       <!-- <select 
-        id="status-<%= order._id %>" 
-        class="form-select border rounded px-3 py-2 text-sm"
-        onchange="updateOrderStatus('<%= order._id %>')"
-        <%= (order.orderStatus === 'Delivered' || order.orderStatus === 'Cancelled' || order.orderStatus === 'Returned') ? 'disabled' : '' %>>
-        
-        <% if (order.orderStatus === 'Cancelled') { %>
-          <option value="Cancelled" selected>Cancelled</option>
-        <% } else if (order.orderStatus === 'Returned') { %>
-          <option value="Returned" selected>Returned</option>
-        <% } else { %>
-          <option value="Pending" <%= order.orderStatus === 'Pending' ? 'selected' : '' %>>Pending</option>
-          <option value="Processing" <%= order.orderStatus === 'Processing' ? 'selected' : '' %>>Processing</option>
-          <option value="Shipped" <%= order.orderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
-          <option value="Delivered" <%= order.orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-        <% } %>
-      </select>  -->
+     
 
 <% 
   const hasReturningItems = order.products && order.products.some(item => 
@@ -473,12 +463,16 @@ body {
 %>
 
 <% if (showApproveBtn) { %>
-  <button class="btn btn-sm btn-success w-100 px-3 py-2 text-start border rounded" 
-          onclick="processReturns('<%= order._id %>')"
-          title="<%= returnCount %> returning items">
-    <i class="fas fa-check-circle me-2"></i>
-    Approve Returns (<%= returnCount %>)
-  </button>
+ <button
+  class="btn btn-sm btn-success w-100 px-3 py-2 text-start border rounded
+         <%= returnCount === 0 ? 'return-disabled' : '' %>"
+  onclick="processReturns('<%= order._id %>')"
+  title="<%= returnCount === 0 ? 'No returning items' : returnCount + ' returning items' %>">
+
+  <i class="fas fa-check-circle me-2"></i>
+  Approve Returns (<%= returnCount %>)
+</button>
+
 <% } else { %>
   <select id="status-<%= order._id %>" class="form-select border rounded px-3 py-2 text-sm"
           onchange="updateOrderStatus('<%= order._id %>')"
