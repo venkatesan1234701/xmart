@@ -242,9 +242,7 @@ const applyCoupon = async (req, res) => {
       );
     }
 
-    /* 🔥 🔥 ONLY FIXED PART 🔥 🔥 */
-    // ❌ old: subtotal = sum(pricePerUnit * qty)
-    // ✅ new: keep subtotal original, adjust grandTotal only
+ 
 
     cart.subtotal = originalSubtotal;
     cart.grandTotal =
@@ -524,106 +522,6 @@ const getCartPage = async (req, res) => {
 };
 
 
-
-
-// const getCartPage = async (req, res) => {
-//   try {
-//     const user = req.session.user;
-//     if (!user) return res.redirect("/signin");
-
-//     let cart = await Cart.findOne({ userId: user.id }).populate({
-//       path: "products.productId",
-//       model: "Product",
-//       select: "name productPic prices sizes",
-//     });
-
-//     if (!cart) {
-//       cart = await Cart.create({
-//         userId: user.id,
-//         products: [],
-//         subtotal: 0,
-//         shippingCost: 40,
-//         grandTotal: 40,
-//         coupon: {
-//           name: null,
-//           discount: 0,
-//           isMax: false,
-//           maxPurchase: 0,
-//         },
-//       });
-//     }
-
-
-
-//     if (cart.coupon?.name) {
-//       cart.products.forEach(item => {
-//         item.pricePerUnit = item.originalPrice;
-//         item.productDiscount = 0;
-//       });
-
-//       cart.subtotal = cart.products.reduce(
-//         (sum, p) => sum + p.originalPrice * p.quantity,
-//         0
-//       );
-
-//       cart.grandTotal = cart.subtotal + (cart.shippingCost || 40);
-
-//       cart.coupon = {
-//         name: null,
-//         discount: 0,
-//         isMax: false,
-//         maxPurchase: 0
-//       };
-
-//       await cart.save();
-//     }
-
-//        const usedCoupons = await Order.find({ userId: user.id })
-//                                   .distinct("coupon.name");
-//      const filteredUsedCoupons = usedCoupons.filter(c => c !== null);
-
-//     const cartItems = cart.products.map(item => ({
-//       name: item.productId?.name || "Unknown Product",
-//       image: item.productId?.productPic?.[0] || "/assets/images/default.jpg",
-//       size: item.selectedSize,
-//       quantity: item.quantity,
-//       price: item.pricePerUnit,
-//       total: item.pricePerUnit * item.quantity,
-//       id: item.productId?._id,
-//     }));
-
-//     const subtotal = cart.subtotal;
-//     const serviceFee = cart.shippingCost || 40;
-//     const grandTotal = cart.grandTotal;
-
-//     const now = new Date();
-
-//     const coupons = await Coupon.find({
-//       isListed: true,
-//       currentStatus: "active",
-//       couponStartDate: { $lte: now },
-//       couponExpiryDate: { $gte: now },
-//     });
-
-//     res.render("user/card", {
-//       user,
-//       cart,
-//       cartItems,
-//       subtotal,
-//       serviceFee,
-//       grandTotal,
-//       coupon: cart.coupon,
-//       coupons,
-//       usedCoupons: filteredUsedCoupons,
-//       isEmpty: cartItems.length === 0,
-//       message: { type: "", text: "" },
-//     });
-
-//   } catch (error) {
-//     console.error("Error loading cart page:", error);
-//     res.status(500).send("Server Error - Cannot load cart page");
-//   }
-// };
 
 
 const moveToCart = async (req, res) => {
@@ -922,7 +820,6 @@ const updateCartQuantity = async (req, res) => {
     const sizeIndex = productDoc.sizes.indexOf(selectedSize);
     const availableQty = productDoc.quantities[sizeIndex];
 
-    // 🔴 STOCK SAFETY
     if (cartItem.quantity > availableQty) {
       cartItem.quantity = availableQty;
       await cart.save();
@@ -935,7 +832,6 @@ const updateCartQuantity = async (req, res) => {
       });
     }
 
-    // 🔴 QTY CHANGE
     if (action === "increase") {
       if (cartItem.quantity >= 8) {
         return res.json({
@@ -962,7 +858,6 @@ const updateCartQuantity = async (req, res) => {
       cartItem.quantity -= 1;
     }
 
-    // 🔴 IMPORTANT FIX 1: RESET COUPON AFTER QTY CHANGE
     if (cart.coupon?.name) {
       cart.coupon = {
         name: null,
@@ -977,7 +872,6 @@ const updateCartQuantity = async (req, res) => {
       });
     }
 
-    // 🔴 IMPORTANT FIX 2: RECALCULATE USING ORIGINAL PRICE
     cart.subtotal = cart.products.reduce(
       (sum, p) => sum + p.originalPrice * p.quantity,
       0
@@ -1199,7 +1093,6 @@ const validateBeforeCheckout = async (req, res) => {
       const product = await Product.findById(item.productId)
         .populate("category");
 
-      // PRODUCT NOT FOUND
       if (!product) {
         return res.json({
           success: false,
@@ -1207,7 +1100,6 @@ const validateBeforeCheckout = async (req, res) => {
         });
       }
 
-      // PRODUCT BLOCK / DELETE
       if (product.isBlocked === true || product.isDeleted === true) {
         return res.json({
           success: false,
@@ -1215,7 +1107,6 @@ const validateBeforeCheckout = async (req, res) => {
         });
       }
 
-      // CATEGORY BLOCK / DELETE
       if (
         product.category &&
         (product.category.isBlocked === true ||
@@ -1227,7 +1118,6 @@ const validateBeforeCheckout = async (req, res) => {
         });
       }
 
-      // STOCK CHECK
       const sizeIndex = product.sizes.indexOf(item.selectedSize);
       const availableQty = product.quantities[sizeIndex];
 

@@ -551,19 +551,16 @@ const getCheckoutPage = async (req, res) => {
 
     let cartUpdated = false;
 
-    // 🧹 CLEAN CART HERE
     for (let i = cart.products.length - 1; i >= 0; i--) {
       const item = cart.products[i];
       const product = item.productId;
 
-      // product missing / blocked / deleted
       if (!product || product.isBlocked || product.isDeleted) {
         cart.products.splice(i, 1);
         cartUpdated = true;
         continue;
       }
 
-      // category blocked / deleted
       if (
         product.category &&
         (product.category.isBlocked || product.category.isDeleted)
@@ -573,7 +570,6 @@ const getCheckoutPage = async (req, res) => {
         continue;
       }
 
-      // size invalid
       const sizeIndex = product.sizes.indexOf(item.selectedSize);
       if (sizeIndex === -1) {
         cart.products.splice(i, 1);
@@ -586,7 +582,6 @@ const getCheckoutPage = async (req, res) => {
       await cart.save();
     }
 
-    // reload cart after cleanup
     cart = await Cart.findOne({ userId: user.id }).populate({
       path: "products.productId",
       model: "Product",

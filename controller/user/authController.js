@@ -791,10 +791,8 @@ const googleCallBack = (req, res, next) => {
           user = await User.findOne({ email });
         }
 
-        // ✅ IMPORTANT FIX: user exists ah nu FIRST check
         if (user) {
 
-          // ✅ NOW SAFE TO CHECK isBlocked
           if (user.isBlocked) {
             return res.send(`
               <script>
@@ -804,7 +802,6 @@ const googleCallBack = (req, res, next) => {
             `);
           }
 
-          // ❌ Email user trying Google login
           if (user.loginType !== "google") {
             return res.send(`
               <script>
@@ -814,7 +811,6 @@ const googleCallBack = (req, res, next) => {
             `);
           }
 
-          // ✅ LOGIN SUCCESS
           req.session.user = {
             id: user._id.toString(),
             email: user.email,
@@ -826,7 +822,6 @@ const googleCallBack = (req, res, next) => {
           return res.send(`<script>window.location.replace('/');</script>`);
         }
 
-        // 🆕 USER NOT FOUND → CREATE NEW GOOGLE USER
         const referralCode = await generateUniqueReferralCode();
 
         const newUser = new User({
