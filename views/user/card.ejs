@@ -986,12 +986,19 @@ body {
 >+</button>
 
 
-
+<div 
+  class="w-1/5 text-right font-bold text-gray-800 product-total"
+  data-id="<%= item.id %>"
+  data-size="<%= item.size %>"
+  data-price="<%= item.originalPrice %>"
+>
+  ₹<%= item.total %>
+</div>
 
   <!-- Total Price -->
-  <div class="w-1/5 text-right font-bold text-gray-800">
+  <!-- <div class="w-1/5 text-right font-bold text-gray-800">
     ₹<%= item.total %>
-  </div>
+  </div> -->
 
 </div>
 
@@ -1842,7 +1849,6 @@ searchInput.addEventListener("input", () => {
   }, 300);
 });
 
-// 🖱️ Hide when clicked outside
 document.addEventListener('click', e => {
   if (!resultsList.contains(e.target) && e.target !== searchInput) {
     resultsList.classList.add('hidden');
@@ -1860,11 +1866,12 @@ document.addEventListener('click', e => {
 
 
 
-document.addEventListener("DOMContentLoaded", () => {
 
+
+document.addEventListener("DOMContentLoaded", () => {
   const updateQuantity = async (productId, selectedSize, action) => {
     try {
-      const res = await fetch('/cart/update-quantity', {   // FIXED URL
+      const res = await fetch('/cart/update-quantity', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId, selectedSize, action })
@@ -1872,17 +1879,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await res.json();
 
-      // ADMIN REDUCED STOCK – AUTO RELOAD
       if (data.forceUpdate) {
         Swal.fire({
           icon: "warning",
           title: "Stock Updated",
           text: data.message
-        }).then(() => location.reload());   // AUTO REFRESH
+        }).then(() => location.reload());
         return;
       }
 
-      // ERROR
       if (!data.success) {
         Swal.fire({
           icon: "warning",
@@ -1892,9 +1897,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // SUCCESS → AUTO RELOAD
-      location.reload();
-
+      updateCartUI(data);
+      
     } catch (err) {
       Swal.fire({
         icon: "error",
@@ -1902,23 +1906,40 @@ document.addEventListener("DOMContentLoaded", () => {
         text: "Try again later"
       });
     }
-  };
+  }
+  const updateCartUI = (data) => {
+  console.log(" UPDATE DATA:", data)
 
+  const qtyInput = document.querySelector(`input[data-id="${data.productId}"][data-size="${data.selectedSize}"]`);
+  if (qtyInput) {
+    qtyInput.value = data.updatedQty;
+  }
+  const buttons = document.querySelectorAll(`[data-id="${data.productId}"][data-size="${data.selectedSize}"]`);
+  buttons.forEach(btn => {
+    const row = btn.closest('tr, .flex, .cart-row, .cart-item');
+    if (row) {
+      const priceEls = row.querySelectorAll('₹, .font-bold, .text-right, [class*="price"]');
+      if (priceEls.length > 0) {
+        priceEls[priceEls.length - 1].textContent = `₹${data.rowTotal.toFixed(0)}`;
+        console.log("ROW PRICE:", data.rowTotal);
+      }
+    }
+  })
+  document.getElementById('subtotalValue').textContent = `₹${data.subtotal.toFixed(0)}`;
+  document.getElementById('serviceFeeValue').textContent = `₹${data.shippingCost.toFixed(0)}`;
+  document.getElementById('couponDiscountValue').textContent = `-₹${data.couponDiscount.toFixed(0)}`;
+  document.getElementById('grandTotalValue').textContent = `₹${data.grandTotal.toFixed(0)}`;
+  document.getElementById('grandTotalButton').textContent = `₹${data.grandTotal.toFixed(0)}`;
+}
   document.querySelectorAll(".button-minus, .button-plus").forEach(btn => {
     btn.addEventListener("click", (e) => {
       const productId = e.target.dataset.id;
       const size = e.target.dataset.size;
       const action = e.target.dataset.action;
-
       updateQuantity(productId, size, action);
     });
   });
-
 });
-
-
-
-
 
 
 

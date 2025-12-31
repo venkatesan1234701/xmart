@@ -28,7 +28,9 @@ router.get("/products/add", productcontroller.getAddProductPage)
 router.post("/products/add", upload.fields(imageFields), productcontroller.addProduct)
 router.get("/products/:id", productcontroller.getProductById)
 router.post("/products/edit/:id", upload.fields(imageFields), productcontroller.updateProduct)
-router.get("/products/delete/:id", productcontroller.deleteProduct);
+// router.get("/products/delete/:id", productcontroller.deleteProduct);
+router.get("/products/toggle/:id",productcontroller.toggleProductStatus);
+
 
 
 router.get('/sales-report',adminAuth,authController.getSalesReport)

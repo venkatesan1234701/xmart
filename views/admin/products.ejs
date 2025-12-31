@@ -33,6 +33,7 @@
 
 
 <style>
+  
   /* ==========================================================
    GLOBAL PAGE STYLING
 ========================================================== */
@@ -870,7 +871,22 @@ table td {
               </td>
               <td class="py-2 px-4 flex gap-2 justify-center align-middle">
                 <a href="javascript:void(0)" class="editBtn px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700" data-id="<%= prod._id %>">Edit</a>
-                <button onclick="confirmDelete('<%= prod._id %>')" class="px-3 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700">Delete</button>
+               <% if (!prod.isDeleted) { %>
+  <button 
+    onclick="confirmToggle('<%= prod._id %>', 'unlist')" 
+    class="px-3 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700">
+    Unlist
+  </button>
+<% } else { %>
+  <button 
+    onclick="confirmToggle('<%= prod._id %>', 'list')" 
+    class="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700">
+    List
+  </button>
+<% } %>
+
+               
+                <!-- <button onclick="confirmDelete('<%= prod._id %>')" class="px-3 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700">Delete</button> -->
                 <button 
                   class="px-3 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-700" 
                   data-prod='<%= JSON.stringify(prod) %>' 
@@ -1719,46 +1735,102 @@ if (!nameValue) {
   });
 
   // ================= PREFILL SIZES FUNCTION =================
-  function prefillSizes(product){
-    const sizeCheckboxes = document.querySelectorAll('.size-checkbox');
-    sizeCheckboxes.forEach(cb => {
-      const size = cb.value;
-      const idx = product.sizes?.indexOf(size) ?? -1;
-      const priceInput = cb.nextElementSibling.nextElementSibling;
-      const qtyInput = priceInput.nextElementSibling;
+  // function prefillSizes(product){
+  //   const sizeCheckboxes = document.querySelectorAll('.size-checkbox');
+  //   sizeCheckboxes.forEach(cb => {
+  //     const size = cb.value;
+  //     const idx = product.sizes?.indexOf(size) ?? -1;
+  //     const priceInput = cb.nextElementSibling.nextElementSibling;
+  //     const qtyInput = priceInput.nextElementSibling;
 
-      if(idx > -1){
-        cb.checked = true;
-        priceInput.value = product.prices[idx];
-        qtyInput.value = product.quantities[idx];
-        priceInput.classList.remove('hidden');
-        qtyInput.classList.remove('hidden');
-      } else {
-        cb.checked = false;
-        priceInput.value = '';
-        qtyInput.value = '';
-        priceInput.classList.add('hidden');
-        qtyInput.classList.add('hidden');
-      }
-    });
-  }
+  //     if(idx > -1){
+  //       cb.checked = true;
+  //       priceInput.value = product.prices[idx];
+  //       qtyInput.value = product.quantities[idx];
+  //       priceInput.classList.remove('hidden');
+  //       qtyInput.classList.remove('hidden');
+  //     } else {
+  //       cb.checked = false;
+  //       priceInput.value = '';
+  //       qtyInput.value = '';
+  //       priceInput.classList.add('hidden');
+  //       qtyInput.classList.add('hidden');
+  //     }
+  //   });
+  // }
+
+
+  function prefillSizes(product) {
+  const sizeCheckboxes = document.querySelectorAll('.size-checkbox');
+
+  sizeCheckboxes.forEach(cb => {
+    const size = cb.value;
+    const idx = product.sizes?.indexOf(size);
+
+    const priceInput = cb.nextElementSibling.nextElementSibling;
+    const qtyInput = priceInput.nextElementSibling;
+
+    const price = idx > -1 ? Number(product.prices[idx]) : 0;
+    const qty = idx > -1 ? Number(product.quantities[idx]) : 0;
+
+    if (price > 0 && qty > 0) {
+      cb.checked = true;
+      priceInput.value = price;
+      qtyInput.value = qty;
+      priceInput.classList.remove('hidden');
+      qtyInput.classList.remove('hidden');
+    } else {
+      cb.checked = false;
+      priceInput.value = '';
+      qtyInput.value = '';
+      priceInput.classList.add('hidden');
+      qtyInput.classList.add('hidden');
+    }
+  });
+}
 
   // ================= DELETE PRODUCT =================
-  window.confirmDelete = function(id){
-    Swal.fire({
-      title:'Are you sure?',
-      text:"You won't be able to revert this!",
-      icon:'warning',
-      showCancelButton:true,
-      confirmButtonColor:'#d33',
-      cancelButtonColor:'#3085d6',
-      confirmButtonText:'Yes, delete it!'
-    }).then(result=>{
-      if(result.isConfirmed){
-        window.location.href=`/admin/products/delete/${id}`;
-      }
-    });
-  }
+  // window.confirmDelete = function(id){
+  //   Swal.fire({
+  //     title:'Are you sure?',
+  //     text:"You won't be able to revert this!",
+  //     icon:'warning',
+  //     showCancelButton:true,
+  //     confirmButtonColor:'#d33',
+  //     cancelButtonColor:'#3085d6',
+  //     confirmButtonText:'Yes, delete it!'
+  //   }).then(result=>{
+  //     if(result.isConfirmed){
+  //       window.location.href=`/admin/products/delete/${id}`;
+  //     }
+  //   });
+  // }
+
+
+window.confirmToggle = function (id, action) {
+  const isUnlist = action === "unlist";
+
+  Swal.fire({
+    title: isUnlist ? "Unlist this product?" : "List this product?",
+    text: isUnlist
+      ? "Product will be hidden from users."
+      : "Product will be visible to users.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: isUnlist ? "#d33" : "#16a34a",
+    cancelButtonColor: "#6b7280",
+    confirmButtonText: isUnlist ? "Yes, Unlist" : "Yes, List",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = `/admin/products/toggle/${id}`;
+    }
+  });
+};
+
+
+
+
+
 
 });
 

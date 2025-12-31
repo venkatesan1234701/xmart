@@ -68,12 +68,10 @@ const getEditAddress = async (req, res) => {
     let address = addressCache.get(cacheKey);
 
     if (!address) {
-      // console.time("DB Query");
       address = await Address.findOne(
         { _id: addressId, userId: sessionUser.id, isActive: true },
         { firstName: 1, secondName: 1, addressLine1: 1, addressLine2: 1, city: 1, state: 1, country: 1, zipCode: 1, phone: 1, addressType: 1 } // only needed fields
-      ).lean();
-      // console.timeEnd("DB Query");
+      ).lean()
 
       if (!address) return res.redirect("/user/profile");
 

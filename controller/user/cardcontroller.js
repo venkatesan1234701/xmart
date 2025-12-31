@@ -189,7 +189,6 @@ const applyCoupon = async (req, res) => {
       });
     }
 
-    /* 🔹 ORIGINAL SUBTOTAL */
     let originalSubtotal = 0;
     cart.products.forEach(item => {
       originalSubtotal += item.originalPrice * item.quantity;
@@ -202,7 +201,6 @@ const applyCoupon = async (req, res) => {
       });
     }
 
-    /* 🔹 DISCOUNT */
     let discount = Math.round(
       (originalSubtotal * coupon.discountPercentage) / 100
     );
@@ -213,7 +211,6 @@ const applyCoupon = async (req, res) => {
       isMax = true;
     }
 
-    /* 🔹 PRODUCT LEVEL DISTRIBUTION (OLD LOGIC SAME) */
     let distributed = 0;
 
     cart.products.forEach(item => {
@@ -415,7 +412,6 @@ const getCartPage = async (req, res) => {
       });
     }
 
-    // 🔹 RESET COUPON
     if (cart.coupon?.name) {
       cart.products.forEach(item => {
         item.pricePerUnit = item.originalPrice;
@@ -439,31 +435,27 @@ const getCartPage = async (req, res) => {
       await cart.save();
     }
 
-    // 🔴 REMOVE ONLY INVALID ITEMS
     let messageText = "";
 
     cart.products = cart.products.filter(item => {
       const product = item.productId;
 
-      // PRODUCT ISSUE
       if (!product || product.isBlocked || product.isDeleted) {
         messageText = "This product is not available";
-        return false; // ❌ remove this item
+        return false;
       }
 
-      // CATEGORY ISSUE
       if (
         product.category &&
         (product.category.isBlocked || product.category.isDeleted)
       ) {
         messageText = "This category is not available";
-        return false; // ❌ remove this item
+        return false; 
       }
 
-      return true; // ✅ keep this item
+      return true; 
     });
 
-    // 🔹 RECALCULATE TOTALS AFTER REMOVE
     cart.subtotal = cart.products.reduce(
       (sum, item) => sum + item.pricePerUnit * item.quantity,
       0
@@ -472,12 +464,10 @@ const getCartPage = async (req, res) => {
     cart.grandTotal = cart.subtotal + (cart.shippingCost || 40);
     await cart.save();
 
-    // 🔹 USED COUPONS
     const usedCoupons = await Order.find({ userId: user.id })
                                    .distinct("coupon.name");
     const filteredUsedCoupons = usedCoupons.filter(c => c !== null);
 
-    // 🔹 CART ITEMS
     const cartItems = cart.products.map(item => ({
       name: item.productId?.name || "Unknown Product",
       image: item.productId?.productPic?.[0] || "/assets/images/default.jpg",
@@ -497,7 +487,6 @@ const getCartPage = async (req, res) => {
       couponExpiryDate: { $gte: now },
     });
 
-    // 🔹 FINAL RENDER
     res.render("user/card", {
       user,
       cart,
@@ -875,18 +864,25 @@ const updateCartQuantity = async (req, res) => {
     cart.subtotal = cart.products.reduce(
       (sum, p) => sum + p.originalPrice * p.quantity,
       0
-    );
+    )
+    const rowTotal = cartItem.originalPrice * cartItem.quantity
+    cart.grandTotal = cart.subtotal + (cart.shippingCost || 40)
 
-    cart.grandTotal = cart.subtotal + (cart.shippingCost || 40);
-
-    await cart.save();
+    await cart.save()
 
     return res.json({
-      success: true,
-      updatedQty: cartItem.quantity,
-      availableQty,
-      couponRemoved: true
-    });
+  success: true,
+  productId: productId,
+  selectedSize: selectedSize,
+  updatedQty: cartItem.quantity,
+  rowTotal: rowTotal,  
+  availableQty,
+  couponRemoved: true,
+  subtotal: cart.subtotal,
+  shippingCost: cart.shippingCost || 0,
+  couponDiscount: cart.coupon?.discount || 0,
+  grandTotal: cart.grandTotal
+});
 
   } catch (err) {
     console.error("Quantity update error:", err);

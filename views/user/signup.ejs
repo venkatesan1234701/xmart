@@ -228,8 +228,8 @@ button.btn-outline-danger:hover {
   <p>Welcome to Xmart! Enter your email to get started.</p>
 
   <!-- Single form -->
-  <form id="sign-up-form" method="POST" action="/signup">
-    <!-- First Name and Last Name -->
+  <!-- <form id="sign-up-form" method="POST" action="/signup">
+  
     <div class="row mb-3">
       <div class="col-md-6">
         <label for="firstName" class="form-label">First Name</label>
@@ -243,21 +243,18 @@ button.btn-outline-danger:hover {
       </div>
     </div>
 
-    <!-- Email -->
     <div class="mb-3">
       <label for="email" class="form-label">Email Address</label>
       <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" autocomplete="off">
       <span class="error-style text-danger" id="emailError"></span>
     </div>
 
-    <!-- Phone -->
     <div class="mb-3">
       <label for="phone" class="form-label">Phone Number</label>
       <input type="tel" class="form-control" id="phone" name="phoneNumber" maxlength="10" placeholder="Enter your phone number" autocomplete="off">
       <span class="error-style text-danger" id="phoneError"></span>
     </div>
 
-    <!-- Password -->
     <div class="mb-3">
       <label for="password" class="form-label">Password</label>
       <div style="position: relative;">
@@ -267,21 +264,90 @@ button.btn-outline-danger:hover {
       <span class="error-style text-danger" id="passwordError"></span>
     </div>
 
-    <!-- Referral -->
     <div class="mb-3">
       <label for="referralCode" class="form-label">Referral Code (Optional)</label>
       <input type="text" class="form-control" id="referralCode" name="referralCode" maxlength="6" placeholder="Enter referral code" autocomplete="off">
       <span class="error-style text-danger" id="referralCodeError"></span>
     </div>
 
-    <!-- Submit -->
     <button type="submit" class="btn btn-success w-100">Sign Up</button>
     <p class="error-style text-center" id="userExistError"></p>
-  </form>
+  </form> -->
 
+<form id="sign-up-form" method="POST" action="/signup">
 
+  <!-- First Name and Last Name -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="firstName" class="form-label">First Name</label>
+      <input type="text" class="form-control" id="firstName" name="firstName"
+             placeholder="Enter your first name" autocomplete="off">
+      <span class="error-style text-danger" id="firstNameError"></span>
+    </div>
+    <div class="col-md-6">
+      <label for="lastName" class="form-label">Last Name</label>
+      <input type="text" class="form-control" id="lastName" name="secondName"
+             placeholder="Enter your last name" autocomplete="off">
+      <span class="error-style text-danger" id="lastNameError"></span>
+    </div>
+  </div>
 
+  <!-- Email -->
+  <div class="mb-3">
+    <label for="email" class="form-label">Email Address</label>
+    <input type="email" class="form-control" id="email" name="email"
+           placeholder="Enter your email" autocomplete="off">
+    <span class="error-style text-danger" id="emailError"></span>
+  </div>
 
+  <!-- Phone -->
+  <div class="mb-3">
+    <label for="phone" class="form-label">Phone Number</label>
+    <input type="tel" class="form-control" id="phone" name="phoneNumber"
+           maxlength="10" placeholder="Enter your phone number" autocomplete="off">
+    <span class="error-style text-danger" id="phoneError"></span>
+  </div>
+
+  <!-- Password -->
+  <div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <div style="position: relative;">
+      <input type="password" class="form-control" id="password" name="password"
+             placeholder="Create a password" autocomplete="off">
+      <span id="togglePassword"
+            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+        👁
+      </span>
+    </div>
+    <span class="error-style text-danger" id="passwordError"></span>
+  </div>
+
+  <!-- Confirm Password -->
+  <div class="mb-3">
+    <label for="confirmPassword" class="form-label">Confirm Password</label>
+    <div style="position: relative;">
+      <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+             placeholder="Confirm your password" autocomplete="off">
+      <span id="toggleConfirmPassword"
+            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+        👁
+      </span>
+    </div>
+    <span class="error-style text-danger" id="confirmPasswordError"></span>
+  </div>
+
+  <!-- Referral -->
+  <div class="mb-3">
+    <label for="referralCode" class="form-label">Referral Code (Optional)</label>
+    <input type="text" class="form-control" id="referralCode" name="referralCode"
+           maxlength="6" placeholder="Enter referral code" autocomplete="off">
+    <span class="error-style text-danger" id="referralCodeError"></span>
+  </div>
+
+  <!-- Submit -->
+  <button type="submit" class="btn btn-success w-100">Sign Up</button>
+  <p class="error-style text-center" id="userExistError"></p>
+</form>
 
 <% if (typeof sweetError !== 'undefined') { %>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -294,6 +360,20 @@ button.btn-outline-danger:hover {
     });
   </script>
 <% } %>
+
+
+
+<!-- <% if (typeof sweetError !== 'undefined') { %>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: '<%= sweetError %>',
+      confirmButtonText: 'OK'
+    });
+  </script>
+<% } %> -->
 
 
 
@@ -340,68 +420,8 @@ button.btn-outline-danger:hover {
 <script src="/js/sign-up.js"></script>
 
 
-<!-- 
-<script>
-  
-  const signupForm = document.getElementById("sign-up-form");
-const signUpBtn = signupForm.querySelector("button[type='submit']");
 
-// Clear error when user types in the input
-signupForm.querySelectorAll("input").forEach(input => {
-  input.addEventListener("input", () => {
-    const errorEl = document.getElementById(input.id + "Error");
-    if (errorEl) errorEl.textContent = ""; // clear error on input
-  });
-});
-
-// Form submit & validation
-signupForm.addEventListener("submit", function (e) {
-  e.preventDefault(); // prevent default submit
-
-  let isValid = true;
-
-  // Reset error messages
-  document.querySelectorAll(".error-style").forEach(el => el.textContent = "");
-
-  // Get values
-  const firstName = document.getElementById("firstName").value.trim();
-  const lastName = document.getElementById("lastName").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const password = document.getElementById("password").value.trim();
-  const referral = document.getElementById("referralCode").value.trim();
-
-  const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-  const phoneRegex = /^[0-9]{10}$/;
-
-  if (!firstName) { document.getElementById("firstNameError").textContent = "First name is required"; isValid = false; }
-  if (!lastName) { document.getElementById("lastNameError").textContent = "Last name is required"; isValid = false; }
-  if (!email) { document.getElementById("emailError").textContent = "Email is required"; isValid = false; }
-  else if (!emailRegex.test(email)) { document.getElementById("emailError").textContent = "Enter a valid email"; isValid = false; }
-  if (!phone) { document.getElementById("phoneError").textContent = "Phone number is required"; isValid = false; }
-  else if (!phoneRegex.test(phone)) { document.getElementById("phoneError").textContent = "Enter a valid 10-digit phone number"; isValid = false; }
-  if (!password) { document.getElementById("passwordError").textContent = "Password is required"; isValid = false; }
-  else if (password.length < 6) { document.getElementById("passwordError").textContent = "Password must be at least 6 characters"; isValid = false; }
-  if (referral && referral.length !== 6) { document.getElementById("referralCodeError").textContent = "Referral code must be 6 characters"; isValid = false; }
-
-  if (!isValid) return; // stop submit if invalid
-
-  // Disable button after valid submission to prevent multiple clicks
-  signUpBtn.disabled = true;
-  signUpBtn.innerText = "Signing Up...";
-
-  signupForm.submit();
-});
-
-// Toggle password visibility
-document.getElementById("togglePassword").addEventListener("click", function () {
-  const pwd = document.getElementById("password");
-  pwd.type = pwd.type === "password" ? "text" : "password";
-});
-
-</script> -->
-
-<script>
+<!-- <script>
 
 const signupForm = document.getElementById("sign-up-form");
 const signUpBtn = signupForm.querySelector("button[type='submit']");
@@ -506,6 +526,146 @@ document.getElementById("togglePassword").addEventListener("click", function () 
 });
 
 </script>
+ -->
+
+
+
+
+
+<script>
+const signupForm = document.getElementById("sign-up-form");
+const signUpBtn = signupForm.querySelector("button[type='submit']");
+
+// Clear error when user types
+signupForm.querySelectorAll("input").forEach(input => {
+  input.addEventListener("input", () => {
+    const errorEl = document.getElementById(input.id + "Error");
+    if (errorEl) errorEl.textContent = "";
+  });
+});
+
+signupForm.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  let isValid = true;
+  document.querySelectorAll(".error-style").forEach(el => el.textContent = "");
+
+  const firstName = document.getElementById("firstName").value.trim();
+  const lastName = document.getElementById("lastName").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const confirmPassword = document.getElementById("confirmPassword").value.trim();
+  const referral = document.getElementById("referralCode").value.trim();
+
+  // Regex
+  const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  const phoneRegex = /^[0-9]{10}$/;
+
+  // Validation
+  if (!firstName) {
+    document.getElementById("firstNameError").textContent = "First name is required";
+    isValid = false;
+  }
+  if (!lastName) {
+    document.getElementById("lastNameError").textContent = "Last name is required";
+    isValid = false;
+  }
+
+  if (!email) {
+    document.getElementById("emailError").textContent = "Email is required";
+    isValid = false;
+  } else if (!emailRegex.test(email)) {
+    document.getElementById("emailError").textContent = "Enter a valid email";
+    isValid = false;
+  }
+
+  if (!phone) {
+    document.getElementById("phoneError").textContent = "Phone number is required";
+    isValid = false;
+  } else if (!phoneRegex.test(phone)) {
+    document.getElementById("phoneError").textContent = "Enter a valid 10-digit phone number";
+    isValid = false;
+  }
+
+  // if (!password) {
+  //   document.getElementById("passwordError").textContent = "Password is required";
+  //   isValid = false;
+  // } else if (password.length < 6) {
+  //   document.getElementById("passwordError").textContent = "Password must be at least 6 characters";
+  //   isValid = false;
+  // }
+
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+if (!password) {
+  document.getElementById("passwordError").textContent = "Password is required";
+  isValid = false;
+} else if (password.length < 8) {
+  document.getElementById("passwordError").textContent = "Password must be at least 8 characters";
+  isValid = false;
+} else if (!passwordRegex.test(password)) {
+  document.getElementById("passwordError").textContent = 
+    "Password must contain: 1 uppercase, 1 lowercase, 1 number, 1 special char (@$!%*?&)";
+  isValid = false;
+}
+
+  if (!confirmPassword) {
+    document.getElementById("confirmPasswordError").textContent = "Confirm password is required";
+    isValid = false;
+  } else if (password !== confirmPassword) {
+    document.getElementById("confirmPasswordError").textContent = "Passwords do not match";
+    isValid = false;
+  }
+
+  if (referral && referral.length !== 6) {
+    document.getElementById("referralCodeError").textContent = "Referral code must be 6 characters";
+    isValid = false;
+  }
+
+  if (!isValid) return; 
+
+  if (referral) {
+    try {
+      const response = await fetch("/check-referral", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: referral })
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        document.getElementById("referralCodeError").textContent = data.message;
+        return; 
+      }
+
+    } catch (err) {
+      document.getElementById("referralCodeError").textContent = "Server error. Try again later.";
+      return;
+    }
+  }
+
+  // Submit Form
+  signUpBtn.disabled = true;
+  signUpBtn.innerText = "Signing Up...";
+
+  signupForm.submit();
+});
+
+document.getElementById("togglePassword").addEventListener("click", function () {
+  const pwd = document.getElementById("password");
+  pwd.type = pwd.type === "password" ? "text" : "password";
+});
+
+document.getElementById("toggleConfirmPassword").addEventListener("click", function () {
+  const cpwd = document.getElementById("confirmPassword");
+  cpwd.type = cpwd.type === "password" ? "text" : "password";
+});
+</script>
+
+
+
 
 
 <!-- 

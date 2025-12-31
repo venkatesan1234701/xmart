@@ -19,6 +19,14 @@
       transition: all 0.3s ease;
     }
 
+    :root {
+  --primary: #16a34a;
+  --primary-dark: #059669;
+  --bg-main: #f5f7fa;
+  --sidebar-bg: #ffffff;
+  --danger: #dc2626;
+}
+
 
 
     @media (max-width: 640px) {
@@ -428,9 +436,9 @@
           <td><%= order.productName %></td>
           <td><%= order.quantity %></td>
 
-          <td>₹<%= order.grandTotal %></td>
+          <td><%= order.grandTotal %></td>
 
-          <td>₹<%= order.discount %></td>  
+          <td><%= order.discount %></td>  
 
           <td><%= order.paymentMethod %></td>
         </tr>
@@ -777,9 +785,9 @@ document.getElementById("download-pdf").addEventListener("click", function () {
 
   const summaryData = [
     ["Total Orders", totalOrders],
-    ["Total Revenue", "₹" + totalRevenue.toFixed(2)],
-    ["Total Discount", "₹" + totalDiscount.toFixed(2)],
-    ["Avg. Order Value", "₹" + avgOrderValue.toFixed(2)],
+    ["Total Revenue",   totalRevenue.toFixed(2)],
+    ["Total Discount",  totalDiscount.toFixed(2)],
+    ["Avg. Order Value",  avgOrderValue.toFixed(2)],
   ];
 
   doc.autoTable({

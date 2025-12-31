@@ -96,7 +96,7 @@ const { models } = require("mongoose")
 const getShopPage = async (req, res) => {
   try {
     const user = req.session.user || null;
-    const perPage = 8;
+    const perPage = 12;
     const page = parseInt(req.query.page) || 1;
     const sort = req.query.sort || 'newest';
     const query = req.query.query || ''; 

@@ -316,7 +316,7 @@ body {
 									</div>
 									<div class="w-full">
 									
-										<div class="password-field relative">
+										<!-- <div class="password-field relative">
 											<label for="formSigninPassword" class="invisible hidden">Password</label>
 											<div class="password-field relative">
 												<input type="password" name="password"
@@ -327,8 +327,21 @@ body {
 												</span>
 												<div class="invalid-feedback">Please enter password.</div>
 											</div>
-										</div>
-									</div>
+										</div> -->
+									
+                  
+                  
+                      <div class="mb-3">
+      <!-- <label for="password" class="form-label">Password</label> -->
+      <div style="position: relative;">
+        <input type="password" class="form-control" id="password" name="password" placeholder="Enter a password" autocomplete="off">
+        <span id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">👁</span>
+      </div>
+      <span class="error-style text-danger" id="passwordError"></span>
+    </div>
+
+                  
+                  </div>
 								</div>
 								<div class="flex flex-col gap-4">
 									<div class="flex justify-between w-full">
@@ -369,7 +382,13 @@ Remove if you do not want.
 <script src="../assets/libs/simplebar/dist/simplebar.min.js"></script>
 
 <!-- Theme JS -->
+<script>
+  document.getElementById("togglePassword").addEventListener("click", function () {
+  const pwd = document.getElementById("password");
+  pwd.type = pwd.type === "password" ? "text" : "password";
+});
 
+</script>
 <script src="../assets/js/theme.min.js"></script>
 
 	<script src="../assets/js/vendors/validation.js"></script>

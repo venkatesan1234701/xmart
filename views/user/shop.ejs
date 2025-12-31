@@ -2364,91 +2364,196 @@ sortSelect.addEventListener('change', function() {
 // });
 
 
-const searchInput = document.getElementById("searchProducts");
-const searchBtn = document.getElementById("searchBtn");
-const resultsList = document.getElementById("searchResults");
+// const searchInput = document.getElementById("searchProducts");
+// const searchBtn = document.getElementById("searchBtn");
+// const resultsList = document.getElementById("searchResults");
 
-let timeout = null;
-let isSearching = false; 
+// let timeout = null;
+// let isSearching = false; 
 
-searchBtn.addEventListener("click", async (e) => {
-  e.preventDefault(); 
+// searchBtn.addEventListener("click", async (e) => {
+//   e.preventDefault(); 
   
-  const query = searchInput.value.trim();
-  if (!query) {
-    Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Please enter product name!' });
-    return;
+//   const query = searchInput.value.trim();
+//   if (!query) {
+//     Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Please enter product name!' });
+//     return;
+//   }
+
+//   resultsList.classList.add('hidden');
+//   isSearching = true;
+//   window.location.href = `/shop?query=${encodeURIComponent(query)}`;
+// });
+
+// searchInput.addEventListener("input", () => {
+
+//   if (isSearching) return;
+
+//   const query = searchInput.value.trim();
+  
+//   if (timeout) clearTimeout(timeout);
+
+//   timeout = setTimeout(async () => {
+//     if (query.length < 2) {
+//       resultsList.innerHTML = '';
+//       resultsList.classList.add('hidden');
+//       return;
+//     }
+
+//     try {
+//       const res = await fetch(`/search-products?query=${encodeURIComponent(query)}`);
+//       const data = await res.json();
+
+//       resultsList.innerHTML = '';
+
+//       if (data.length === 0) {
+//         resultsList.classList.add('hidden');
+//         return;
+//       }
+
+//       data.slice(0, 6).forEach(product => {
+//         const li = document.createElement('li');
+//         li.innerHTML = `
+//           <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer group">
+//             <div class="font-medium text-gray-900 group-hover:text-green-600">${product.name}</div>
+          
+//           </div>
+//         `;
+//         li.addEventListener('click', () => {
+//           window.location.href = `/product/${product._id}`;
+//         });
+//         resultsList.appendChild(li);
+//       });
+
+//       resultsList.classList.remove('hidden');
+//     } catch (err) {
+//       console.error(err);
+//       resultsList.classList.add('hidden');
+//     }
+//   }, 300);
+// });
+
+// document.addEventListener('click', (e) => {
+//   if (!resultsList.contains(e.target) && e.target !== searchInput) {
+//     resultsList.classList.add('hidden');
+//   }
+// });
+
+// searchInput.addEventListener('keypress', (e) => {
+//   if (e.key === 'Enter') {
+//     searchBtn.click(); 
+//   }
+// });
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  const searchInput = document.getElementById("searchProducts");
+  const searchBtn = document.getElementById("searchBtn");
+  const resultsList = document.getElementById("searchResults");
+
+  let timeout = null;
+  let isSearching = false;
+
+  const params = new URLSearchParams(window.location.search);
+  const existingQuery = params.get("query");
+  if (existingQuery) {
+    searchInput.value = existingQuery;
   }
 
-  resultsList.classList.add('hidden');
-  isSearching = true;
-  window.location.href = `/shop?query=${encodeURIComponent(query)}`;
-});
+  searchBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
 
-searchInput.addEventListener("input", () => {
-
-  if (isSearching) return;
-
-  const query = searchInput.value.trim();
-  
-  if (timeout) clearTimeout(timeout);
-
-  timeout = setTimeout(async () => {
-    if (query.length < 2) {
-      resultsList.innerHTML = '';
-      resultsList.classList.add('hidden');
+    const query = searchInput.value.trim();
+    if (!query) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Oops...',
+        text: 'Please enter product name!'
+      });
       return;
     }
 
-    try {
-      const res = await fetch(`/search-products?query=${encodeURIComponent(query)}`);
-      const data = await res.json();
+    resultsList.classList.add('hidden');
+    isSearching = true;
 
-      resultsList.innerHTML = '';
+    window.location.href = `/shop?query=${encodeURIComponent(query)}`;
+  })
 
-      if (data.length === 0) {
+  searchInput.addEventListener("input", () => {
+
+    if (isSearching) return;
+
+    const query = searchInput.value.trim();
+    if (timeout) clearTimeout(timeout);
+
+    timeout = setTimeout(async () => {
+
+      if (query.length < 2) {
+        resultsList.innerHTML = '';
         resultsList.classList.add('hidden');
         return;
       }
 
-      data.slice(0, 6).forEach(product => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer group">
-            <div class="font-medium text-gray-900 group-hover:text-green-600">${product.name}</div>
-          
-          </div>
-        `;
-        li.addEventListener('click', () => {
-          window.location.href = `/product/${product._id}`;
-        });
-        resultsList.appendChild(li);
-      });
+      try {
+        const res = await fetch(`/search-products?query=${encodeURIComponent(query)}`);
+        const data = await res.json();
 
-      resultsList.classList.remove('hidden');
-    } catch (err) {
-      console.error(err);
+        resultsList.innerHTML = '';
+
+        if (!data || data.length === 0) {
+          resultsList.classList.add('hidden');
+          return;
+        }
+
+        data.slice(0, 6).forEach(product => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer group">
+              <div class="font-medium text-gray-900 group-hover:text-green-600">
+                ${product.name}
+              </div>
+            </div>
+          `;
+          li.addEventListener('click', () => {
+            window.location.href = `/product/${product._id}`;
+          });
+          resultsList.appendChild(li);
+        });
+
+        resultsList.classList.remove('hidden');
+
+      } catch (err) {
+        console.error(err);
+        resultsList.classList.add('hidden');
+      }
+
+    }, 300);
+  });
+
+  // =========================================
+  // CLICK OUTSIDE → HIDE SUGGESTIONS
+  // =========================================
+  document.addEventListener('click', (e) => {
+    if (!resultsList.contains(e.target) && e.target !== searchInput) {
       resultsList.classList.add('hidden');
     }
-  }, 300);
+  });
+
+  // =========================================
+  // ENTER KEY SEARCH
+  // =========================================
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      searchBtn.click();
+    }
+  });
+
 });
-
-document.addEventListener('click', (e) => {
-  if (!resultsList.contains(e.target) && e.target !== searchInput) {
-    resultsList.classList.add('hidden');
-  }
-});
-
-searchInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') {
-    searchBtn.click(); 
-  }
-});
-
-
-
-
-
 
 
 
