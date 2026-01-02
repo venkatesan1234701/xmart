@@ -1168,14 +1168,14 @@ body {
         autocomplete="off"
       />
 
-      <!-- Dropdown List -->
+<!--   
       <ul 
         id="couponDropdown" 
         class="hidden absolute z-50 w-full bg-white border border-gray-200 rounded-lg mt-1 shadow-md max-h-40 overflow-y-auto"
       >
         <% coupons.forEach(c => { %>
 
-          <!-- ❌ Skip coupon if already used -->
+        
           <% if (usedCoupons.includes(c.couponCode)) { return; } %>
 
           <% const eligible = subtotal >= c.minimumPurchase; %>
@@ -1204,7 +1204,36 @@ body {
           </li>
 
         <% }) %>
-      </ul>
+      </ul> -->
+
+
+
+      <ul 
+  id="couponDropdown"
+  class="hidden absolute z-50 w-full bg-white border border-gray-200 rounded-lg mt-1 shadow-md max-h-40 overflow-y-auto"
+>
+  <% coupons.forEach(c => { %>
+
+    <% if (usedCoupons.includes(c.couponCode)) return; %>
+
+    <li 
+      class="coupon-item px-3 py-2 text-sm"
+      data-code="<%= c.couponCode %>"
+      data-min="<%= c.minimumPurchase %>"
+    >
+      <div class="flex justify-between">
+        <strong><%= c.couponCode %></strong>
+        <span><%= c.discountPercentage %>% OFF</span>
+      </div>
+
+      <p class="text-xs">Min Purchase: ₹<%= c.minimumPurchase %></p>
+      <p class="eligibility text-xs mt-1"></p>
+    </li>
+
+  <% }) %>
+</ul>
+
+
 
     </div>
 
@@ -1507,6 +1536,50 @@ Remove if you do not want.
 
 
 <script>
+
+
+
+// ⭐ GLOBAL FUNCTION (IMPORTANT)
+function refreshCouponEligibility() {
+  const subtotalEl = document.getElementById("subtotalValue");
+  if (!subtotalEl) return;
+
+  const subtotal = parseFloat(
+    subtotalEl.innerText.replace("₹", "").trim()
+  );
+
+  document.querySelectorAll(".coupon-item").forEach(item => {
+    const min = parseFloat(item.dataset.min);
+    const code = item.dataset.code;
+    const status = item.querySelector(".eligibility");
+
+    if (subtotal >= min) {
+      status.textContent = "Eligible";
+      status.className = "eligibility text-xs mt-1 text-green-600";
+
+      item.style.opacity = "1";
+      item.style.pointerEvents = "auto";
+
+      item.onclick = () => {
+        document.getElementById("couponInput").value = code;
+        document.getElementById("couponDropdown").classList.add("hidden");
+      };
+    } else {
+      status.textContent = "Not eligible";
+      status.className = "eligibility text-xs mt-1 text-red-500";
+
+      item.style.opacity = "0.5";
+      item.style.pointerEvents = "none";
+      item.onclick = null;
+    }
+  });
+}
+
+
+
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
 
   // Auto check every 4 seconds
@@ -1536,18 +1609,32 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+  // const dropdownBtn = document.getElementById("dropdownButton");
+  // const dropdown = document.getElementById("couponDropdown");
+
+  // dropdownBtn.addEventListener("click", (e) => {
+  //   e.stopPropagation();
+  //   dropdown.classList.toggle("hidden");
+  // });
+
+  // document.addEventListener("click", () => {
+  //   dropdown.classList.add("hidden");
+  // });
+
+
   const dropdownBtn = document.getElementById("dropdownButton");
-  const dropdown = document.getElementById("couponDropdown");
+const dropdown = document.getElementById("couponDropdown");
 
-  dropdownBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    dropdown.classList.toggle("hidden");
-  });
+dropdownBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  dropdown.classList.toggle("hidden");
 
-  document.addEventListener("click", () => {
-    dropdown.classList.add("hidden");
-  });
+  refreshCouponEligibility();
+});
 
+document.addEventListener("click", () => {
+  dropdown.classList.add("hidden");
+});
 
 
 
@@ -1594,54 +1681,91 @@ document.addEventListener("DOMContentLoaded", () => {
 document.getElementById("cancelCoupon").classList.remove("hidden");
 
 
-document.addEventListener('DOMContentLoaded', () => {
-  const couponForm = document.getElementById('couponForm');
-  const couponMessage = document.getElementById('couponMessage');
-  const couponDiscountValue = document.getElementById('couponDiscountValue');
-  const grandTotalValue = document.getElementById('grandTotalValue');
-  const grandTotalButton = document.getElementById('grandTotalButton');
+// document.addEventListener('DOMContentLoaded', () => {
+//   const couponForm = document.getElementById('couponForm');
+//   const couponMessage = document.getElementById('couponMessage');
+//   const couponDiscountValue = document.getElementById('couponDiscountValue');
+//   const grandTotalValue = document.getElementById('grandTotalValue');
+//   const grandTotalButton = document.getElementById('grandTotalButton');
 
-  couponForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(couponForm);
-    const couponCode = formData.get('couponCode');
+//   couponForm.addEventListener('submit', async (e) => {
+//     e.preventDefault();
+//     const formData = new FormData(couponForm);
+//     const couponCode = formData.get('couponCode');
 
-    try {
-      const response = await fetch('/apply-coupon', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ couponCode })
-      });
-      const data = await response.json();
+//     try {
+//       const response = await fetch('/apply-coupon', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({ couponCode })
+//       });
+//       const data = await response.json();
 
-      if (data.success) {
-        couponMessage.textContent = data.message;
-        couponMessage.className = 'text-green-600 mt-2 text-sm';
-        couponDiscountValue.textContent = `-₹${data.discount.toFixed(2)}`;
-        grandTotalValue.textContent = `₹${data.newGrandTotal.toFixed(2)}`;
-        grandTotalButton.textContent = `₹${data.newGrandTotal.toFixed(2)}`;
+//       if (data.success) {
+//         couponMessage.textContent = data.message;
+//         couponMessage.className = 'text-green-600 mt-2 text-sm';
+//         couponDiscountValue.textContent = `-₹${data.discount.toFixed(2)}`;
+//         grandTotalValue.textContent = `₹${data.newGrandTotal.toFixed(2)}`;
+//         grandTotalButton.textContent = `₹${data.newGrandTotal.toFixed(2)}`;
 
-        // ⭐ SHOW CANCEL BUTTON
-        document.getElementById("cancelCoupon").classList.remove("hidden");
+//         // ⭐ SHOW CANCEL BUTTON
+//         document.getElementById("cancelCoupon").classList.remove("hidden");
 
-      } else {
-        couponMessage.textContent = data.message;
-        couponMessage.className = 'text-red-600 mt-2 text-sm';
-        couponDiscountValue.textContent = '-₹0.00';
+//       } else {
+//         couponMessage.textContent = data.message;
+//         couponMessage.className = 'text-red-600 mt-2 text-sm';
+//         couponDiscountValue.textContent = '-₹0.00';
 
-        const subtotal = parseFloat(document.getElementById('subtotalValue').textContent.replace('₹',''));
-        const shipping = parseFloat(document.getElementById('serviceFeeValue').textContent.replace('₹',''));
-        const originalTotal = subtotal + shipping;
+//         const subtotal = parseFloat(document.getElementById('subtotalValue').textContent.replace('₹',''));
+//         const shipping = parseFloat(document.getElementById('serviceFeeValue').textContent.replace('₹',''));
+//         const originalTotal = subtotal + shipping;
 
-        grandTotalValue.textContent = `₹${originalTotal.toFixed(2)}`;
-        grandTotalButton.textContent = `₹${originalTotal.toFixed(2)}`;
-      }
-    } catch (err) {
-      console.error('Error applying coupon:', err);
-      couponMessage.textContent = 'Server error applying coupon';
+//         grandTotalValue.textContent = `₹${originalTotal.toFixed(2)}`;
+//         grandTotalButton.textContent = `₹${originalTotal.toFixed(2)}`;
+//       }
+//     } catch (err) {
+//       console.error('Error applying coupon:', err);
+//       couponMessage.textContent = 'Server error applying coupon';
+//       couponMessage.className = 'text-red-600 mt-2 text-sm';
+//     }
+//   });
+// });
+
+
+couponForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const couponCode = document.getElementById('couponInput').value.trim();
+  if (!couponCode) return;
+
+  try {
+    const response = await fetch('/apply-coupon', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ couponCode })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      couponMessage.textContent = data.message;
+      couponMessage.className = 'text-green-600 mt-2 text-sm';
+
+      couponDiscountValue.textContent = `-₹${data.discount}`;
+      grandTotalValue.textContent = `₹${data.newGrandTotal}`;
+      grandTotalButton.textContent = `₹${data.newGrandTotal}`;
+    } else {
+      couponMessage.textContent = data.message;
       couponMessage.className = 'text-red-600 mt-2 text-sm';
     }
-  });
+
+    // ⭐ ADD THIS LINE
+    refreshCouponEligibility();
+
+  } catch (err) {
+    couponMessage.textContent = 'Server error applying coupon';
+    couponMessage.className = 'text-red-600 mt-2 text-sm';
+  }
 });
 
 
@@ -1930,6 +2054,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('couponDiscountValue').textContent = `-₹${data.couponDiscount.toFixed(0)}`;
   document.getElementById('grandTotalValue').textContent = `₹${data.grandTotal.toFixed(0)}`;
   document.getElementById('grandTotalButton').textContent = `₹${data.grandTotal.toFixed(0)}`;
+    refreshCouponEligibility()
 }
   document.querySelectorAll(".button-minus, .button-plus").forEach(btn => {
     btn.addEventListener("click", (e) => {

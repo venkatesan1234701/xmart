@@ -1293,39 +1293,6 @@ td.fw-semibold {
 <script>
 
 
-
-  // async function moveToCart(productId, size, qty) {
-  //   console.log("🧾 MoveToCart Clicked:", { productId, size, qty });
-
-  //   if (!productId || productId === "undefined" || productId.trim() === "") {
-  //     alert("Product ID missing or invalid!");
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch("/user/move-to-cart", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ productId, size, qty }),
-  //     });
-
-  //     const data = await response.json();
-  //     console.log("🛒 MoveToCart Response:", data);
-
-  //     if (data.success) {
-  //       // Redirect to cart page
-  //       window.location.href = data.redirectUrl;
-  //     } else {
-  //       alert(data.message || "Failed to move to cart");
-  //     }
-  //   } catch (err) {
-  //     console.error("MoveToCart Error:", err);
-  //     alert("Something went wrong while moving to cart!");
-  //   }
-  // }
-
-
-
  async function moveToCart(productId, size, qty) {
     try {
       const response = await fetch("/move-to-cart", {
@@ -1337,7 +1304,6 @@ td.fw-semibold {
       const data = await response.json();
 
       if (data.success) {
-        // ✅ Show SweetAlert success popup
         Swal.fire({
           icon: "success",
           title: "Moved to Cart!",
@@ -1346,13 +1312,12 @@ td.fw-semibold {
           timer: 1800
         });
 
-        // ✅ Redirect to /user/card after small delay
         setTimeout(() => {
           window.location.href = data.redirectUrl || "/card";
         }, 1800);
 
       } else {
-        // ❌ Show SweetAlert error popup
+
         Swal.fire({
           icon: "error",
           title: "Oops!",
@@ -1536,7 +1501,6 @@ document.addEventListener("DOMContentLoaded", () => {
           timer: 1500,
         });
 
-        // 🧠 Smooth fade-out instead of page reload
         const row = document.querySelector(`[data-product-id="${productId}"][data-size="${size}"]`);
         if (row) {
           row.style.transition = "opacity 0.5s";
@@ -1544,7 +1508,6 @@ document.addEventListener("DOMContentLoaded", () => {
           setTimeout(() => row.remove(), 600);
         }
 
-        // Optional reload after short delay (if needed)
         setTimeout(() => location.reload(), 1600);
       } else {
         Swal.fire({
@@ -1571,7 +1534,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = `?search=${encodeURIComponent(query)}&page=1`;
   }
 
-  // Optional: Trigger search on Enter key
   document
     .getElementById("searchProducts")
     .addEventListener("keypress", function (e) {

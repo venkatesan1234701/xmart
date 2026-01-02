@@ -28,15 +28,13 @@ router.get("/products/add", productcontroller.getAddProductPage)
 router.post("/products/add", upload.fields(imageFields), productcontroller.addProduct)
 router.get("/products/:id", productcontroller.getProductById)
 router.post("/products/edit/:id", upload.fields(imageFields), productcontroller.updateProduct)
-// router.get("/products/delete/:id", productcontroller.deleteProduct);
+
 router.get("/products/toggle/:id",productcontroller.toggleProductStatus);
-
-
 
 router.get('/sales-report',adminAuth,authController.getSalesReport)
 
 router.get('/customers',adminAuth,authController.renderCustomers)
-// router.get('/customers/search', authController.searchCustomers);
+
 router.get('/customers/search', authController.earchCustomers)
 
 
@@ -77,7 +75,7 @@ router.delete('/category-offer/delete/:id', adminAuth, categoryOfferController.d
 
 
 router.post("/updateOrderStatus/:orderId", adminOrder.updateOrderStatus)
-// router.put("/admin/orders/:orderId/approve-returns", adminOrder.approveAllReturns);
++
 
 router.put("/orders/:orderId/approve-returns", adminOrder.approveAllReturns);
 

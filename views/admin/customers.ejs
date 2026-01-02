@@ -612,12 +612,12 @@ async function toggleBlock(userId, btn) {
 
   try {
     const res = await fetch(`/admin/users/block/${userId}`, {
-      method: "PUT", // 🔴 must match backend
+      method: "PUT", 
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        action: isBlocking ? "block" : "unblock", // ⭐ IMPORTANT
+        action: isBlocking ? "block" : "unblock", 
       }),
     });
 

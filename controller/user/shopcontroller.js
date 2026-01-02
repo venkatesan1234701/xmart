@@ -12,87 +12,6 @@ const { models } = require("mongoose")
 
 
 
-
-
-// const getShopPage = async (req, res) => {
-//   try {
-//     const user = req.session.user || null;
-//     const perPage = 8;
-//     const page = parseInt(req.query.page) || 1;
-//     const sort = req.query.sort || 'newest';
-
-//     let sortOption = { createdAt: -1 };
-//     if (sort === 'lowToHigh') sortOption = { 'prices.0': 1 };
-//     if (sort === 'highToLow') sortOption = { 'prices.0': -1 };
-//     if (sort === 'nameAToZ') sortOption = { name: 1 };
-//     if (sort === 'nameZToA') sortOption = { name: -1 };
-
-//     const categories = await Category.find({ isBlocked: false, isDeleted: false }).lean();
-
-//     let products = await Product.find({ isDeleted: false })
-//       .populate({ path: 'category', match: { isBlocked: false, isDeleted: false } })
-//       .sort(sortOption)
-//       .lean();
-
-//     products = products.filter(p => p.category);
-
-//     const now = new Date();
-
-//     const activeProductOffers = await ProductOffer.find({
-//       currentStatus: 'active',
-//       isListed: true,
-//       startDate: { $lte: now },
-//       endDate: { $gte: now }
-//     }).lean();
-
-//     const activeCategoryOffers = await CategoryOffer.find({
-//       status: 'list',
-//       isListed: true,
-//       startDate: { $lte: now },
-//       endDate: { $gte: now }
-//     }).lean();
-
-//     const productsWithOffer = products.map(product => {
-//       const productOffer = activeProductOffers.find(o => o.product.toString() === product._id.toString());
-//       let categoryOffer = null;
-
-//       if (product.category) {
-//         categoryOffer = activeCategoryOffers.find(c => c.category.toString() === product.category._id.toString());
-//       }
-
-//       let finalOffer = null;
-//       if (productOffer && categoryOffer) {
-//         finalOffer = productOffer.offerPercentage >= categoryOffer.offerPercentage ? productOffer : categoryOffer;
-//       } else if (productOffer) {
-//         finalOffer = productOffer;
-//       } else if (categoryOffer) {
-//         finalOffer = categoryOffer;
-//       }
-
-//       return { ...product, offer: finalOffer };
-//     });
-
-//     const totalProducts = productsWithOffer.length;
-//     const pages = Math.ceil(totalProducts / perPage);
-//     const paginatedProducts = productsWithOffer.slice((page - 1) * perPage, page * perPage);
-
-//     res.render('user/shop', {
-//       user,
-//       products: paginatedProducts,
-//       categories,
-//       current: page,
-//       pages,
-//       sort
-//     });
-
-//   } catch (err) {
-//     console.error("getShopPage error:", err);
-//     res.status(500).send('Server Error');
-//   }
-// };
-
-
-
 const getShopPage = async (req, res) => {
   try {
     const user = req.session.user || null;
@@ -147,14 +66,14 @@ const getShopPage = async (req, res) => {
       isListed: true,
       startDate: { $lte: now },
       endDate: { $gte: now }
-    }).lean();
+    }).lean()
 
     const activeCategoryOffers = await CategoryOffer.find({
       status: 'list',
       isListed: true,
       startDate: { $lte: now },
       endDate: { $gte: now }
-    }).lean();
+    }).lean()
 
     const productsWithOffer = products.map(product => {
       const productOffer = activeProductOffers.find(
@@ -232,7 +151,7 @@ const getShopPage = async (req, res) => {
       error: 'Shop page failed to load. Please try again.' 
     });
   }
-};
+}
 
 
 
@@ -313,7 +232,7 @@ const getSingleProductPage = async (req, res) => {
     console.error("Error in getSingleProductPage:", err);
     res.redirect("/shop");
   }
-};
+}
 
 
 
@@ -477,104 +396,9 @@ const addToCart = async (req, res) => {
     console.error("AddToCart Error:", err);
     return res.status(500).json({ success: false, message: "Server error" });
   }
-};
+}
 
 
-
-
-
-// const addToCart = async (req, res) => {
-//   try {
-//     const { productId, qty, size, pricePerUnit } = req.body;
-//     const quantity = Math.min(parseInt(qty) || 1, 8);
-//     const unitPrice = parseFloat(pricePerUnit);
-
-//     if (!req.user || !req.user.id) {
-//       return res.status(401).json({ success: false, message: "Login required" });
-//     }
-//     const userId = req.user.id;
-
-//     const product = await Product.findById(productId);
-//     if (!product) return res.json({ success: false, message: "Product not found" });
-
-//     const sizeIndex = product.sizes.indexOf(size);
-//     if (sizeIndex === -1) return res.json({ success: false, message: "Invalid size selected" });
-
-//     const availableQty = product.quantities[sizeIndex];
-//     if (quantity > availableQty) return res.json({ success: false, message: `Only ${availableQty} items available` });
-//     if (isNaN(unitPrice) || unitPrice <= 0) return res.json({ success: false, message: "Invalid price per unit" });
-
-//     let cart = await Cart.findOne({ userId });
-//     if (!cart) {
-//       cart = new Cart({
-//         userId,
-//         subtotal: 0,
-//         shippingCost: 40,
-//         grandTotal: 0,
-//         products: []
-//       });
-//     }
-
-//     const existingProduct = cart.products.find(p =>
-//       p.productId.toString() === productId && p.selectedSize === size
-//     );
-
-//     // if (existingProduct) {
-//     //   const newQty = existingProduct.quantity + quantity;
-//     //   if (newQty > availableQty) {
-//     //     return res.json({ success: false, message: `Only ${availableQty} items available` });
-//     //   }
-//     //   existingProduct.quantity = newQty;
-//     //   existingProduct.pricePerUnit = unitPrice;
-
-//     if (existingProduct) {
-//   const newQty = existingProduct.quantity + quantity;
-
-//   if (existingProduct.quantity >= 8) {
-//     return res.json({ success: false, message: "You already have maximum 8 quantity in cart!" });
-//   }
-//   if (newQty > 8) {
-//     return res.json({
-//       success: false,
-//       message: `Only ${8 - existingProduct.quantity} more items can be added`
-//     });
-//   }
-//   if (newQty > availableQty) {
-//     return res.json({
-//       success: false,
-//       message: `Only ${availableQty} items available`
-//     });
-//   }
-//   existingProduct.quantity = newQty;
-//   existingProduct.pricePerUnit = unitPrice;
-// }
-//     else {
-//       cart.products.push({
-//         productId: product._id,
-//         quantity,
-//         selectedSize: size,
-//         pricePerUnit: unitPrice,
-//         productDiscount: 0
-//       });
-//     }
-
-//     cart.subtotal = cart.products.reduce((acc, p) => acc + (p.quantity * p.pricePerUnit), 0);
-//     cart.grandTotal = cart.subtotal + (cart.shippingCost || 0);
-
-//     await cart.save();
-
-//     return res.json({
-//       success: true,
-//       message: "Product added to cart",
-//       availableQuantity: availableQty,
-//       cart
-//     });
-
-//   } catch (err) {
-//     console.error("AddToCart Error:", err);
-//     return res.status(500).json({ success: false, message: "Server error" });
-//   }
-// };
 
 
 

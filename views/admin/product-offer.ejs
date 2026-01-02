@@ -562,165 +562,6 @@ table td {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const offerForm = document.getElementById("offerForm");
-  const modalEl = document.getElementById("couponModal");
-  const offerModal = new bootstrap.Modal(modalEl);
-  const productSelect = document.getElementById("productSelect");
-  const productNameDisplay = document.getElementById("productNameDisplay");
-  const openModalBtn = document.getElementById("openModalBtn");
-
-  // 🟢 OPEN ADD MODAL
-  if (openModalBtn) {
-    openModalBtn.addEventListener("click", () => {
-      offerForm.reset();
-      document.getElementById("productOfferId").value = "";
-      document.querySelector(".modal-title").innerText = "Add Product Offer";
-
-      // Show dropdown, enable it
-      productSelect.classList.remove("d-none");
-      productSelect.removeAttribute("disabled");
-
-      // Hide product name display
-      productNameDisplay.classList.add("d-none");
-      productNameDisplay.innerText = "";
-
-      // Default status
-      document.getElementById("currentStatus").value = "list";
-      offerModal.show();
-    });
-  }
-
-  // 🟢 SUBMIT (Add / Edit)
-  offerForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const id = document.getElementById("productOfferId").value;
-    const productId = document.getElementById("productSelect").value;
-    const offerPercentage = Number(document.getElementById("offerPercentage").value);
-    const startDate = document.getElementById("startDate").value;
-    const endDate = document.getElementById("endDate").value;
-    const status = document.getElementById("currentStatus").value;
-
-    // Validation
-    if ((!id && !productId) || !offerPercentage || !startDate || !endDate) {
-      return Swal.fire("Validation Error", "All fields are required", "warning");
-    }
-
-    if (new Date(endDate) <= new Date(startDate)) {
-      return Swal.fire("Validation Error", "End date must be after start date", "warning");
-    }
-
-    // prepare payload
-    const payload = {
-      offerPercentage,
-      startDate,
-      endDate,
-      isListed: status === "list",
-    };
-
-    if (!id) payload.productId = productId; // only add productId in ADD mode
-    else payload.productOfferId = id; // send ID in update mode
-
-    // ✅ FIXED ROUTES (as per your backend)
-    const url = id
-      ? `/admin/productOffers/updateOffer`
-      : `/admin/productOffers/addOffer`;
-    const method = id ? "PUT" : "POST";
-
-    try {
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        Swal.fire("Success", data.message || "Offer saved successfully!", "success")
-          .then(() => location.reload());
-      } else {
-        Swal.fire("Error", data.error || "Something went wrong", "error");
-      }
-    } catch (err) {
-      console.error("Error saving product offer:", err);
-      Swal.fire("Error", "Server request failed", "error");
-    }
-  });
-});
-
-// 🟡 OPEN EDIT MODAL
-function openEditModalFromButton(btn) {
-  try {
-    const offer = JSON.parse(btn.dataset.offer);
-
-    document.getElementById("productOfferId").value = offer._id;
-    document.getElementById("offerPercentage").value = offer.offerPercentage;
-    document.getElementById("startDate").value = offer.startDate.split("T")[0];
-    document.getElementById("endDate").value = offer.endDate.split("T")[0];
-    document.getElementById("currentStatus").value = offer.isListed ? "list" : "unlist";
-    document.querySelector(".modal-title").innerText = "Edit Product Offer";
-
-    // 🟠 Hide dropdown, disable it
-    const productSelect = document.getElementById("productSelect");
-    const productNameDisplay = document.getElementById("productNameDisplay");
-
-    productSelect.classList.add("d-none");
-    productSelect.setAttribute("disabled", true);
-
-    productNameDisplay.classList.remove("d-none");
-    productNameDisplay.innerText =
-      offer.product?.name || offer.productName || "Unknown Product";
-
-    const modalEl = document.getElementById("couponModal");
-    const offerModal = new bootstrap.Modal(modalEl);
-    offerModal.show();
-  } catch (err) {
-    console.error("Error opening edit modal:", err);
-    Swal.fire("Error", "Unable to open edit modal", "error");
-  }
-}
-
-// 🔴 DELETE PRODUCT OFFER
-async function deleteProductOffer(id) {
-  const confirmDelete = await Swal.fire({
-    title: "Are you sure?",
-    text: "This product offer will be permanently deleted.",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, delete it!",
-  });
-
-  if (!confirmDelete.isConfirmed) return;
-
-  try {
-    const res = await fetch(`/admin/productOffers/delete/${id}`, {
-      method: "DELETE",
-    });
-    const data = await res.json();
-
-    if (res.ok) {
-      Swal.fire({
-        title: "Deleted!",
-        text: data.message,
-        icon: "success",
-        timer: 1500,
-        showConfirmButton: false,
-      });
-      setTimeout(() => location.reload(), 1500);
-    } else {
-      Swal.fire("Error", data.error || "Something went wrong", "error");
-    }
-  } catch (err) {
-    console.error("Error deleting product offer:", err);
-    Swal.fire("Error", "Server request failed", "error");
-  }
-}
-</script> -->
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -731,7 +572,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const productNameDisplay = document.getElementById("productNameDisplay");
   const openModalBtn = document.getElementById("openModalBtn");
 
-  // 🟢 OPEN ADD MODAL
   if (openModalBtn) {
     openModalBtn.addEventListener("click", () => {
       offerForm.reset();
@@ -748,7 +588,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // 🟢 SUBMIT (Add / Edit)
   offerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -759,11 +598,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const endDate = document.getElementById("endDate").value;
     const status = document.getElementById("currentStatus").value;
 
-    // ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
-    // ⭐ FIELD-WISE VALIDATION ADDED ⭐
-    // ⭐ NOTHING ELSE CHANGED ⭐
 
-    // Product validation (Only for ADD mode)
     if (!id && !productId) {
       return Swal.fire("Validation Error", "Please select a product", "warning");
     }
@@ -796,11 +631,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return Swal.fire("Validation Error", "Please select a status", "warning");
     }
 
-    // ⭐ END OF VALIDATION ⭐
-    // ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
-
-
-    // prepare payload
     const payload = {
       offerPercentage,
       startDate,
@@ -838,7 +668,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// 🟡 OPEN EDIT MODAL
 function openEditModalFromButton(btn) {
   try {
     const offer = JSON.parse(btn.dataset.offer);

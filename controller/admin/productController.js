@@ -12,13 +12,6 @@ const renderProductsPage = async (req, res) => {
     const perPage = 4;
     const page = parseInt(req.query.page) || 1;
 
-    // const totalProducts = await Product.countDocuments({ isDeleted: false });
-    // const products = await Product.find({ isDeleted: false })
-    //   .sort({ createdAt: -1 })
-    //   .skip((page - 1) * perPage)
-    //   .limit(perPage)
-    //   .lean();
-
  const totalProducts = await Product.countDocuments();
 
 const products = await Product.find()
@@ -236,21 +229,6 @@ const updateProduct = async (req, res) => {
   }
 }
 
-
-
-
-
-
-// const deleteProduct = async (req, res) => {
-//   try {
-//     // await Product.findByIdAndDelete(req.params.id);
-//     await Product.findByIdAndUpdate(req.params.id, { isDeleted: true })
-//     res.redirect("/admin/products");
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send("Server Error");
-//   }
-// };
 
 
 const toggleProductStatus = async (req, res) => {

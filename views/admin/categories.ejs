@@ -834,46 +834,7 @@ document.querySelectorAll('.toggleBlockBtn').forEach(btn => {
 
 
 
-
-
-
-// document.querySelectorAll('.toggleBlockBtn').forEach(btn => {
-//   btn.addEventListener('click', async (e) => {
-//     const categoryId = e.currentTarget.dataset.id;
-
-//     try {
-//       const res = await fetch(`/admin/category/toggle-block/${categoryId}`, {
-//         method: 'PATCH',
-//         headers: { 'Content-Type': 'application/json' }
-//       });
-
-//       if (res.ok) window.location.reload(); // page reload to reflect changes
-//       else alert('Failed to toggle block status');
-//     } catch (err) {
-//       console.error(err);
-//       alert('Something went wrong');
-//     }
-//   });
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 document.addEventListener("DOMContentLoaded", () => {
-  // ===== Toggle Category Active/Inactive =====
 
 document.querySelectorAll('.toggleCategoryBtn').forEach(btn => {
   btn.addEventListener('click', async () => {
@@ -907,7 +868,6 @@ document.querySelectorAll('.toggleCategoryBtn').forEach(btn => {
 })
 
 
-  // ===== Elements =====
   const catForm = document.getElementById("categorySearchForm")
   const catInput = document.getElementById("categorySearchInput")
   const catResults = document.getElementById("categoryResults")
@@ -922,7 +882,6 @@ document.querySelectorAll('.toggleCategoryBtn').forEach(btn => {
   const editDescription = document.getElementById("editCategoryDescription")
   let timeout;
 
-  // ===== Live Search =====
   catForm.addEventListener("submit", e => {
     e.preventDefault();
     performCatSearch(catInput.value.trim())
@@ -982,7 +941,6 @@ document.querySelectorAll('.toggleCategoryBtn').forEach(btn => {
     }
   }
 
-  // ===== Add Category =====
   openCategoryBtn.addEventListener("click", () => {
     categoryForm.reset();
     categoryModal.classList.remove("hidden");
@@ -1070,8 +1028,6 @@ menuBtn.onclick = () => {
 };
 
 
-  
-  // ===== Attach edit & delete events =====
   function attachRowEvents(row) {
     const editBtn = row.querySelector(".editCategoryBtn");
     const deleteBtn = row.querySelector(".deleteCategoryBtn");
@@ -1118,15 +1074,12 @@ menuBtn.onclick = () => {
     }
   }
 
-  // ===== Initialize existing edit buttons =====
   document.querySelectorAll(".editCategoryBtn").forEach(btn => attachRowEvents(btn.closest("tr")));
 
   document.getElementById("closeEditModal").addEventListener("click", () => {
     editModal.classList.add("hidden");
   });
 
-  // ===== Edit Category =====
-// ===== Edit Category =====
 editForm.addEventListener("submit", async e => {
   e.preventDefault();
 
@@ -1149,7 +1102,6 @@ editForm.addEventListener("submit", async e => {
     return;
   }
 
-  // ⭐ 100 CHARACTER LIMIT FOR DESCRIPTION
   if (description.length > 200) {
     Swal.fire(
       'Error',

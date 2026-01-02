@@ -600,7 +600,7 @@ body {
     }
 
     try {
-      // 1️⃣ Create Razorpay Order (backend)
+
       const res = await fetch("/wallet/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -609,7 +609,6 @@ body {
       const data = await res.json();
       if (!data.success) return alert("❌ Failed to create Razorpay order!");
 
-      // 2️⃣ Open Razorpay payment window
       const options = {
         key: data.key_id,
         amount: data.amount,
@@ -618,7 +617,7 @@ body {
         description: "Add Money to Wallet",
         order_id: data.orderId,
         handler: async function (response) {
-          // 3️⃣ Verify payment on backend
+
           const verifyRes = await fetch("/wallet/verify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

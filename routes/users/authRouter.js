@@ -7,19 +7,15 @@ const reviewController = require('../../controller/user/Review')
 const addresscontroller = require('../../controller/user/address')
 const cardController = require('../../controller/user/cardcontroller')
 const checkoutController = require('../../controller/user/checkout')
-// const WishlistCotroller = require('../../controller/user/wishlistController')
 const WishlistCotroller= require('../../controller/user/wishlistController')
 const walletController = require('../../controller/user/walletController')
 const mailcontroller = require('../../controller/user/mailcontroller')
 const AuthPagesForLoggedInUsers = require('../../middleware/auth')
 
-// const orderController = require('../../controller/user/orderController')
 const upload = require("../../config/multer");
 const {Authenticated} = require('../../middleware/Userblock')
 const {isAuthenticated} = require('../../middleware/userAuth')
-// const Wishlist = require('../../models/Wishlist')
 
-// router.get('/change-mail', mailcontroller.renderChangeMail);
 
 
 
@@ -44,10 +40,6 @@ router.post("/verify-otp",AuthPagesForLoggedInUsers,authController.verifyOtp)
 router.get("/reset-password",AuthPagesForLoggedInUsers, authController.getResetPassword)
 router.post("/reset-password",AuthPagesForLoggedInUsers,authController.postResetPassword)
 
-// router.get('/auth/google/signup', passport.authenticate('google', { scope: ['profile', 'email'] }))
-// router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
-//   res.redirect('/')
-// })
 
 router.get("/auth/google",AuthPagesForLoggedInUsers, authController.authenticateGoogle);
 router.get("/auth/google/callback",AuthPagesForLoggedInUsers, authController.googleCallBack);
@@ -79,8 +71,6 @@ router.get('/cart/validate-before-checkout',cardController.validateBeforeCheckou
 
 router.post("/move-to-cart",cardController. moveToCart)
 
-// router.get('/remove-from-cart/:productId',cardController. removeFromCart);
-
 router.post("/verify", checkoutController.verifyPayment)
 router.get("/failed", checkoutController.paymentFailed)
 
@@ -100,9 +90,7 @@ router.post('/cancel-coupon',cardController.cancelCoupon);
 
 
 router.get("/orders", checkoutController.getUserOrders)
-// router.delete("/user/orders/:id",checkoutController. cancelOrderController);
 router.put("/user/orders/:id/cancel-item",checkoutController. cancelSingleItem);
-// router.put("/orders/:orderId/return-item",checkoutController.returnOrderItem)
 router.put("/orders/:orderId/return-item", checkoutController.returnOrderItem);
 
 
@@ -123,7 +111,6 @@ router.post('/delete-address/:id', addresscontroller.deleteAddress);
 router.get("/edit-address/:id", addresscontroller.getEditAddress);
 router.post("/edit-address/:id",addresscontroller. postEditAddress);
 
-// router.get('/orders', orderController.getOrdersPage)
 
 router.get('/changepassword',WishlistCotroller.changepassword)
 router.post("/changepassword",WishlistCotroller.postchangepass);

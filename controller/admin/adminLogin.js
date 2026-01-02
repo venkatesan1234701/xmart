@@ -364,43 +364,6 @@ const getSalesReport = async (req, res) => {
     let totalOrderRevenue = 0;
 
     const addedOrderIds = new Set();
-
-    // orders.forEach(order => {
-    //   let totalMRP = 0;
-
-    //   order.products.forEach(product => {
-    //     const sizeIndex = ["S", "M", "L"].indexOf(product.selectedSize);
-    //     const productPrice = product.productId?.prices[sizeIndex] || 0;
-    //     totalMRP += productPrice * product.quantity;
-    //   })
-    //   const orderDiscount = totalMRP - order.grandTotal;
-    //   totalDiscount += orderDiscount;
-
-      
-    //   if (!addedOrderIds.has(order._id.toString())) {
-    //     totalOrderRevenue += (order.grandTotal || 0);
-    //     addedOrderIds.add(order._id.toString());
-    //   }
-    //   order.products.forEach(product => {
-    //     const sizeIndex = ["S", "M", "L"].indexOf(product.selectedSize);
-    //     const productPrice = product.productId?.prices[sizeIndex] || 0;
-    //     const productMRP = productPrice * product.quantity;
-
-    //     flattenedOrders.push({
-    //       userName: order.userId?.firstName || "Unknown",
-    //       orderDate: new Date(order.createdAt).toISOString().split("T")[0],
-    //       productName: product.productId?.name || "",
-    //       quantity: product.quantity,
-    //       productMRP: productMRP,
-    //       productPaid: product.totalPrice,
-    //       grandTotal: order.grandTotal,
-    //       discount: orderDiscount,  
-    //       paymentMethod: order.paymentDetails.method
-    //     });
-    //   });
-    // });
-
-
     orders.forEach(order => {
   let totalMRP = 0;
 
@@ -485,38 +448,6 @@ const renderCustomers = async (req, res, next) => {
     next(new AppError('Server Error', 500));
   }
 }
-
-
-
-
-// const toggleBlockUser = async (req, res, next) => {
-//   try {
-//     const userId = req.params.id;
-//     const action = req.body?.action;
-
-//     const user = await User.findById(userId);
-//     if (!user) {
-//       return res.status(404).json({ success: false, message: "User not found" });
-//     }
-
-//     if (action === "block") {
-//       user.isBlocked = true;
-//       user.blockedAt = new Date();
-//     } else if (action === "unblock") {
-//       user.isBlocked = false;
-//       user.blockedAt = null;
-//     }
-
-//     await user.save();
-
-//     res.json({
-//       success: true,
-//       isBlocked: user.isBlocked,
-//     });
-//   } catch (err) {
-//     next(err);
-//   }
-// }
 
 
 const toggleBlockUser = async (req, res, next) => {

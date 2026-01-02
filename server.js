@@ -69,13 +69,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use("/admin/orders", adminRouter)
 
-// app.use(checkblock)
-// app.use("/wishlist", authRouter)
-// app.use("/payment", authRouter)
-// app.use("/user", authRouter);
-// app.use("/", authRouter)
-// app.use("/admin", adminRouter)
-
 app.use(checkblock); 
 app.use("/", authRouter);               
 app.use("/user", authRouter);           

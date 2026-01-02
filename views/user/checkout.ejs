@@ -2091,41 +2091,11 @@ Remove if you do not want.
 <script>
 
 
-// document.querySelector("form#checkoutForm").addEventListener("submit", function(e) {
-//     e.preventDefault();
-
-//     // Check address
-//     const addressSelected = document.querySelector('input[name="selectedAddress"]:checked');
-//     if (!addressSelected) {
-//       Swal.fire({
-//         icon: 'warning',
-//         title: 'Select an address',
-//         text: 'Please select a delivery address before placing the order.'
-//       });
-//       return;
-//     }
-
-//     // Check payment
-//     const paymentSelected = document.querySelector('input[name="paymentMethod"]:checked');
-//     if (!paymentSelected) {
-//       Swal.fire({
-//         icon: 'warning',
-//         title: 'Select a payment method',
-//         text: 'Please select a payment method before placing the order.'
-//       });
-//       return;
-//     }
-
-//     // All good, submit the form
-//     this.submit();
-//   });
 
 document.querySelector("#checkoutForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  /* -----------------------------
-     1️⃣ Address Validation
-  ----------------------------- */
+
   const addressSelected = document.querySelector(
     'input[name="selectedAddress"]:checked'
   );

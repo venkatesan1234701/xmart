@@ -1269,58 +1269,9 @@ document.querySelectorAll(".size-box").forEach((box) => {
   });
 
 
-// document.querySelectorAll(".wishlist-btn").forEach((btn) => {
-//   let isProcessing = false;
-
-//   btn.addEventListener("click", async (e) => {
-//     e.preventDefault();
-//     if (isProcessing) return;
-//     isProcessing = true;
-
-//     const productId = btn.dataset.productId;
-//     const selectedSize =
-//       document.querySelector(".size-box.selected span")?.textContent || null;
-//     const price =
-//       document.querySelector("#priceDisplay")?.textContent.replace("₹", "").trim() || 0;
-//     const quantity = document.querySelector("#orderQty")?.value || 1;
-
-//     try {
-//       const res = await fetch("/wishlist/add", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({
-//           productId,
-//           size: selectedSize,
-//           price,
-//           qty: quantity,
-//         }),
-//       });
-
-//       const data = await res.json();
-
-//       Swal.fire({
-//         icon: data.success ? "success" : "info",
-//         title: data.success ? "Added!" : "Info",
-//         text: data.message,
-//         showConfirmButton: false,
-//         timer: 1500,
-//       });
-//     } catch (err) {
-//       console.error("❌ Wishlist Error:", err);
-//       Swal.fire({
-//         icon: "error",
-//         title: "Oops...",
-//         text: "Something went wrong! Please try again.",
-//       });
-//     } finally {
-//       setTimeout(() => (isProcessing = false), 1000);
-//     }
-//   });
-// });
-
 document.querySelectorAll(".wishlist-btn").forEach((btn) => {
   btn.addEventListener("click", async (e) => {
-    e.preventDefault(); // ✅ Prevent page reload
+    e.preventDefault(); 
 
     const productId = btn.dataset.productId;
     const selectedSize =
@@ -1878,10 +1829,10 @@ document.addEventListener("DOMContentLoaded", () => {
           Swal.fire({
             icon: "success",
             title: "Login Successful ",
-            text: `Welcome ${result.user.name.split(' ')[0]}!`, // First name only
+            text: `Welcome ${result.user.name.split(' ')[0]}!`,
             confirmButtonColor: "#16a34a"
           }).then(() => {
-            window.location.reload(); // reload page to show dropdown with username
+            window.location.reload()
           });
 
         } else {

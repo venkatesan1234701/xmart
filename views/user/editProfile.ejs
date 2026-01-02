@@ -161,33 +161,6 @@ body {
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<!-- 
-<script>
-  const form = document.getElementById('editProfileForm');
-  const phoneInput = document.getElementById('phone');
-  const phoneError = document.getElementById('phoneError');
-
-  form.addEventListener('submit', function(e) {
-    const phoneVal = phoneInput.value.trim();
-    if (!/^\d{10}$/.test(phoneVal)) {
-      e.preventDefault();
-      phoneError.classList.remove('d-none');
-      phoneInput.focus();
-      return;
-    } else {
-      phoneError.classList.add('d-none');
-    }
-
-    e.preventDefault(); // prevent immediate submit
-    Swal.fire({
-      icon: 'success',
-      title: 'Profile Updated!',
-      text: 'Your profile has been saved successfully.',
-      timer: 2000,
-      showConfirmButton: false
-    }).then(() => form.submit());
-  });
-</script> -->
 
 <script>
   const form = document.getElementById("editProfileForm");
