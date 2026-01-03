@@ -53,9 +53,18 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/xmart")
-  .then(() => console.log("MongoDB (xmart) connected successfully"))
-  .catch((err) => console.error("Connection error:", err))
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("MongoDB Atlas connected successfully");
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
+
+// mongoose
+//   .connect("mongodb://127.0.0.1:27017/xmart")
+//   .then(() => console.log("MongoDB (xmart) connected successfully"))
+//   .catch((err) => console.error("Connection error:", err))
 
 app.use(express.static(path.join(__dirname, "public")))
 app.use(express.static('public'));
@@ -107,6 +116,11 @@ app.get("/dashboard", (req, res) => {
   if (!req.user) return res.redirect("/signin")
   res.send(`Welcome ${req.user.firstName}! You are logged in.`)
 })
+
+mongoose.connection.once("open", () => {
+  console.log("DB connection OPENED");
+});
+
 
 app.listen(3000, () => {
   console.log("Server running on http://localhost:3000");

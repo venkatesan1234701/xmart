@@ -111,7 +111,7 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-});
+})
 
 const postSignup = async (req, res) => {
   try {
@@ -221,120 +221,19 @@ const postSignup = async (req, res) => {
     return res.render("user/otpPage", { email, message: mailStatus });
 
   } catch (err) {
-    console.error("Signup Error:", err);
+    // console.error("Signup Error:", err);
+      if (err.code === 11000) {
+    return res.render("user/signup", {
+      sweetError: "Phone number already registered",
+      formData: req.body,
+    });
+  }
     res.status(500).redirect("/signin");
   }
-};
+}
 
 
 
-// const postSignup = async (req, res) => {
-//   try {
-//     // console.log(" FULL Signup Body:", req.body);
-
-//     const {
-//       firstName,
-//       secondName,
-//       email,
-//       phoneNumber,
-//       password,
-//       referralCode,
-//     } = req.body;
-
-//     let referredBy = null;
-
-//     // console.log("referral code :", referralCode);
-
-//     let user = await User.findOne({ email });
-//     const hashedPass = await bcrypt.hash(password, 10);
-
-//     if (user) {
-//       if (user.isVerified) {
-//         return res.render("user/signup", {
-//           sweetError: "Email already registered. Please login.",
-//           formData: req.body,
-//         });
-//       }
-//       user.firstName = firstName;
-//       user.secondName = secondName;
-//       user.phone = String(phoneNumber);
-//       user.password = hashedPass;
-//       user.loginType = "manual"
-
-//          if (!user.referralCode) {
-//         user.referralCode = await generateUniqueReferralCode();
-//       }
-//       await user.save();
-
-//     } else {
-//       if (referralCode && referralCode.trim().length > 0) {
-//         // console.log(" cheking reffral code :", referralCode);
-
-//         const referralUser = await User.findOne({ referralCode });
-//         if (!referralUser) {
-//           return res.render("user/signup", {
-//             error: "Invalid referral code!",
-//             formData: req.body,
-//           });
-//         }
-
-//         referredBy = referralUser._id;
-//         // console.log(" valid reffral code :", referredBy);
-//       }
-
-//       const newReferralCode = await generateUniqueReferralCode();
-
-//       user = new User({
-//         firstName,
-//         secondName,
-//         email,
-//         phone: String(phoneNumber),
-//         password: hashedPass,
-//         referredBy,
-//         referralCode: newReferralCode,
-//         isVerified: false,
-//         loginType: "manual", 
-//       });
-
-//       await user.save()
-//     }
-
-//     const otpCode = crypto.randomInt(100000, 999999).toString()
-//     console.log(" Signup OTP:", otpCode);
-
-//     await Otp.updateOne(
-//       { email },
-//       {
-//         otp: await bcrypt.hash(otpCode, 10),
-//         createdAt: new Date(),
-//         expireAt: Date.now() + 75 * 1000,
-//       },
-//       { upsert: true }
-//     )
-
-//     let mailStatus = "OTP sent to your email";
-//     try {
-//       await transporter.sendMail({
-//         from: `"Bro Basket" <${process.env.EMAIL_USER}>`,
-//         to: email,
-//         subject: "Your OTP Code",
-//         text: `Your OTP is: ${otpCode}. It expires in 75 seconds.`,
-//       });
-//     } catch (mailErr) {
-//       console.error("Email send failed:", mailErr.message);
-//       mailStatus = "Failed to send OTP email. Please try Resend OTP.";
-//     }
-
-//     req.session.otpEmail = email;
-//     req.session.flowType = "signup";
-
-//     return res.render("user/otpPage", { email, message: mailStatus });
-
-//   } catch (err) {
-//     console.error("Signup Error:", err);
-//     res.status(500).redirect("/signin");
-//   }
-// }
 
 const verifyOtp = async (req, res) => {
   try {
