@@ -10,44 +10,81 @@ const razorpayInstance = new Razorpay({
 
 
 
+// const getWalletPage = async (req, res) => {
+//   try {
+//     const userId = req.session.user?.id;
+//     if (!userId) return res.redirect("/signin");
+
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = 10; 
+//     const skip = (page - 1) * limit;
+
+//     let wallet = await Wallet.findOne({ userId });
+//     if (!wallet) {
+//       wallet = await Wallet.create({ userId });
+//     }
+
+//     const sortedTransactions = wallet.transactions
+//       .sort((a, b) => b.createdAt - a.createdAt);
+
+//     const totalTransactions = sortedTransactions.length;
+
+//     const paginatedTransactions = sortedTransactions.slice(skip, skip + limit);
+
+//     const totalPages = Math.ceil(totalTransactions / limit);
+
+//     res.render("user/wallet", {
+//       wallet,
+//       transactions: paginatedTransactions,
+//       currentPage: page,
+//       totalPages,
+//       totalTransactions
+//     });
+
+//   } catch (err) {
+//     console.error("Wallet page error:", err);
+//     res.status(500).send("Server Error");
+//   }
+// };
+
 const getWalletPage = async (req, res) => {
   try {
     const userId = req.session.user?.id;
     if (!userId) return res.redirect("/signin");
 
     const page = parseInt(req.query.page) || 1;
-    const limit = 10; 
+    const limit = 10;
     const skip = (page - 1) * limit;
 
     let wallet = await Wallet.findOne({ userId });
+
     if (!wallet) {
       wallet = await Wallet.create({ userId });
     }
 
-    const sortedTransactions = wallet.transactions
-      .sort((a, b) => b.createdAt - a.createdAt);
+    wallet.balance = wallet.balance || 0;
+    wallet.transactions = wallet.transactions || [];
+
+    const sortedTransactions = [...wallet.transactions].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
 
     const totalTransactions = sortedTransactions.length;
-
     const paginatedTransactions = sortedTransactions.slice(skip, skip + limit);
-
     const totalPages = Math.ceil(totalTransactions / limit);
 
-    res.render("user/wallet", {
+    return res.render("user/wallet", {
       wallet,
       transactions: paginatedTransactions,
       currentPage: page,
       totalPages,
-      totalTransactions
+      totalTransactions,
     });
-
   } catch (err) {
-    console.error("Wallet page error:", err);
-    res.status(500).send("Server Error");
+    console.error("❌ Wallet page error:", err);
+    return res.status(500).send("Something went wrong on our side!");
   }
 };
-
-
 
 const createWalletOrder = async (req, res) => {
   try {
