@@ -47,6 +47,8 @@ const razorpayInstance = new Razorpay({
 //   }
 // };
 
+
+
 const getWalletPage = async (req, res) => {
   try {
     const userId = req.session.user?.id;
@@ -59,14 +61,19 @@ const getWalletPage = async (req, res) => {
     let wallet = await Wallet.findOne({ userId });
 
     if (!wallet) {
-      wallet = await Wallet.create({ userId });
+      wallet = await Wallet.create({
+        userId,
+        balance: 0,
+        transactions: []
+      });
     }
 
+    // Safety
     wallet.balance = wallet.balance || 0;
     wallet.transactions = wallet.transactions || [];
 
     const sortedTransactions = [...wallet.transactions].sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
     );
 
     const totalTransactions = sortedTransactions.length;
@@ -80,11 +87,13 @@ const getWalletPage = async (req, res) => {
       totalPages,
       totalTransactions,
     });
+
   } catch (err) {
     console.error("❌ Wallet page error:", err);
     return res.status(500).send("Something went wrong on our side!");
   }
 };
+
 
 const createWalletOrder = async (req, res) => {
   try {

@@ -275,13 +275,11 @@ body {
 
 </nav>
 
-
-	<!-- Wallet Section -->
-<!-- <div class="container ">
+<div class="container">
 
   <div class="wallet-container text-center mb-4">
     <div class="wallet-balance fs-4 fw-semibold text-success">
-      Wallet Balance: ₹ <%= wallet.balance.toFixed(2) %>
+      Wallet Balance: ₹ <%= (wallet.balance || 0).toFixed(2) %>
     </div>
 
     <button class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#addMoneyModal">
@@ -293,7 +291,7 @@ body {
 
   <h5 class="fw-semibold text-success mb-3 text-center">🧾 Transaction History</h5>
 
-  <% if (wallet.transactions.length === 0) { %>
+  <% if (totalTransactions === 0) { %>
     <p class="text-muted text-center">No transactions yet.</p>
   <% } else { %>
     <div class="table-responsive">
@@ -304,28 +302,26 @@ body {
             <th>Date</th>
             <th>Amount</th>
             <th>Type</th>
-             <th>Status</th> 
             <th>Details</th>
           </tr>
         </thead>
         <tbody>
-          <% wallet.transactions.slice().reverse().forEach(txn => { %>
+          <% transactions.forEach(txn => { %>
             <tr>
               <td><%= txn.transactionId || 'N/A' %></td>
-              <td><%= new Date(txn.createdAt).toLocaleDateString() %></td>
-              <td class="<%= txn.transactionType === 'Credit' ? 'text-success' : 'text-danger' %>">
-                <%= txn.transactionType === 'Credit' ? '+ ' : '- ' %>₹<%= txn.amount.toFixed(2) %>
+
+              <td>
+                <%= txn.createdAt 
+                    ? new Date(txn.createdAt).toLocaleString() 
+                    : '-' %>
               </td>
-              <td><%= txn.type %></td>
-               <td>
-                <% if (txn.status === 'completed') { %>
-                  <span class="badge bg-success">Completed</span>
-                <% } else if (txn.status === 'pending') { %>
-                  <span class="badge bg-warning text-dark">Pending</span>
-                <% } else { %>
-                  <span class="badge bg-danger">Failed</span>
-                <% } %>
-              </td> 
+
+              <td class="<%= txn.transactionType === 'Credit' ? 'text-success' : 'text-danger' %>">
+                <%= txn.transactionType === 'Credit' ? '+ ' : '- ' %>
+                ₹<%= (txn.amount || 0).toFixed(2) %>
+              </td>
+
+              <td><%= txn.type || '-' %></td>
               <td><%= txn.transactionDetail || '-' %></td>
             </tr>
           <% }) %>
@@ -334,86 +330,47 @@ body {
     </div>
   <% } %>
 
-  
+  <% if (totalPages > 1) { %>
+    <nav class="d-flex justify-content-center mt-4">
+      <ul class="pagination shadow-sm p-2 rounded-4" style="background-color: #f8f9fa;">
+
+        <% if (currentPage > 1) { %>
+          <li class="page-item">
+            <a class="page-link border-0 rounded-3 mx-1 px-3 py-2 text-success fw-semibold"
+               href="?page=<%= currentPage - 1 %>">‹ Prev</a>
+          </li>
+        <% } else { %>
+          <li class="page-item disabled">
+            <span class="page-link">‹ Prev</span>
+          </li>
+        <% } %>
+
+        <% for (let i = 1; i <= totalPages; i++) { %>
+          <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+            <a class="page-link"
+               href="?page=<%= i %>"><%= i %></a>
+          </li>
+        <% } %>
+
+        <% if (currentPage < totalPages) { %>
+          <li class="page-item">
+            <a class="page-link"
+               href="?page=<%= currentPage + 1 %>">Next ›</a>
+          </li>
+        <% } else { %>
+          <li class="page-item disabled">
+            <span class="page-link">Next ›</span>
+          </li>
+        <% } %>
+
+      </ul>
+    </nav>
+  <% } %>
+
 </div>
-<% if (totalPages > 1) { %>
-  <nav class="d-flex justify-content-center mt-4">
-    <ul class="pagination shadow-sm p-2 rounded-4" style="background-color: #f8f9fa;">
-
-      <% if (currentPage > 1) { %>
-        <li class="page-item">
-          <a class="page-link border-0 rounded-3 mx-1 px-3 py-2 text-success fw-semibold" 
-             href="?page=<%= currentPage - 1 %>" 
-             style="background-color: #e9f8ee;">
-            ‹ Prev
-          </a>
-        </li>
-      <% } else { %>
-        <li class="page-item disabled">
-          <span class="page-link border-0 rounded-3 mx-1 px-3 py-2 text-muted" 
-                style="background-color: #f1f1f1;">‹ Prev</span>
-        </li>
-      <% } %>
-
-      <% 
-        const startPage = Math.max(1, currentPage - 2);
-        const endPage = Math.min(totalPages, currentPage + 2);
-      %>
-
-      <% if (startPage > 1) { %>
-        <li class="page-item">
-          <a class="page-link border-0 rounded-3 mx-1 px-3 py-2 text-success fw-semibold" 
-             href="?page=1" 
-             style="background-color: #e9f8ee;">1</a>
-        </li>
-        <% if (startPage > 2) { %>
-          <li class="page-item disabled"><span class="page-link border-0 bg-transparent text-muted">...</span></li>
-        <% } %>
-      <% } %>
-
-      <% for (let i = startPage; i <= endPage; i++) { %>
-        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-          <a class="page-link border-0 rounded-3 mx-1 px-3 py-2 fw-semibold 
-                    <%= i === currentPage 
-                        ? 'text-white bg-success shadow-sm' 
-                        : 'text-success' %>" 
-             href="?page=<%= i %>">
-            <%= i %>
-          </a>
-        </li>
-      <% } %>
-
-      <% if (endPage < totalPages) { %>
-        <% if (endPage < totalPages - 1) { %>
-          <li class="page-item disabled"><span class="page-link border-0 bg-transparent text-muted">...</span></li>
-        <% } %>
-        <li class="page-item">
-          <a class="page-link border-0 rounded-3 mx-1 px-3 py-2 text-success fw-semibold" 
-             href="?page=<%= totalPages %>" 
-             style="background-color: #e9f8ee;"><%= totalPages %></a>
-        </li>
-      <% } %>
-
-      <% if (currentPage < totalPages) { %>
-        <li class="page-item">
-          <a class="page-link border-0 rounded-3 mx-1 px-3 py-2 text-success fw-semibold" 
-             href="?page=<%= currentPage + 1 %>" 
-             style="background-color: #e9f8ee;">
-            Next ›
-          </a>
-        </li>
-      <% } else { %>
-        <li class="page-item disabled">
-          <span class="page-link border-0 rounded-3 mx-1 px-3 py-2 text-muted" 
-                style="background-color: #f1f1f1;">Next ›</span>
-        </li>
-      <% } %>
-
-    </ul>
-  </nav>
-<% } %> -->
 
 
+<!-- 
 <div class="container">
 
   <div class="wallet-container text-center mb-4">
@@ -533,27 +490,6 @@ body {
     </nav>
   <% } %>
 
-</div>
-
-	<!-- Modal: Add Money -->
-<!-- <div class="modal fade" id="addMoneyModal" tabindex="-1" aria-labelledby="addMoneyModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title" id="addMoneyModalLabel">Add Money to Wallet</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="addMoneyForm">
-          <div class="mb-3">
-            <label for="amount" class="form-label fw-semibold">Enter Amount (₹)</label>
-            <input type="number" id="amount" class="form-control" placeholder="Enter amount" min="1" required />
-          </div>
-          <button type="submit" class="btn btn-success w-100">Proceed to Pay</button>
-        </form>
-      </div>
-    </div>
-  </div>
 </div> -->
 
 
