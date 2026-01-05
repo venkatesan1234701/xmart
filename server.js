@@ -24,6 +24,8 @@ app.use((req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 
+app.set("trust proxy", 1);
+
 app.use('/admin', session({
   name: 'admin.sid',
   secret: 'yourAdminSecret',

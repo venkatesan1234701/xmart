@@ -1,12 +1,51 @@
 
-const Razorpay = require("razorpay");
-const crypto = require("crypto");
-const Wallet = require("../../models/walletSchema");
+// const Razorpay = require("razorpay");
+// const crypto = require("crypto");
+// const Wallet = require("../../models/walletSchema");
 
-const razorpayInstance = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+// const razorpayInstance = new Razorpay({
+//   key_id: process.env.RAZORPAY_KEY_ID,
+//   key_secret: process.env.RAZORPAY_KEY_SECRET,
+// });
+
+
+
+// // const getWalletPage = async (req, res) => {
+// //   try {
+// //     const userId = req.session.user?.id;
+// //     if (!userId) return res.redirect("/signin");
+
+// //     const page = parseInt(req.query.page) || 1;
+// //     const limit = 10; 
+// //     const skip = (page - 1) * limit;
+
+// //     let wallet = await Wallet.findOne({ userId });
+// //     if (!wallet) {
+// //       wallet = await Wallet.create({ userId });
+// //     }
+
+// //     const sortedTransactions = wallet.transactions
+// //       .sort((a, b) => b.createdAt - a.createdAt);
+
+// //     const totalTransactions = sortedTransactions.length;
+
+// //     const paginatedTransactions = sortedTransactions.slice(skip, skip + limit);
+
+// //     const totalPages = Math.ceil(totalTransactions / limit);
+
+// //     res.render("user/wallet", {
+// //       wallet,
+// //       transactions: paginatedTransactions,
+// //       currentPage: page,
+// //       totalPages,
+// //       totalTransactions
+// //     });
+
+// //   } catch (err) {
+// //     console.error("Wallet page error:", err);
+// //     res.status(500).send("Server Error");
+// //   }
+// // };
 
 
 
@@ -16,39 +55,210 @@ const razorpayInstance = new Razorpay({
 //     if (!userId) return res.redirect("/signin");
 
 //     const page = parseInt(req.query.page) || 1;
-//     const limit = 10; 
+//     const limit = 10;
 //     const skip = (page - 1) * limit;
 
 //     let wallet = await Wallet.findOne({ userId });
+
 //     if (!wallet) {
-//       wallet = await Wallet.create({ userId });
+//       wallet = await Wallet.create({
+//         userId,
+//         balance: 0,
+//         transactions: []
+//       });
 //     }
 
-//     const sortedTransactions = wallet.transactions
-//       .sort((a, b) => b.createdAt - a.createdAt);
+//     // Safety
+//     wallet.balance = wallet.balance || 0;
+//     wallet.transactions = wallet.transactions || [];
+
+//     const sortedTransactions = [...wallet.transactions].sort(
+//       (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+//     );
 
 //     const totalTransactions = sortedTransactions.length;
-
 //     const paginatedTransactions = sortedTransactions.slice(skip, skip + limit);
-
 //     const totalPages = Math.ceil(totalTransactions / limit);
 
-//     res.render("user/wallet", {
+//     return res.render("user/wallet", {
 //       wallet,
 //       transactions: paginatedTransactions,
 //       currentPage: page,
 //       totalPages,
-//       totalTransactions
+//       totalTransactions,
 //     });
 
 //   } catch (err) {
-//     console.error("Wallet page error:", err);
-//     res.status(500).send("Server Error");
+//     console.error("❌ Wallet page error:", err);
+//     return res.status(500).send("Something went wrong on our side!");
 //   }
 // };
 
 
+// const createWalletOrder = async (req, res) => {
+//   try {
+//     const { amount } = req.body;
+//     const userId = req.session.user?.id;
 
+//     if (!userId) {
+//       console.log(" No user session found");
+//       return res.json({ success: false, message: "User not logged in" });
+//     }
+
+//     if (!amount || amount <= 0) {
+//       console.log(" Invalid amount received:", amount);
+//       return res.json({ success: false, message: "Invalid amount" });
+//     }
+
+//     console.log(" Creating Razorpay wallet order for:", amount);
+
+//     const order = await razorpayInstance.orders.create({
+//       amount: amount * 100,
+//       currency: "INR",
+//       receipt: "wallet_" + Date.now(),
+//     });
+
+//     console.log(" Razorpay order created:", order.id);
+
+//     res.json({
+//       success: true,
+//       orderId: order.id,
+//       amount: order.amount,
+//       key_id: process.env.RAZORPAY_KEY_ID,
+//     });
+//   } catch (error) {
+//     console.error(" Error creating Razorpay order:", error);
+//     res.json({ success: false, message: error.message });
+//   }
+// }
+
+
+
+
+
+// // const verifyWalletPayment = async (req, res) => {
+// //   try {
+// //     const {
+// //       razorpay_order_id,
+// //       razorpay_payment_id,
+// //       razorpay_signature,
+// //       amount,
+// //     } = req.body;
+// //     const userId = req.session.user?.id;
+
+// //     const sign = razorpay_order_id + "|" + razorpay_payment_id;
+// //     const expectedSign = crypto
+// //       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+// //       .update(sign.toString())
+// //       .digest("hex");
+
+// //     if (expectedSign !== razorpay_signature) {
+// //       console.log(" Invalid Razorpay signature!");
+// //       return res.render("user/order-failed");
+// //     }
+
+// //     console.log("Wallet payment verified successfully");
+// // const refundTransactionId = "REF" + Math.floor(100000 + Math.random() * 900000);
+// //     let wallet = await Wallet.findOne({ userId });
+// //     if (!wallet) wallet = await Wallet.create({ userId });
+
+// //     wallet.balance += parseFloat(amount);
+// //     wallet.transactions.push({
+// //       amount,
+// //       type: "Razorpay",
+// //       transactionType: "Credit",
+// //       transactionDetail: "Wallet Top-up",
+// //       transactionId: refundTransactionId,
+// //       status: "completed",
+// //     });
+
+// //     await wallet.save();
+
+// //     return res.render("user/wallet-success", {
+// //       message: `₹${amount} added to your wallet successfully!`,
+// //     });
+// //   } catch (error) {
+// //     console.error(" Wallet verification error:", error);
+// //     return res.render("user/order-failed");
+// //   }
+// // };
+
+
+// const verifyWalletPayment = async (req, res) => {
+//   try {
+//     const {
+//       razorpay_order_id,
+//       razorpay_payment_id,
+//       razorpay_signature,
+//       amount,
+//     } = req.body;
+
+//     const userId = req.session.user?.id;
+//     if (!userId) {
+//       return res.json({ success: false });
+//     }
+
+//     // ✅ Signature verify
+//     const sign = razorpay_order_id + "|" + razorpay_payment_id;
+
+//     const expectedSign = crypto
+//       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+//       .update(sign)
+//       .digest("hex");
+
+//     if (expectedSign !== razorpay_signature) {
+//       console.log("❌ Invalid Razorpay signature");
+//       return res.json({ success: false });
+//     }
+
+//     // ✅ ObjectId fix
+//     const mongoose = require("mongoose");
+//     const objectUserId = new mongoose.Types.ObjectId(userId);
+
+//     let wallet = await Wallet.findOne({ userId: objectUserId });
+//     if (!wallet) {
+//       wallet = await Wallet.create({
+//         userId: objectUserId,
+//         balance: 0,
+//         transactions: [],
+//       });
+//     }
+
+//     // ✅ Wallet update
+//     await wallet.addTransaction({
+//       amount: Number(amount),
+//       type: "Razorpay",
+//       transactionType: "Credit",
+//       transactionDetail: "Wallet Top-up",
+//       transactionId: razorpay_payment_id,
+//       status: "completed",
+//     });
+
+//     return res.json({ success: true });
+//   } catch (error) {
+//     console.error("❌ Wallet verification error:", error);
+//     return res.json({ success: false });
+//   }
+// };
+
+
+// module.exports = {
+//   getWalletPage,
+//   createWalletOrder,
+//   verifyWalletPayment,
+// };
+
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
+const mongoose = require("mongoose");
+const Wallet = require("../../models/walletSchema");
+
+const razorpayInstance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+/* ===================== WALLET PAGE ===================== */
 const getWalletPage = async (req, res) => {
   try {
     const userId = req.session.user?.id;
@@ -58,59 +268,53 @@ const getWalletPage = async (req, res) => {
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    let wallet = await Wallet.findOne({ userId });
+    const objectUserId = new mongoose.Types.ObjectId(userId);
 
+    let wallet = await Wallet.findOne({ userId: objectUserId });
     if (!wallet) {
       wallet = await Wallet.create({
-        userId,
+        userId: objectUserId,
         balance: 0,
-        transactions: []
+        transactions: [],
       });
     }
 
-    // Safety
-    wallet.balance = wallet.balance || 0;
-    wallet.transactions = wallet.transactions || [];
+    const transactions = Array.isArray(wallet.transactions)
+      ? wallet.transactions
+      : [];
 
-    const sortedTransactions = [...wallet.transactions].sort(
-      (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
-    );
+    const sortedTransactions = [...transactions].sort((a, b) => {
+      const d1 = a.createdAt ? new Date(a.createdAt) : new Date(0);
+      const d2 = b.createdAt ? new Date(b.createdAt) : new Date(0);
+      return d2 - d1;
+    });
 
     const totalTransactions = sortedTransactions.length;
     const paginatedTransactions = sortedTransactions.slice(skip, skip + limit);
     const totalPages = Math.ceil(totalTransactions / limit);
 
-    return res.render("user/wallet", {
+    res.render("user/wallet", {
       wallet,
       transactions: paginatedTransactions,
       currentPage: page,
       totalPages,
       totalTransactions,
     });
-
   } catch (err) {
-    console.error("❌ Wallet page error:", err);
-    return res.status(500).send("Something went wrong on our side!");
+    console.error("Wallet page error:", err);
+    res.status(500).send("Something went wrong on our side!");
   }
 };
 
-
+/* ===================== CREATE ORDER ===================== */
 const createWalletOrder = async (req, res) => {
   try {
     const { amount } = req.body;
     const userId = req.session.user?.id;
 
-    if (!userId) {
-      console.log(" No user session found");
-      return res.json({ success: false, message: "User not logged in" });
+    if (!userId || !amount || amount <= 0) {
+      return res.json({ success: false });
     }
-
-    if (!amount || amount <= 0) {
-      console.log(" Invalid amount received:", amount);
-      return res.json({ success: false, message: "Invalid amount" });
-    }
-
-    console.log(" Creating Razorpay wallet order for:", amount);
 
     const order = await razorpayInstance.orders.create({
       amount: amount * 100,
@@ -118,24 +322,19 @@ const createWalletOrder = async (req, res) => {
       receipt: "wallet_" + Date.now(),
     });
 
-    console.log(" Razorpay order created:", order.id);
-
     res.json({
       success: true,
       orderId: order.id,
       amount: order.amount,
       key_id: process.env.RAZORPAY_KEY_ID,
     });
-  } catch (error) {
-    console.error(" Error creating Razorpay order:", error);
-    res.json({ success: false, message: error.message });
+  } catch (err) {
+    console.error("Create wallet order error:", err);
+    res.json({ success: false });
   }
-}
+};
 
-
-
-
-
+/* ===================== VERIFY PAYMENT ===================== */
 const verifyWalletPayment = async (req, res) => {
   try {
     const {
@@ -144,54 +343,52 @@ const verifyWalletPayment = async (req, res) => {
       razorpay_signature,
       amount,
     } = req.body;
+
     const userId = req.session.user?.id;
+    if (!userId) return res.json({ success: false });
 
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSign = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(sign.toString())
+      .update(sign)
       .digest("hex");
 
     if (expectedSign !== razorpay_signature) {
-      console.log(" Invalid Razorpay signature!");
-      return res.render("user/order-failed");
+      return res.json({ success: false });
     }
 
-    console.log("Wallet payment verified successfully");
-const refundTransactionId = "REF" + Math.floor(100000 + Math.random() * 900000);
-    let wallet = await Wallet.findOne({ userId });
-    if (!wallet) wallet = await Wallet.create({ userId });
+    const objectUserId = new mongoose.Types.ObjectId(userId);
 
-    wallet.balance += parseFloat(amount);
-    wallet.transactions.push({
-      amount,
+    let wallet = await Wallet.findOne({ userId: objectUserId });
+    if (!wallet) {
+      wallet = await Wallet.create({
+        userId: objectUserId,
+        balance: 0,
+        transactions: [],
+      });
+    }
+
+    await wallet.addTransaction({
+      amount: Number(amount),
       type: "Razorpay",
       transactionType: "Credit",
       transactionDetail: "Wallet Top-up",
-      transactionId: refundTransactionId,
+      transactionId: razorpay_payment_id,
       status: "completed",
     });
 
-    await wallet.save();
-
-    return res.render("user/wallet-success", {
-      message: `₹${amount} added to your wallet successfully!`,
-    });
-  } catch (error) {
-    console.error(" Wallet verification error:", error);
-    return res.render("user/order-failed");
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Verify wallet payment error:", err);
+    res.json({ success: false });
   }
 };
-
-
-
 
 module.exports = {
   getWalletPage,
   createWalletOrder,
   verifyWalletPayment,
 };
-
 
 
 
