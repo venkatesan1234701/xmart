@@ -368,14 +368,27 @@ const verifyWalletPayment = async (req, res) => {
       });
     }
 
-    await wallet.addTransaction({
-      amount: Number(amount),
-      type: "Razorpay",
-      transactionType: "Credit",
-      transactionDetail: "Wallet Top-up",
-      transactionId: razorpay_payment_id,
-      status: "completed",
-    });
+    // await wallet.addTransaction({
+    //   amount: Number(amount),
+    //   type: "Razorpay",
+    //   transactionType: "Credit",
+    //   transactionDetail: "Wallet Top-up",
+    //   transactionId: razorpay_payment_id,
+    //   status: "completed",
+    // });
+
+    const refId = "REF" + Math.floor(100000 + Math.random() * 900000);
+
+await wallet.addTransaction({
+  amount: Number(amount),
+  type: "Razorpay",
+  transactionType: "Credit",
+  transactionDetail: "Wallet Top-up",
+  transactionId: refId,  
+  razorpayPaymentId: razorpay_payment_id, 
+  status: "completed",
+});
+
 
     res.json({ success: true });
   } catch (err) {
