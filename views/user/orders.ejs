@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>My Orders</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- ✅ Bootstrap only -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,6 +17,139 @@
 body {
   background: #f5f7fa;
   font-family: "Inter", sans-serif;
+}
+/* ==================================================
+   MOBILE RESPONSIVE FIX – MY ORDERS PAGE
+   Target: Phones (≤ 576px)
+================================================== */
+@media (max-width: 576px) {
+
+  /* Base readable size */
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    font-size: 0.95rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Container full width */
+  .container {
+    max-width: 100% !important;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  /* ---------------- Navbar ---------------- */
+  .navbar .container {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+
+  .navbar-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px !important;
+  }
+
+  .navbar-nav .nav-link {
+    font-size: 0.85rem;
+    padding: 4px 6px;
+  }
+
+  .navbar form,
+  .navbar .btn {
+    width: 100%;
+    text-align: center;
+    margin-top: 6px;
+  }
+
+  /* ---------------- Search Bar ---------------- */
+  form[action="/user/orders"] {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  input[type="search"] {
+    font-size: 0.9rem;
+  }
+
+  button[type="submit"] {
+    width: 100%;
+  }
+
+  /* ---------------- Title ---------------- */
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  /* ---------------- Table ---------------- */
+  .table {
+    font-size: 0.85rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 10px;
+    white-space: nowrap;
+  }
+
+  .table img {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  /* ---------------- Badges ---------------- */
+  .badge {
+    font-size: 0.75rem;
+    padding: 5px 8px;
+  }
+
+  /* ---------------- Buttons ---------------- */
+  .details-btn {
+    font-size: 0.8rem;
+    padding: 5px 10px !important;
+  }
+
+  /* ---------------- Pagination ---------------- */
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pagination .page-link {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+
+  /* ---------------- Modal ---------------- */
+  .modal-dialog {
+    margin: 10px;
+  }
+
+  .modal-title {
+    font-size: 1.1rem;
+  }
+
+  .modal-body {
+    font-size: 0.9rem;
+  }
+
+  #modalProducts img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .modal-footer button {
+    width: 100%;
+    margin-bottom: 6px;
+  }
 }
 
 /* ------------------------------------
@@ -587,8 +721,8 @@ document.getElementById("downloadInvoiceBtn").addEventListener("click", function
   doc.text(`Date: ${date}`, 140, 35);
   doc.text(`Payment: ${paymentMethod}`, 140, 40);
   doc.text(`Status: ${status}`, 140, 45);
-  doc.text(`Total Amount: ₹${total}`, 140, 50);
-  doc.text(`Discount: ₹${discount}`, 140, 55);
+  doc.text(`Total Amount: ${total}`, 140, 50);
+  doc.text(`Discount: ${discount}`, 140, 55);
   
 
   // ---------------------------------------------------
@@ -624,7 +758,7 @@ document.getElementById("downloadInvoiceBtn").addEventListener("click", function
       productName,
       size,
       qty,
-      `₹${price}`,
+      `${price}`,
       badge
     ]);
   });
@@ -646,7 +780,7 @@ document.getElementById("downloadInvoiceBtn").addEventListener("click", function
   // ---------------------------------------------------
   const finalY = doc.lastAutoTable.finalY + 10;
   doc.setFontSize(12);
-  doc.text(`Grand Total: ₹${total}`, 150, finalY, { align: "right" });
+  doc.text(`Grand Total: ${total}`, 150, finalY, { align: "right" });
 
   // ---------------------------------------------------
   // 6. SHIPPING ADDRESS
@@ -684,7 +818,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const modal = new bootstrap.Modal(document.getElementById("orderDetailsModal"));
   let currentOrder = null;
 
-  // 🟢 Handle "Details" button click
   document.querySelectorAll(".details-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       const order = orders[btn.dataset.orderIndex];
@@ -760,14 +893,20 @@ if (itemStatus === "Returned") {
 } else if (itemStatus === "Returning") {
   actionBtns = `<span class="badge bg-warning text-dark">Returning</span>`;
 
-} else if (itemStatus === "Delivered") {
+}else if (itemStatus === "Delivered") {
   actionBtns = `
     <button class="btn btn-sm btn-outline-warning"
-      onclick="returnProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
+      onclick="openReturnPopup(
+        '${order._id}',
+        '${item.productId._id}',
+        '${item.selectedSize}'
+      )">
       Return
     </button>`;
+}
 
-} else {
+
+ else {
   actionBtns = `
     <button class="btn btn-sm btn-outline-danger"
       onclick="cancelProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
@@ -804,7 +943,6 @@ if (itemStatus === "Returned") {
 
 
   
-  // ❌ Cancel entire order
   document.getElementById("cancelOrderBtn").addEventListener("click", async () => {
     if (!currentOrder?._id) return;
 
@@ -838,7 +976,18 @@ if (itemStatus === "Returned") {
   });
 });
 
-// ✅ Cancel specific product
+function openReturnPopup(orderId, productId, size) {
+  const modalEl = document.getElementById("orderDetailsModal");
+  const modalInstance = bootstrap.Modal.getInstance(modalEl);
+  if (modalInstance) {
+    modalInstance.hide();
+  }
+
+  setTimeout(() => {
+    returnProduct(orderId, productId, size);
+  }, 300);
+}
+
 async function cancelProduct(orderId, productId, size) {
   const confirm = await Swal.fire({
     title: "Cancel this product?",
@@ -863,7 +1012,52 @@ async function cancelProduct(orderId, productId, size) {
   }
 }
 
-// ✅ Return specific product
+
+async function returnProduct(orderId, productId, size) {
+  const { value: reason } = await Swal.fire({
+    title: "Return Product",
+    input: "textarea",
+    inputLabel: "Reason for return",
+    inputPlaceholder: "Please type the reason here...",
+    showCancelButton: true,
+    confirmButtonText: "Submit Return",
+    cancelButtonText: "Cancel",
+    allowOutsideClick: false,
+
+    didOpen: () => {
+      Swal.getInput().focus();
+    },
+
+    inputValidator: (value) => {
+      if (!value) {
+        return "Return reason is required";
+      }
+    }
+  });
+
+  if (!reason) return;
+
+  const res = await fetch(`/user/orders/${orderId}/return-item`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      productId,
+      selectedSize: size,
+      returnReason: reason
+    })
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    await Swal.fire("Return Requested", data.message, "success");
+    location.reload();
+  } else {
+    Swal.fire("Error", data.message || "Failed", "error");
+  }
+}
+
+
 
 // async function returnProduct(orderId, productId, size) {
 //   const confirm = await Swal.fire({
@@ -882,37 +1076,12 @@ async function cancelProduct(orderId, productId, size) {
 
 //   const data = await res.json();
 //   if (res.ok) {
-//     await Swal.fire("✅ Returned!", data.message, "success");
+//     await Swal.fire("✅ Return Requested!", data.message, "success");
 //     location.reload();
 //   } else {
 //     Swal.fire("❌ Error", data.message || "Failed to return product.", "error");
 //   }
 // }
-
-
-async function returnProduct(orderId, productId, size) {
-  const confirm = await Swal.fire({
-    title: "Return this product?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, return it"
-  });
-  if (!confirm.isConfirmed) return;
-
-  const res = await fetch(`/user/orders/${orderId}/return-item`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ productId, selectedSize: size })
-  });
-
-  const data = await res.json();
-  if (res.ok) {
-    await Swal.fire("✅ Return Requested!", data.message, "success");
-    location.reload();
-  } else {
-    Swal.fire("❌ Error", data.message || "Failed to return product.", "error");
-  }
-}
 
 
 </script>

@@ -55,6 +55,174 @@ h2 {
   --danger: #dc2626;
 }
 
+/* =====================================================
+   PRODUCT OFFER – FINAL RESPONSIVE FIX
+   (CSS ONLY | SAFE | NO HTML CHANGE)
+===================================================== */
+
+/* ---------- GLOBAL ---------- */
+body {
+  overflow-x: hidden;
+}
+
+/* ---------- SIDEBAR (MOBILE) ---------- */
+@media (max-width: 768px) {
+  aside {
+    transform: translateX(-100%);
+    transition: 0.3s ease;
+    z-index: 60;
+  }
+
+  aside.open {
+    transform: translateX(0);
+  }
+
+  #menuBtn {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 100;
+  }
+
+  main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding-top: 70px !important;
+  }
+}
+
+/* ---------- PAGE HEADER ---------- */
+@media (max-width: 640px) {
+  h2 {
+    font-size: 18px;
+  }
+}
+
+/* ---------- ADD OFFER BUTTON ---------- */
+@media (max-width: 640px) {
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start !important;
+  }
+
+  #openModalBtn {
+    width: 100%;
+  }
+}
+
+/* ---------- SEARCH BAR ---------- */
+@media (max-width: 640px) {
+  form[action=""] {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #product-search,
+  form[action=""] button {
+    width: 100% !important;
+  }
+}
+
+/* ---------- TABLE WRAPPER ---------- */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---------- TABLE BASE ---------- */
+table {
+  width: 100%;
+  min-width: 900px; /* desktop look + mobile scroll */
+  border-collapse: collapse;
+}
+
+/* ---------- TABLE CELL ---------- */
+thead th,
+tbody td {
+  white-space: nowrap;
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+/* ---------- PRODUCT COLUMN ---------- */
+td:nth-child(2) {
+  min-width: 200px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* ---------- STATUS BADGE ---------- */
+.badge {
+  white-space: nowrap;
+}
+
+/* ---------- ACTION BUTTONS ---------- */
+.btn-edit,
+.btn-delete {
+  white-space: nowrap;
+}
+
+/* ---------- MOBILE TABLE FONT ---------- */
+@media (max-width: 576px) {
+  table {
+    min-width: 850px;
+  }
+
+  thead th,
+  tbody td {
+    font-size: 13px;
+    padding: 10px;
+  }
+}
+
+/* =====================================================
+   CARD VIEW FOR VERY SMALL MOBILE
+===================================================== */
+@media (max-width: 480px) {
+  table thead {
+    display: none;
+  }
+
+  table tbody tr {
+    display: block;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    padding: 10px;
+  }
+
+  table tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 4px;
+    text-align: left !important;
+  }
+
+  table tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #6b7280;
+    padding-right: 10px;
+  }
+
+  table tbody td:last-child {
+    justify-content: flex-end;
+  }
+}
+
+/* ---------- MODAL (MOBILE POLISH) ---------- */
+@media (max-width: 576px) {
+  .modal-dialog {
+    margin: 10px;
+  }
+
+  .modal-content {
+    padding: 10px;
+  }
+}
+
 
 /* ==============================================
    NAVBAR

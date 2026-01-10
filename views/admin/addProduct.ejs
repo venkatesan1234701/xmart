@@ -3,12 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>add product</title>
   <style>
     /* ---- Universal Modal Overlay ---- */
 #addProductModal {
   backdrop-filter: blur(4px);
   animation: fadeIn 0.3s ease;
+}
+/* ==================================================
+   MOBILE RESPONSIVE FIX – ADD PRODUCT MODAL
+   Target: Phones (≤ 576px)
+================================================== */
+@media (max-width: 576px) {
+
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    font-size: 0.95rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* -------- Modal positioning -------- */
+  #addProductModal {
+    padding: 12px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #addProductModal > div {
+    max-width: 100%;
+    width: 100%;
+    padding: 16px !important;
+    max-height: 95vh;
+    border-radius: 12px !important;
+  }
+
+  /* -------- Title -------- */
+  #modalTitle {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  /* -------- Form layout -------- */
+  #productForm .flex {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Inputs & selects */
+  #productForm input,
+  #productForm select,
+  #productForm textarea {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  #productForm label {
+    font-size: 0.85rem;
+  }
+
+  /* -------- Image upload -------- */
+  .imageInput {
+    font-size: 0.8rem;
+  }
+
+  .relative.w-20.h-20 {
+    width: 70px;
+    height: 70px;
+  }
+
+  /* -------- Buttons -------- */
+  #closeModal,
+  #saveBtn {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .flex.justify-end.gap-2 {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* -------- Error msg -------- */
+  #errorMsg {
+    font-size: 0.8rem;
+    text-align: center;
+  }
 }
 
 /* ---- Modal Box ---- */

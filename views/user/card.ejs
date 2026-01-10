@@ -7,7 +7,7 @@
 	<!-- Required meta tags -->
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon/favicon.ico" />
 
 <!-- Libs CSS -->
@@ -1992,84 +1992,185 @@ document.addEventListener('click', e => {
 
 
 
+// document.addEventListener("DOMContentLoaded", () => {
+//   const updateQuantity = async (productId, selectedSize, action) => {
+//     try {
+//       const res = await fetch('/cart/update-quantity', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({ productId, selectedSize, action })
+//       });
+
+//       const data = await res.json();
+
+//       if (data.forceUpdate) {
+//         Swal.fire({
+//           icon: "warning",
+//           title: "Stock Updated",
+//           text: data.message
+//         }).then(() => location.reload());
+//         return;
+//       }
+
+//       if (!data.success) {
+//         Swal.fire({
+//           icon: "warning",
+//           title: "Oops!",
+//           text: data.message
+//         });
+//         return;
+//       }
+
+//       updateCartUI(data);
+      
+//     } catch (err) {
+//       Swal.fire({
+//         icon: "error",
+//         title: "Server Error",
+//         text: "Try again later"
+//       });
+//     }
+//   }
+//   const updateCartUI = (data) => {
+//   console.log(" UPDATE DATA:", data)
+
+//   const qtyInput = document.querySelector(`input[data-id="${data.productId}"][data-size="${data.selectedSize}"]`);
+//   if (qtyInput) {
+//     qtyInput.value = data.updatedQty;
+//   }
+//   const buttons = document.querySelectorAll(`[data-id="${data.productId}"][data-size="${data.selectedSize}"]`);
+//   buttons.forEach(btn => {
+//     const row = btn.closest('tr, .flex, .cart-row, .cart-item');
+//     if (row) {
+//       const priceEls = row.querySelectorAll('₹, .font-bold, .text-right, [class*="price"]');
+//       if (priceEls.length > 0) {
+//         priceEls[priceEls.length - 1].textContent = `₹${data.rowTotal.toFixed(0)}`;
+//         console.log("ROW PRICE:", data.rowTotal);
+//       }
+//     }
+//   })
+//   document.getElementById('subtotalValue').textContent = `₹${data.subtotal.toFixed(0)}`;
+//   document.getElementById('serviceFeeValue').textContent = `₹${data.shippingCost.toFixed(0)}`;
+//   document.getElementById('couponDiscountValue').textContent = `-₹${data.couponDiscount.toFixed(0)}`;
+//   document.getElementById('grandTotalValue').textContent = `₹${data.grandTotal.toFixed(0)}`;
+//   document.getElementById('grandTotalButton').textContent = `₹${data.grandTotal.toFixed(0)}`;
+//     refreshCouponEligibility()
+// }
+//   document.querySelectorAll(".button-minus, .button-plus").forEach(btn => {
+//     btn.addEventListener("click", (e) => {
+//       const productId = e.target.dataset.id;
+//       const size = e.target.dataset.size;
+//       const action = e.target.dataset.action;
+//       updateQuantity(productId, size, action);
+//     });
+//   });
+// });
+
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
+
   const updateQuantity = async (productId, selectedSize, action) => {
     try {
-      const res = await fetch('/cart/update-quantity', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/cart/update-quantity", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId, selectedSize, action })
       });
 
       const data = await res.json();
-
-      if (data.forceUpdate) {
-        Swal.fire({
-          icon: "warning",
-          title: "Stock Updated",
-          text: data.message
-        }).then(() => location.reload());
-        return;
-      }
+      console.log("UPDATE RESPONSE:", data);
 
       if (!data.success) {
+        if (data.failureType === "STOCK_UPDATED") {
+          Swal.fire({
+            icon: "warning",
+            title: "Stock Updated",
+            text: data.message
+          }).then(() => {
+            location.reload(); 
+          });
+          return;
+        }
+
+        if (data.failureType === "STOCK_LIMIT") {
+          Swal.fire({
+            icon: "warning",
+            title: "Stock Limit Reached",
+            html: `
+              Only <b>${data.availableQty}</b> items available
+              for size <b>${data.selectedSize}</b>
+            `
+          });
+          return;
+        }
+
+        if (data.failureType === "MAX_LIMIT") {
+          Swal.fire({
+            icon: "info",
+            title: "Quantity Limit",
+            text: data.message
+          });
+          return;
+        }
+
+        if (data.failureType === "MIN_LIMIT") {
+          Swal.fire({
+            icon: "info",
+            title: "Minimum Quantity",
+            text: data.message
+          });
+          return;
+        }
+
         Swal.fire({
           icon: "warning",
           title: "Oops!",
-          text: data.message
+          text: data.message || "Something went wrong"
         });
         return;
       }
 
       updateCartUI(data);
-      
+
     } catch (err) {
+      console.error(err);
       Swal.fire({
         icon: "error",
         title: "Server Error",
-        text: "Try again later"
+        text: "Please try again later"
       });
     }
-  }
-  const updateCartUI = (data) => {
-  console.log(" UPDATE DATA:", data)
+  };
 
-  const qtyInput = document.querySelector(`input[data-id="${data.productId}"][data-size="${data.selectedSize}"]`);
-  if (qtyInput) {
-    qtyInput.value = data.updatedQty;
-  }
-  const buttons = document.querySelectorAll(`[data-id="${data.productId}"][data-size="${data.selectedSize}"]`);
-  buttons.forEach(btn => {
-    const row = btn.closest('tr, .flex, .cart-row, .cart-item');
-    if (row) {
-      const priceEls = row.querySelectorAll('₹, .font-bold, .text-right, [class*="price"]');
-      if (priceEls.length > 0) {
-        priceEls[priceEls.length - 1].textContent = `₹${data.rowTotal.toFixed(0)}`;
-        console.log("ROW PRICE:", data.rowTotal);
-      }
-    }
-  })
-  document.getElementById('subtotalValue').textContent = `₹${data.subtotal.toFixed(0)}`;
-  document.getElementById('serviceFeeValue').textContent = `₹${data.shippingCost.toFixed(0)}`;
-  document.getElementById('couponDiscountValue').textContent = `-₹${data.couponDiscount.toFixed(0)}`;
-  document.getElementById('grandTotalValue').textContent = `₹${data.grandTotal.toFixed(0)}`;
-  document.getElementById('grandTotalButton').textContent = `₹${data.grandTotal.toFixed(0)}`;
-    refreshCouponEligibility()
-}
-  document.querySelectorAll(".button-minus, .button-plus").forEach(btn => {
+  const updateCartUI = (data) => {
+
+    const qtyInput = document.querySelector(
+      `.quantity-field[data-id="${data.productId}"][data-size="${data.selectedSize}"]`
+    );
+    if (qtyInput) qtyInput.value = data.updatedQty;
+
+    const productTotal = document.querySelector(
+      `.product-total[data-id="${data.productId}"][data-size="${data.selectedSize}"]`
+    );
+    if (productTotal) productTotal.textContent = `₹${data.rowTotal}`;
+
+    document.getElementById("subtotalValue").textContent = `₹${data.subtotal}`;
+    document.getElementById("serviceFeeValue").textContent = `₹${data.shippingCost}`;
+    document.getElementById("couponDiscountValue").textContent = `-₹0`;
+    document.getElementById("grandTotalValue").textContent = `₹${data.grandTotal}`;
+    document.getElementById("grandTotalButton").textContent = `₹${data.grandTotal}`;
+  };
+
+  document.querySelectorAll(".button-plus, .button-minus").forEach(btn => {
     btn.addEventListener("click", (e) => {
-      const productId = e.target.dataset.id;
-      const size = e.target.dataset.size;
-      const action = e.target.dataset.action;
-      updateQuantity(productId, size, action);
+      const { id, size, action } = e.currentTarget.dataset;
+      updateQuantity(id, size, action);
     });
   });
+
 });
-
-
-
-
-
 
 
 

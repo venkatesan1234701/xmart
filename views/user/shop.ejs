@@ -7,7 +7,7 @@
 	<!-- Required meta tags -->
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="assets/libs/nouislider/dist/nouislider.min.css" rel="stylesheet" />
 	<link href="assets/libs/tiny-slider/dist/tiny-slider.css" rel="stylesheet" />
 	<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon/favicon.ico" />
@@ -2062,6 +2062,67 @@ Remove if you do not want.
 
 
 <script>
+// async function filterProductsByCategory() {
+//   const category = document.getElementById("categorySelect").value;
+
+//   const res = await fetch(`/filter-products?category=${category}`);
+//   const data = await res.json();
+
+//   const container = document.getElementById("productContainer");
+//   container.innerHTML = "";
+
+//   data.products.forEach(p => {
+//     container.innerHTML += `
+//       <div class="p-4 border rounded">
+//         <h3>${p.name}</h3>
+//         <p>₹ ${p.price}</p>
+//       </div>
+//     `;
+//   });
+
+//   // HIDE PAGINATION WHEN FILTER APPLIED
+//   document.getElementById("paginationBox")?.classList.add("hidden");
+// }
+
+// const paginationBox = document.getElementById("paginationBox");
+// const filtersBox = document.getElementById("filtersBox");
+
+// // HIDE pagination when user clicks ANYWHERE inside filter section
+// filtersBox.addEventListener("click", () => {
+//   paginationBox?.classList.add("hidden");
+// });
+
+// // HIDE pagination when a filter value changes
+// filtersBox.addEventListener("change", () => {
+//   paginationBox?.classList.add("hidden");
+// });
+
+
+
+
+
+
+
+/* ===============================
+   GLOBAL ELEMENTS
+================================ */
+const paginationBox = document.getElementById("paginationBox");
+const filtersBox = document.getElementById("filtersBox");
+const sortSelect = document.getElementById("sortSelect");
+
+
+/* ===============================
+   PAGE LOAD → SHOW PAGINATION
+================================ */
+document.addEventListener("DOMContentLoaded", () => {
+  paginationBox?.classList.remove("hidden");
+});
+
+
+/* ===============================
+   CATEGORY FILTER
+   → FILTER APPLY = PAGINATION HIDE
+================================ */
 async function filterProductsByCategory() {
   const category = document.getElementById("categorySelect").value;
 
@@ -2080,22 +2141,61 @@ async function filterProductsByCategory() {
     `;
   });
 
-  // HIDE PAGINATION WHEN FILTER APPLIED
-  document.getElementById("paginationBox")?.classList.add("hidden");
+  // ❌ Filter → pagination hide
+  paginationBox?.classList.add("hidden");
 }
 
-const paginationBox = document.getElementById("paginationBox");
-const filtersBox = document.getElementById("filtersBox");
 
-// HIDE pagination when user clicks ANYWHERE inside filter section
-filtersBox.addEventListener("click", () => {
-  paginationBox?.classList.add("hidden");
-});
+/* ===============================
+   SORT
+   → SORT APPLY = PAGINATION SHOW + WORK
+================================ */
+if (sortSelect) {
+  sortSelect.addEventListener("change", async function () {
+    const sortValue = this.value;
 
-// HIDE pagination when a filter value changes
-filtersBox.addEventListener("change", () => {
-  paginationBox?.classList.add("hidden");
-});
+    const res = await fetch(`/sort-products?sort=${sortValue}&page=1`);
+    const data = await res.json();
+
+    const container = document.getElementById("productContainer");
+    container.innerHTML = "";
+
+    data.products.forEach(p => {
+      container.innerHTML += `
+        <div class="p-4 border rounded">
+          <h3>${p.name}</h3>
+          <p>₹ ${p.price}</p>
+        </div>
+      `;
+    });
+
+    // ✅ SORT → pagination SHOW
+    paginationBox?.classList.remove("hidden");
+  });
+}
+
+
+/* ===============================
+   OTHER FILTER INTERACTIONS
+   (EXCEPT SORT)
+   → PAGINATION HIDE
+================================ */
+if (filtersBox) {
+  filtersBox.addEventListener("click", (e) => {
+    // ⚠️ if click comes from sortSelect → ignore
+    if (e.target.closest("#sortSelect")) return;
+
+    paginationBox?.classList.add("hidden");
+  });
+
+  filtersBox.addEventListener("change", (e) => {
+    // ⚠️ if change comes from sortSelect → ignore
+    if (e.target.id === "sortSelect") return;
+
+    paginationBox?.classList.add("hidden");
+  });
+}
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -2218,11 +2318,15 @@ function filterProductsByCategory() {
 }
 
 
+document.getElementById("sortSelect").addEventListener("change", function () {
+  const sort = this.value;
+  window.location.href = `/shop?sort=${sort}&page=1`;
+});
 
 
 
 
-const sortSelect = document.getElementById('sortSelect');
+// const sortSelect = document.getElementById('sortSelect');
 
 sortSelect.addEventListener('change', function() {
   const value = this.value;

@@ -7,6 +7,7 @@
 	<!-- Required meta tags -->
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="shortcut icon" type="image/x-icon" href="../assets/images/favicon/favicon.ico" />
 
 <!-- Libs CSS -->
@@ -33,7 +34,197 @@
 
 
 <style>
-  
+  /* =====================================================
+   PRODUCTS PAGE – FINAL RESPONSIVE FIX
+   (CSS ONLY | SAFE | NO HTML CHANGE)
+===================================================== */
+
+body {
+  overflow-x: hidden;
+}
+
+/* ================= SIDEBAR (MOBILE) ================= */
+@media (max-width: 768px) {
+  aside {
+    transform: translateX(-100%);
+    transition: 0.3s ease;
+    z-index: 60;
+  }
+
+  aside.open {
+    transform: translateX(0);
+  }
+
+  #menuBtn {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 100;
+  }
+
+  main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding-top: 70px !important;
+  }
+}
+
+/* ================= PAGE HEADER ================= */
+@media (max-width: 640px) {
+  h2 {
+    font-size: 18px;
+  }
+}
+
+/* ================= SEARCH BAR ================= */
+@media (max-width: 640px) {
+  #productsSearchForm {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  #productsSearchForm .relative {
+    width: 100%;
+  }
+
+  #productsSearchForm button {
+    width: 100%;
+  }
+}
+
+/* ================= ADD PRODUCT BUTTON ================= */
+@media (max-width: 640px) {
+  #addProductBtn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
+/* ================= TABLE WRAPPER ================= */
+.bg-white.rounded-lg.shadow-md {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ================= TABLE BASE ================= */
+table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+}
+
+/* ================= TABLE CELLS ================= */
+thead th,
+tbody td {
+  white-space: nowrap;
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+/* Product Name Column */
+td:first-child {
+  min-width: 200px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Image Column */
+td:nth-child(3) {
+  min-width: 120px;
+}
+
+/* Action Column */
+td:last-child {
+  min-width: 220px;
+}
+
+/* ================= ACTION BUTTONS ================= */
+.editBtn,
+.detailsBtn,
+button {
+  white-space: nowrap;
+}
+
+/* ================= MOBILE CARD VIEW ================= */
+@media (max-width: 576px) {
+  table {
+    min-width: 850px;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody tr {
+    display: block;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    padding: 10px;
+  }
+
+  tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 4px;
+    text-align: left !important;
+  }
+
+  tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #6b7280;
+    padding-right: 10px;
+  }
+
+  tbody td:last-child {
+    justify-content: flex-end;
+  }
+}
+
+/* ================= ADD / EDIT MODAL ================= */
+@media (max-width: 640px) {
+  #addProductModal > div,
+  #cropModal > div {
+    max-width: 95%;
+    padding: 12px;
+  }
+
+  .size-row {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .sizePrice,
+  .sizeQty {
+    width: 100%;
+  }
+}
+
+/* ================= DETAILS MODAL ================= */
+@media (max-width: 640px) {
+  #detailsModal .modal-box {
+    width: 95%;
+    padding: 14px;
+  }
+
+  #detailsImages img {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+/* ================= PAGINATION ================= */
+@media (max-width: 640px) {
+  nav.flex.items-center.gap-x-1 {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+}
+
   /* ==========================================================
    GLOBAL PAGE STYLING
 ========================================================== */
@@ -869,7 +1060,7 @@ table td {
                   </div>
                 <% } %>
               </td>
-              <td class="py-2 px-4 flex gap-2 justify-center align-middle">
+              <!-- <td class="py-2 px-4 flex gap-2 justify-center align-middle">
                 <a href="javascript:void(0)" class="editBtn px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700" data-id="<%= prod._id %>">Edit</a>
                <% if (!prod.isDeleted) { %>
   <button 
@@ -886,14 +1077,53 @@ table td {
 <% } %>
 
                
-                <!-- <button onclick="confirmDelete('<%= prod._id %>')" class="px-3 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700">Delete</button> -->
+               
                 <button 
                   class="px-3 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-700" 
                   data-prod='<%= JSON.stringify(prod) %>' 
                   onclick="viewDetails(this)">
                   Details
                 </button>
-              </td>
+              </td> -->
+           
+           <td class="py-2 px-4 flex gap-2 justify-center align-middle">
+
+  <!-- EDIT -->
+  <button
+    type="button"
+    class="editBtn px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700"
+    data-id="<%= prod._id %>">
+    Edit
+  </button>
+
+  <% if (!prod.isDeleted) { %>
+    <button 
+      type="button"
+      onclick="confirmToggle('<%= prod._id %>', 'unlist')" 
+      class="px-3 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700">
+      Unlist
+    </button>
+  <% } else { %>
+    <button 
+      type="button"
+      onclick="confirmToggle('<%= prod._id %>', 'list')" 
+      class="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700">
+      List
+    </button>
+  <% } %>
+
+  <!-- DETAILS -->
+  <button 
+    type="button"
+    class="px-3 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-700"
+    data-prod='<%= JSON.stringify(prod) %>' 
+    onclick="viewDetails(this)">
+    Details
+  </button>
+
+</td>
+
+           
             </tr>
           <% }) %>
         <% } else { %>

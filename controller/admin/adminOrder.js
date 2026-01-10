@@ -62,6 +62,38 @@ const getAllOrders = async (req, res) => {
 }
 
 
+const cancelReturnOrder = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    order.products = order.products.map(item => {
+      if (
+        item.itemStatus &&
+        item.itemStatus.toLowerCase().trim() === "returning"
+      ) {
+        item.itemStatus = "Delivered";
+      }
+      return item;
+    })
+    order.orderStatus = "Delivered";
+
+    await order.save();
+
+    res.json({
+      success: true,
+      message: "Return cancelled. Order marked as Delivered."
+    });
+
+  } catch (error) {
+    console.error("Cancel Return Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 
 const getSingleOrder = async (req, res) => {
@@ -122,6 +154,7 @@ const getSingleOrder = async (req, res) => {
           pricePerUnit: toNumber(item.pricePerUnit),
           totalPrice: toNumber(item.totalPrice),
           itemStatus: item.itemStatus || "Pending", 
+           returnReason: item.returnReason || null,
         };
       }),
     };
@@ -304,5 +337,6 @@ module.exports = {
      getAllOrders,
      getSingleOrder,
      updateOrderStatus,
-     approveAllReturns
+     approveAllReturns,
+     cancelReturnOrder
      };

@@ -539,8 +539,13 @@ const getCheckoutPage = async (req, res) => {
       0
     );
 
-    const shippingCost = cart.shippingCost || 40;
-    const grandTotal = subtotal + shippingCost;
+    // const shippingCost = cart.shippingCost || 40;
+    // const grandTotal = subtotal + shippingCost;
+
+const shippingCost = cart.shippingCost || 40;
+const discount = cart.coupon?.discount || 0;
+const grandTotal = subtotal - discount + shippingCost;
+
 
     cart.subtotal = subtotal;
     cart.grandTotal = grandTotal;
@@ -933,32 +938,80 @@ const razorpayInstance = new Razorpay({
 })
 
 
+// const returnOrderItem = async (req, res) => {
+//   try {
+//     const { orderId } = req.params;
+//     const { productId, selectedSize } = req.body;
+//     const userId = req.session.user?.id;
+
+//     if (!userId || !orderId || !productId || !selectedSize) {
+//       return res.status(400).json({ success: false, message: "Missing fields" });
+//     }
+
+//     const order = await Order.findById(orderId).populate("products.productId");
+//     if (!order || order.userId.toString() !== userId) {
+//       return res.status(404).json({ success: false, message: "Order not found" });
+//     }
+
+//     const productItem = order.products.find(
+//       (p) => p.productId._id.toString() === productId && 
+//              p.selectedSize === selectedSize &&
+//              p.itemStatus !== "Returned"
+//     );
+
+//     if (!productItem) {
+//       return res.status(400).json({ success: false, message: "Invalid return request" });
+//     }
+
+//     productItem.itemStatus = "Returning";
+//     order.orderStatus = "Returning";
+
+//     await order.save();
+
+//     res.json({
+//       success: true,
+//       message: "Return request sent! Waiting for admin approval",
+//       orderStatus: "Returning"
+//     });
+
+//   } catch (err) {
+//     console.error("Return Error:", err);
+//     res.status(500).json({ success: false, message: "Server error" });
+//   }
+// };
+
+
 const returnOrderItem = async (req, res) => {
   try {
     const { orderId } = req.params;
-    const { productId, selectedSize } = req.body;
+    const { productId, selectedSize, returnReason } = req.body;
     const userId = req.session.user?.id;
 
-    if (!userId || !orderId || !productId || !selectedSize) {
-      return res.status(400).json({ success: false, message: "Missing fields" });
+    if (!userId || !orderId || !productId || !selectedSize || !returnReason) {
+      return res.status(400).json({ message: "Missing fields" });
     }
 
-    const order = await Order.findById(orderId).populate("products.productId");
+    const order = await Order.findById(orderId);
     if (!order || order.userId.toString() !== userId) {
-      return res.status(404).json({ success: false, message: "Order not found" });
+      return res.status(404).json({ message: "Order not found" });
     }
 
     const productItem = order.products.find(
-      (p) => p.productId._id.toString() === productId && 
-             p.selectedSize === selectedSize &&
-             p.itemStatus !== "Returned"
+      (p) =>
+        p.productId.toString() === productId &&
+        p.selectedSize === selectedSize &&
+        p.itemStatus !== "Returned"
     );
 
     if (!productItem) {
-      return res.status(400).json({ success: false, message: "Invalid return request" });
+      return res.status(400).json({ message: "Invalid return request" });
     }
 
     productItem.itemStatus = "Returning";
+
+    productItem.returnReason = returnReason;
+    productItem.returnRequestedAt = new Date();
+
     order.orderStatus = "Returning";
 
     await order.save();
@@ -966,16 +1019,12 @@ const returnOrderItem = async (req, res) => {
     res.json({
       success: true,
       message: "Return request sent! Waiting for admin approval",
-      orderStatus: "Returning"
     });
-
   } catch (err) {
     console.error("Return Error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 };
-
-
 
 
 const createRepayOrder = async (req, res) => {

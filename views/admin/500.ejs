@@ -2,9 +2,53 @@
 <html>
   <head>
     <title>Server Error</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
+      /* ==================================================
+   MOBILE RESPONSIVE FIX – ERROR PAGE
+   Target: Phones (≤ 576px)
+================================================== */
+@media (max-width: 576px) {
+
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    font-size: 0.95rem;
+    padding: 16px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* -------- Error Card -------- */
+  .error-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 24px;
+    border-radius: 14px;
+  }
+
+  /* -------- Heading -------- */
+  .error-card h1 {
+    font-size: 1.6rem;
+  }
+
+  /* -------- Message -------- */
+  .error-card p {
+    font-size: 0.9rem;
+  }
+
+  /* -------- Button -------- */
+  .back-btn {
+    width: 100%;
+    display: block;
+    text-align: center;
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+}
+
       /* Background */
 body {
   font-family: "Inter", sans-serif;

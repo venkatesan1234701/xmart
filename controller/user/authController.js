@@ -563,9 +563,13 @@ const postForgotPassword = async (req, res) => {
   try {
     const email = req.body.email;
     const user = await User.findOne({ email })
+    // if (!user) {
+    //   return res.render("user/forgot-password", { error: "Email not found!" })
+    // }
+
     if (!user) {
-      return res.render("user/forgot-password", { error: "Email not found!" })
-    }
+  return res.render("user/forgot-password", { error: "Email not found" });
+}
 
     const otpCode = crypto.randomInt(100000, 999999).toString()
     console.log('forgot',otpCode)

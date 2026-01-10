@@ -9,7 +9,11 @@ const userSchema = new mongoose.Schema(
     email: { type: String, unique: true },
     phone: { type: String, unique: true, sparse: true },
     password: String,
-    profile: String, 
+    // profile: String, 
+    profile: {
+  type: String,
+  default: "/images/default-user.png"
+},
     googleId: { type: String, unique: true, sparse: true },
     isBlocked: { type: Boolean, default: false },
     referredBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

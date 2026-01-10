@@ -7,6 +7,7 @@
 	<!-- Required meta tags -->
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="shortcut icon" type="image/x-icon" href="../assets/images/favicon/favicon.ico" />
 
 <!-- Libs CSS -->
@@ -20,6 +21,158 @@
 <link rel="stylesheet" href="../assets/css/theme.min.css">
 
 <style>
+  /* =====================================================
+   DASHBOARD – FINAL RESPONSIVE FIX
+   (CSS ONLY | NO HTML / JS CHANGE)
+===================================================== */
+
+/* ---------- GLOBAL ---------- */
+body {
+  overflow-x: hidden;
+}
+
+/* ---------- SIDEBAR (MOBILE) ---------- */
+@media (max-width: 768px) {
+  aside {
+    transform: translateX(-100%);
+    transition: 0.3s ease;
+    z-index: 60;
+  }
+
+  aside.open {
+    transform: translateX(0);
+  }
+
+  #menuBtn {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 100;
+  }
+
+  main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding-top: 70px !important;
+  }
+}
+
+/* ---------- WELCOME CARD ---------- */
+@media (max-width: 768px) {
+  .card.bg-gray-100 h1 {
+    font-size: 22px;
+  }
+
+  .card.bg-gray-100 p {
+    font-size: 14px;
+  }
+
+  .card.bg-gray-100 .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ---------- DASHBOARD STATS CARDS ---------- */
+@media (max-width: 768px) {
+  .card-lg {
+    margin-bottom: 16px;
+  }
+
+  .card-lg h4 {
+    font-size: 15px;
+  }
+
+  .card-lg h1 {
+    font-size: 20px;
+  }
+}
+
+/* ---------- GRID FIX ---------- */
+@media (max-width: 1024px) {
+  .grid.grid-cols-12 > div {
+    grid-column: span 12 / span 12 !important;
+  }
+}
+
+/* ---------- REVENUE CARD ---------- */
+@media (max-width: 768px) {
+  #revenueFilter {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  #dateFilterForm {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #dateFilterForm input,
+  #dateFilterForm button {
+    width: 100%;
+  }
+}
+
+/* ---------- CHARTS ---------- */
+@media (max-width: 768px) {
+  canvas {
+    max-width: 100%;
+    height: auto !important;
+  }
+}
+
+/* ---------- DOWNLOAD MENU ---------- */
+@media (max-width: 768px) {
+  #downloadMenu {
+    right: auto;
+    left: 0;
+  }
+}
+
+/* ---------- TOP SELLING PRODUCTS ---------- */
+@media (max-width: 768px) {
+  #bestProductsList li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  #bestProductsList img {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* ---------- TOP SELLING CATEGORY ---------- */
+@media (max-width: 768px) {
+  #bestCategoryBox > div {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
+
+/* ---------- GENERAL MOBILE FONT ---------- */
+@media (max-width: 576px) {
+  h1 {
+    font-size: 20px;
+  }
+
+  h3 {
+    font-size: 16px;
+  }
+
+  h4 {
+    font-size: 14px;
+  }
+
+  p,
+  span,
+  li {
+    font-size: 13px;
+  }
+}
+
   /* ===========================================
    GLOBAL RESET / IMPROVEMENTS
 =========================================== */
@@ -657,7 +810,11 @@ canvas {
 
 
 <script>
+  const today = new Date().toISOString().split("T")[0];
 
+  // disable future dates
+  document.getElementById("startDate").setAttribute("max", today);
+  document.getElementById("endDate").setAttribute("max", today);
 
 	const $ = id => document.getElementById(id);
 

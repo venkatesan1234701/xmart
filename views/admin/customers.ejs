@@ -68,6 +68,44 @@ nav .nav-link:hover {
   box-shadow: 0 0 0 3px rgba(34,197,94,0.25);
 }
 
+/* ================================
+   RESPONSIVE TABLE – MOBILE FIX
+================================ */
+
+/* Wrapper for horizontal scroll */
+.responsive-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  z-index: 10;
+}
+
+/* Table width control */
+.responsive-table {
+  min-width: 650px; /* forces scroll on mobile */
+}
+
+/* Make buttons clickable on mobile */
+.responsive-table button {
+  position: relative;
+  z-index: 20;
+  touch-action: manipulation;
+}
+
+/* Mobile specific */
+@media (max-width: 768px) {
+  .responsive-table-wrapper {
+    border-radius: 12px;
+  }
+
+  .responsive-table th,
+  .responsive-table td {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+}
+
 #searchForm button {
   border-radius: 10px;
   background: #16a34a;
@@ -381,6 +419,39 @@ nav[aria-label="breadcrumb"] ol {
 						</div>
 					</div>
 					<!-- row -->
+
+
+
+          <!-- Responsive Table Wrapper -->
+<div class="responsive-table-wrapper">
+  <table class="responsive-table text-left w-full whitespace-nowrap table-with-checkbox table-hover">
+      <thead class="bg-gray-200 text-gray-700">
+        <tr class="border-transparent !border-b-0">
+          <!-- <th scope="col" class="px-6 py-3"></th> -->
+          <th scope="col" class="px-6 py-3">Name</th>
+          <th scope="col" class="px-6 py-3">Email</th>
+          <th scope="col" class="px-6 py-3">Phone</th>
+          <th scope="col" class="px-6 py-3">Block / Unblock</th>
+        </tr>
+      </thead>
+      <tbody id="searchResults">
+        <% users.forEach(user => { %>
+          <tr class="border-b">
+            <!-- <td class="py-3 px-6"></td> -->
+            <td class="py-3 px-6 text-gray-800"><%= user.firstName %></td>
+            <td class="py-3 px-6"><%= user.email %></td>
+            <td class="py-3 px-6"><%= user.phone || '-' %></td>
+            <td class="py-3 px-6">
+              <button class="px-3 py-1 rounded text-white <%= user.isBlocked ? 'bg-green-500' : 'bg-red-500' %>"
+                      onclick="toggleBlock('<%= user._id %>', this)">
+                <%= user.isBlocked ? 'Unblock' : 'Block' %>
+              </button>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+</div>
 					<div class="grid grid-cols-1">
 						<!-- card -->
 						<div class="card h-full card-lg">
@@ -414,10 +485,10 @@ nav[aria-label="breadcrumb"] ol {
       <button type="submit" class="ml-2 px-4 py-2 bg-green-600 text-white rounded-lg">Search</button>
     </form> -->
 
-    <table class="text-left w-full whitespace-nowrap table-with-checkbox table-hover">
+    <!-- <table class="text-left w-full whitespace-nowrap table-with-checkbox table-hover">
       <thead class="bg-gray-200 text-gray-700">
         <tr class="border-transparent !border-b-0">
-          <!-- <th scope="col" class="px-6 py-3"></th> -->
+
           <th scope="col" class="px-6 py-3">Name</th>
           <th scope="col" class="px-6 py-3">Email</th>
           <th scope="col" class="px-6 py-3">Phone</th>
@@ -427,7 +498,7 @@ nav[aria-label="breadcrumb"] ol {
       <tbody id="searchResults">
         <% users.forEach(user => { %>
           <tr class="border-b">
-            <!-- <td class="py-3 px-6"></td> -->
+
             <td class="py-3 px-6 text-gray-800"><%= user.firstName %></td>
             <td class="py-3 px-6"><%= user.email %></td>
             <td class="py-3 px-6"><%= user.phone || '-' %></td>
@@ -440,7 +511,7 @@ nav[aria-label="breadcrumb"] ol {
           </tr>
         <% }) %>
       </tbody>
-    </table>
+    </table> -->
   </div>
 </div>
 

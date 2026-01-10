@@ -12,74 +12,214 @@ const { models } = require("mongoose")
 
 
 
+// const getShopPage = async (req, res) => {
+//   try {
+//     const user = req.session.user || null;
+//     const perPage = 12;
+//     const page = parseInt(req.query.page) || 1;
+//     const sort = req.query.sort || 'newest';
+//     const query = req.query.query || ''; 
+//     const categoryFilter = req.query.category || 'all'; 
+
+//     let sortOption = { createdAt: -1 };
+//     if (sort === 'lowToHigh') sortOption = { 'prices.0': 1 };
+//     if (sort === 'highToLow') sortOption = { 'prices.0': -1 };
+//     if (sort === 'nameAToZ') sortOption = { name: 1 };
+//     if (sort === 'nameZToA') sortOption = { name: -1 };
+
+//     const categories = await Category.find({ 
+//       isBlocked: false, 
+//       isDeleted: false 
+//     }).lean();
+
+//     let productFilter = { 
+//       isDeleted: false 
+//     };
+
+//     if (query && query.trim().length >= 2) {
+//       productFilter.name = { 
+//         $regex: query.trim(), 
+//         $options: "i" 
+//       };
+//     }
+
+//     if (categoryFilter && categoryFilter !== 'all') {
+//       productFilter.category = categoryFilter;
+//     }
+
+//     let products = await Product.find(productFilter)
+//       .populate({ 
+//         path: 'category', 
+//         match: { isBlocked: false, isDeleted: false } 
+//       })
+//       .sort(sortOption)
+//       .lean();
+
+//     products = products.filter(p => 
+//       p.category && 
+//       p.name.toLowerCase() !== 'siva'
+//     );
+
+//     const now = new Date();
+//     const activeProductOffers = await ProductOffer.find({
+//       currentStatus: 'active',
+//       isListed: true,
+//       startDate: { $lte: now },
+//       endDate: { $gte: now }
+//     }).lean()
+
+//     const activeCategoryOffers = await CategoryOffer.find({
+//       status: 'list',
+//       isListed: true,
+//       startDate: { $lte: now },
+//       endDate: { $gte: now }
+//     }).lean()
+
+//     const productsWithOffer = products.map(product => {
+//       const productOffer = activeProductOffers.find(
+//         o => o.product.toString() === product._id.toString()
+//       );
+      
+//       let categoryOffer = null;
+//       if (product.category) {
+//         categoryOffer = activeCategoryOffers.find(
+//           c => c.category.toString() === product.category._id.toString()
+//         );
+//       }
+
+//       let finalOffer = null;
+//       if (productOffer && categoryOffer) {
+//         finalOffer = productOffer.offerPercentage >= categoryOffer.offerPercentage 
+//           ? productOffer 
+//           : categoryOffer;
+//       } else if (productOffer) {
+//         finalOffer = productOffer;
+//       } else if (categoryOffer) {
+//         finalOffer = categoryOffer;
+//       }
+
+//       return { 
+//         ...product, 
+//         offer: finalOffer 
+//       };
+//     });
+
+//     const totalProducts = productsWithOffer.length;
+//     const pages = Math.ceil(totalProducts / perPage);
+//     const paginatedProducts = productsWithOffer.slice(
+//       (page - 1) * perPage, 
+//       page * perPage
+//     );
+
+//     let searchMessage = "Browse our products";
+//     let noProductsMessage = "No products available";
+    
+//     if (query.trim()) {
+//       searchMessage = `Showing results for "${query}"`;
+//       if (totalProducts === 0) {
+//         noProductsMessage = `No products found for "${query}"`;
+//       }
+//     }
+
+//     if (categoryFilter !== 'all') {
+//       const selectedCategory = categories.find(c => c._id.toString() === categoryFilter);
+//       if (selectedCategory) {
+//         searchMessage = `Products in ${selectedCategory.name}`;
+//       }
+//     }
+
+//     res.render('user/shop', {
+//       user,
+//       products: paginatedProducts,
+//       allProductsCount: totalProducts,       
+//       categories,
+//       current: page,
+//       pages,
+//       sort,
+//       query: query || '',                    
+//       categoryFilter,                         
+//       searchMessage,                         
+//       noProducts: totalProducts === 0,       
+//       noProductsMessage,                     
+//       hasSearch: !!query.trim(),             
+//       hasCategoryFilter: categoryFilter !== 'all' 
+//     });
+
+//   } catch (err) {
+//     console.error("getShopPage error:", err);
+//     res.status(500).render('user/error', { 
+//       error: 'Shop page failed to load. Please try again.' 
+//     });
+//   }
+// }
+
+
 const getShopPage = async (req, res) => {
   try {
     const user = req.session.user || null;
+
     const perPage = 12;
     const page = parseInt(req.query.page) || 1;
     const sort = req.query.sort || 'newest';
-    const query = req.query.query || ''; 
-    const categoryFilter = req.query.category || 'all'; 
+    const query = (req.query.query || '').trim();
+    const categoryFilter = req.query.category || 'all';
+    let sortOption = { createdAt: -1 }
 
-    let sortOption = { createdAt: -1 };
     if (sort === 'lowToHigh') sortOption = { 'prices.0': 1 };
     if (sort === 'highToLow') sortOption = { 'prices.0': -1 };
     if (sort === 'nameAToZ') sortOption = { name: 1 };
     if (sort === 'nameZToA') sortOption = { name: -1 };
 
-    const categories = await Category.find({ 
-      isBlocked: false, 
-      isDeleted: false 
+    const categories = await Category.find({
+      isBlocked: false,
+      isDeleted: false
     }).lean();
 
-    let productFilter = { 
-      isDeleted: false 
-    };
+    let productFilter = { isDeleted: false };
 
-    if (query && query.trim().length >= 2) {
-      productFilter.name = { 
-        $regex: query.trim(), 
-        $options: "i" 
-      };
+    if (query.length >= 2) {
+      productFilter.name = { $regex: query, $options: 'i' };
     }
 
-    if (categoryFilter && categoryFilter !== 'all') {
+    if (categoryFilter !== 'all') {
       productFilter.category = categoryFilter;
     }
+    const totalProducts = await Product.countDocuments(productFilter);
+    const pages = Math.ceil(totalProducts / perPage);
 
     let products = await Product.find(productFilter)
-      .populate({ 
-        path: 'category', 
-        match: { isBlocked: false, isDeleted: false } 
+      .populate({
+        path: 'category',
+        match: { isBlocked: false, isDeleted: false }
       })
-      .sort(sortOption)
+      .sort(sortOption) 
+      .skip((page - 1) * perPage)
+      .limit(perPage)
       .lean();
 
-    products = products.filter(p => 
-      p.category && 
-      p.name.toLowerCase() !== 'siva'
-    );
+    products = products.filter(p => p.category);
 
     const now = new Date();
+
     const activeProductOffers = await ProductOffer.find({
       currentStatus: 'active',
       isListed: true,
       startDate: { $lte: now },
       endDate: { $gte: now }
-    }).lean()
+    }).lean();
 
     const activeCategoryOffers = await CategoryOffer.find({
       status: 'list',
       isListed: true,
       startDate: { $lte: now },
       endDate: { $gte: now }
-    }).lean()
+    }).lean();
 
     const productsWithOffer = products.map(product => {
       const productOffer = activeProductOffers.find(
         o => o.product.toString() === product._id.toString()
       );
-      
+
       let categoryOffer = null;
       if (product.category) {
         categoryOffer = activeCategoryOffers.find(
@@ -89,32 +229,25 @@ const getShopPage = async (req, res) => {
 
       let finalOffer = null;
       if (productOffer && categoryOffer) {
-        finalOffer = productOffer.offerPercentage >= categoryOffer.offerPercentage 
-          ? productOffer 
-          : categoryOffer;
+        finalOffer =
+          productOffer.offerPercentage >= categoryOffer.offerPercentage
+            ? productOffer
+            : categoryOffer;
       } else if (productOffer) {
         finalOffer = productOffer;
       } else if (categoryOffer) {
         finalOffer = categoryOffer;
       }
 
-      return { 
-        ...product, 
-        offer: finalOffer 
+      return {
+        ...product,
+        offer: finalOffer
       };
-    });
+    })
+    let searchMessage = 'Browse our products';
+    let noProductsMessage = 'No products available';
 
-    const totalProducts = productsWithOffer.length;
-    const pages = Math.ceil(totalProducts / perPage);
-    const paginatedProducts = productsWithOffer.slice(
-      (page - 1) * perPage, 
-      page * perPage
-    );
-
-    let searchMessage = "Browse our products";
-    let noProductsMessage = "No products available";
-    
-    if (query.trim()) {
+    if (query) {
       searchMessage = `Showing results for "${query}"`;
       if (totalProducts === 0) {
         noProductsMessage = `No products found for "${query}"`;
@@ -122,38 +255,35 @@ const getShopPage = async (req, res) => {
     }
 
     if (categoryFilter !== 'all') {
-      const selectedCategory = categories.find(c => c._id.toString() === categoryFilter);
+      const selectedCategory = categories.find(
+        c => c._id.toString() === categoryFilter
+      );
       if (selectedCategory) {
         searchMessage = `Products in ${selectedCategory.name}`;
       }
     }
-
     res.render('user/shop', {
       user,
-      products: paginatedProducts,
-      allProductsCount: totalProducts,       
+      products: productsWithOffer,
       categories,
       current: page,
       pages,
       sort,
-      query: query || '',                    
-      categoryFilter,                         
-      searchMessage,                         
-      noProducts: totalProducts === 0,       
-      noProductsMessage,                     
-      hasSearch: !!query.trim(),             
-      hasCategoryFilter: categoryFilter !== 'all' 
-    });
-
+      query,
+      categoryFilter,
+      searchMessage,
+      noProducts: productsWithOffer.length === 0,
+      noProductsMessage,
+      hasSearch: !!query,
+      hasCategoryFilter: categoryFilter !== 'all'
+    })
   } catch (err) {
-    console.error("getShopPage error:", err);
-    res.status(500).render('user/error', { 
-      error: 'Shop page failed to load. Please try again.' 
+    console.error('getShopPage error:', err);
+    res.status(500).render('user/error', {
+      error: 'Shop page failed to load. Please try again.'
     });
   }
-}
-
-
+};
 
 
 const getSingleProductPage = async (req, res) => {
@@ -524,6 +654,31 @@ const updateProfile = async (req, res) => {
 };
 
 
+// const uploadProfileImage = async (req, res) => {
+//   try {
+//     const userId = req.session.user.id;
+
+//     if (!req.file) {
+//       console.log("No file uploaded");
+//       return res.redirect("/user/profile");
+//     }
+
+//     const updatedUser = await User.findByIdAndUpdate(
+//       userId,
+//       { profile: "/uploads/products/" + req.file.filename },
+//       { new: true }
+//     );
+
+//     req.session.user.profile = updatedUser.profile;
+
+//     res.redirect("/user/profile");
+//   } catch (err) {
+//     console.error("Profile Image Upload Error:", err);
+//     res.redirect("/user/profile");
+//   }
+// };
+
+
 const uploadProfileImage = async (req, res) => {
   try {
     const userId = req.session.user.id;
@@ -533,13 +688,14 @@ const uploadProfileImage = async (req, res) => {
       return res.redirect("/user/profile");
     }
 
+    const imagePath = "/uploads/products/" + req.file.filename;
+
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { profile: "/uploads/products/" + req.file.filename },
+      { profile: imagePath },
       { new: true }
-    );
-
-    req.session.user.profile = updatedUser.profile;
+    )
+    req.session.user.profile = imagePath;
 
     res.redirect("/user/profile");
   } catch (err) {
@@ -547,8 +703,6 @@ const uploadProfileImage = async (req, res) => {
     res.redirect("/user/profile");
   }
 };
-
-
 
 
 

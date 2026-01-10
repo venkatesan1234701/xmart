@@ -37,7 +37,7 @@ router.get('/customers',adminAuth,authController.renderCustomers)
 
 router.get('/customers/search', authController.earchCustomers)
 
-
+router.post("/orders/:id/cancel-returns",adminAuth,adminOrder.cancelReturnOrder)
 
 router.put('/users/block/:id',authController.toggleBlockUser)
 
