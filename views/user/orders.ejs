@@ -596,7 +596,7 @@ table.table {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-<script>
+<!-- <script>
 ///////////////////////////////////////////////////            this only for dwonload 
 
 document.getElementById("orderDetailsModal").addEventListener("shown.bs.modal", function () {
@@ -1084,7 +1084,237 @@ async function returnProduct(orderId, productId, size) {
 // }
 
 
-</script>
+</script> -->
 
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. DATA LOADING (Safe method using the script tag in your HTML)
+    const ordersDataElement = document.getElementById("orderData");
+    if (!ordersDataElement) {
+        console.error("Order data element not found!");
+        return;
+    }
+    const orders = JSON.parse(ordersDataElement.textContent || "[]");
+    
+    const modalEl = document.getElementById("orderDetailsModal");
+    const modalInstance = new bootstrap.Modal(modalEl);
+    let currentOrder = null;
+
+    // 2. OPEN MODAL ON DETAILS BUTTON CLICK
+    document.querySelectorAll(".details-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const index = btn.dataset.orderIndex;
+            currentOrder = orders[index];
+            
+            if (currentOrder) {
+                showOrderDetails(currentOrder);
+                modalInstance.show();
+            }
+        });
+    });
+
+    // 3. DOWNLOAD INVOICE BUTTON LOGIC
+    document.getElementById("downloadInvoiceBtn").addEventListener("click", function () {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Header
+        doc.setFontSize(20);
+        doc.text("Invoice", 14, 20);
+        doc.setFontSize(10);
+        doc.text("Xmart | hello@xmart.com", 14, 30);
+
+        // Order Info
+        const orderId = document.getElementById("modalOrderId").innerText;
+        const total = document.getElementById("modalTotal").innerText;
+        const status = document.getElementById("modalStatus").innerText;
+        const date = document.getElementById("modalDate").innerText;
+
+        doc.text(`Order ID: ${orderId}`, 140, 30);
+        doc.text(`Date: ${date}`, 140, 35);
+        doc.text(`Status: ${status}`, 140, 40);
+
+        // Products Table
+        const productRows = [];
+        document.querySelectorAll("#modalProducts > div").forEach((item, index) => {
+            const name = item.querySelector("p")?.innerText || "Product";
+            const details = item.querySelector("small")?.innerText || "";
+            const price = item.innerText.match(/₹\s*([0-9.]+)/)?.[1] || "0";
+            productRows.push([index + 1, name, details, `Rs. ${price}`]);
+        });
+
+        doc.autoTable({
+            startY: 50,
+            head: [["#", "Product", "Details", "Price"]],
+            body: productRows,
+            theme: 'grid'
+        });
+
+        const finalY = doc.lastAutoTable.finalY + 10;
+        doc.setFontSize(12);
+        doc.text(`Grand Total: Rs. ${total}`, 140, finalY);
+
+        doc.save(`Invoice_${orderId}.pdf`);
+    });
+
+    // 4. FUNCTION TO SHOW DETAILS IN MODAL
+    function showOrderDetails(order) {
+        document.getElementById("modalOrderId").innerText = order.orderId;
+        document.getElementById("modalPayment").innerText = order.paymentDetails?.method || "N/A";
+        document.getElementById("modalStatus").innerText = order.orderStatus;
+        document.getElementById("modalTotal").innerText = order.grandTotal.toFixed(2);
+        document.getElementById("modalDiscount").innerText = order.coupon?.discount || 0;
+        document.getElementById("modalDate").innerText = new Date(order.createdAt).toLocaleString();
+
+        // Download Button Visibility Logic
+        const downloadBtn = document.getElementById("downloadInvoiceBtn");
+        downloadBtn.style.display = (order.orderStatus === "Cancelled") ? "none" : "inline-block";
+
+        // Address
+        const addr = order.shippingAddress;
+        document.getElementById("modalAddress").innerHTML = addr
+            ? `${addr.firstName} ${addr.lastName}<br>${addr.addressLine1}<br>${addr.city}, ${addr.state} - ${addr.zipCode}`
+            : "No address available.";
+
+        // Repay Button Logic
+        const repayBtn = document.getElementById("repayBtn");
+        if (order.paymentDetails?.status === "Failed") {
+            repayBtn.classList.remove("d-none");
+            repayBtn.onclick = () => handleRepay(order);
+        } else {
+            repayBtn.classList.add("d-none");
+        }
+
+        // Render Products
+        const productsContainer = document.getElementById("modalProducts");
+        productsContainer.innerHTML = "";
+
+        order.products.forEach(item => {
+            const prod = item.productId || {};
+            const img = prod.productPic?.[0] || prod.images?.[0] || "/images/default-product.jpg";
+            let actionBtns = "";
+
+            if (item.itemStatus === "Returned") {
+                actionBtns = `<span class="badge bg-secondary">Returned</span>`;
+            } else if (item.itemStatus === "Cancelled") {
+                actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
+            } else if (item.itemStatus === "Returning") {
+                actionBtns = `<span class="badge bg-warning text-dark">Returning</span>`;
+            } else if (order.orderStatus === "Delivered") {
+                actionBtns = `<button class="btn btn-sm btn-outline-warning" onclick="openReturnPopup('${order._id}', '${prod._id}', '${item.selectedSize}')">Return</button>`;
+            } else {
+                actionBtns = `<button class="btn btn-sm btn-outline-danger" onclick="cancelProduct('${order._id}', '${prod._id}', '${item.selectedSize}')">Cancel</button>`;
+            }
+
+            productsContainer.insertAdjacentHTML("beforeend", `
+                <div class="d-flex align-items-center justify-content-between border p-2 rounded mb-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="${img}" width="60" height="60" class="rounded border" style="object-fit:cover;">
+                        <div>
+                            <p class="fw-semibold mb-1">${prod.name || "Product"}</p>
+                            <small class="text-muted">Size: ${item.selectedSize} | Qty: ${item.quantity}</small><br>
+                            <small class="text-muted">₹${item.paidPrice ?? item.totalPrice}</small>
+                        </div>
+                    </div>
+                    <div>${actionBtns}</div>
+                </div>`);
+        });
+    }
+
+    // 5. REPAY PAYMENT LOGIC
+    async function handleRepay(order) {
+        try {
+            const res = await fetch("/create-repay-order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orderId: order.orderId }),
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error("Repay order creation failed");
+
+            const options = {
+                key: data.key_id,
+                amount: data.amount,
+                currency: "INR",
+                name: "FreshCart",
+                order_id: data.razorpayOrderId,
+                handler: async function (response) {
+                    const verifyRes = await fetch("/payment/verify-repay", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ ...response, oldOrderId: order.orderId }),
+                    });
+                    const result = await verifyRes.text();
+                    document.open(); document.write(result); document.close();
+                },
+                theme: { color: "#10b981" }
+            };
+            new Razorpay(options).open();
+        } catch (err) {
+            console.error("Repay Error:", err);
+            Swal.fire("Error", "Payment retry failed.", "error");
+        }
+    }
+});
+
+// 6. GLOBAL FUNCTIONS (Keep these outside DOMContentLoaded)
+function openReturnPopup(orderId, productId, size) {
+    const modalEl = document.getElementById("orderDetailsModal");
+    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+    if (modalInstance) modalInstance.hide();
+    
+    setTimeout(() => returnProduct(orderId, productId, size), 300);
+}
+
+async function cancelProduct(orderId, productId, size) {
+    const confirm = await Swal.fire({
+        title: "Cancel this product?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, cancel it"
+    });
+    if (!confirm.isConfirmed) return;
+
+    const res = await fetch(`/user/orders/${orderId}/cancel-item`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId, selectedSize: size })
+    });
+
+    if (res.ok) {
+        await Swal.fire("✅ Cancelled!", "Item cancelled successfully", "success");
+        location.reload();
+    } else {
+        Swal.fire("❌ Error", "Failed to cancel product.", "error");
+    }
+}
+
+async function returnProduct(orderId, productId, size) {
+    const { value: reason } = await Swal.fire({
+        title: "Return Product",
+        input: "textarea",
+        inputLabel: "Reason for return",
+        inputPlaceholder: "Why are you returning this?",
+        showCancelButton: true,
+        inputValidator: (value) => !value && "Return reason is required"
+    });
+
+    if (!reason) return;
+
+    const res = await fetch(`/user/orders/${orderId}/return-item`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId, selectedSize: size, returnReason: reason })
+    });
+
+    if (res.ok) {
+        await Swal.fire("Success", "Return requested successfully", "success");
+        location.reload();
+    } else {
+        Swal.fire("Error", "Failed to process return", "error");
+    }
+}
+</script>
 </body>
 </html>
