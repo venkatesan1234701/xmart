@@ -263,20 +263,22 @@ const getShopPage = async (req, res) => {
       }
     }
     res.render('user/shop', {
-      user,
-      products: productsWithOffer,
-      categories,
-      current: page,
-      pages,
-      sort,
-      query,
-      categoryFilter,
-      searchMessage,
-      noProducts: productsWithOffer.length === 0,
-      noProductsMessage,
-      hasSearch: !!query,
-      hasCategoryFilter: categoryFilter !== 'all'
-    })
+  user,
+  products: productsWithOffer,
+  categories,
+  current: page,
+  pages,
+  sort,
+  query,
+  categoryFilter,
+  searchMessage,
+  allProductsCount: totalProducts,
+  noProducts: productsWithOffer.length === 0,
+  noProductsMessage,
+  hasSearch: !!query,
+  hasCategoryFilter: categoryFilter !== 'all'
+});
+
   } catch (err) {
     console.error('getShopPage error:', err);
     res.status(500).render('user/error', {
