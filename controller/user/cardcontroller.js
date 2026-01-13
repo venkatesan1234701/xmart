@@ -138,85 +138,128 @@ const Order = require("../../models/order")
 //   }
 // }
 
-
 const applyCoupon = async (req, res) => {
   try {
     const user = req.session.user;
-    if (!user) {
-      return res.status(401).json({ success: false, message: "Please log in first" });
-    }
-
     const { couponCode } = req.body;
-    if (!couponCode || !couponCode.trim()) {
-      return res.status(400).json({ success: false, message: "Enter a coupon code" });
-    }
-
+    
     const coupon = await Coupon.findOne({
       couponCode: { $regex: new RegExp(`^${couponCode.trim()}$`, "i") },
       isListed: true,
       currentStatus: "active"
     });
 
-    if (!coupon) {
-      return res.status(404).json({ success: false, message: "Invalid coupon code" });
-    }
-
-    const now = new Date();
-    if (
-      (coupon.couponStartDate && now < coupon.couponStartDate) ||
-      (coupon.couponExpiryDate && now > coupon.couponExpiryDate)
-    ) {
-      return res.status(400).json({ success: false, message: "Coupon is not active now" });
-    }
+    if (!coupon) return res.status(404).json({ success: false, message: "Invalid coupon" });
 
     const cart = await Cart.findOne({ userId: user.id });
-    if (!cart || cart.products.length === 0) {
-      return res.status(400).json({ success: false, message: "Your cart is empty" });
-    }
-
+    
     let subtotal = 0;
     cart.products.forEach(i => {
       subtotal += i.originalPrice * i.quantity;
     });
 
     if (subtotal < coupon.minimumPurchase) {
-      return res.status(400).json({
-        success: false,
-        message: `Minimum purchase should be ₹${coupon.minimumPurchase}`
-      });
+      return res.status(400).json({ success: false, message: `Min purchase ₹${coupon.minimumPurchase} required` });
     }
 
     let discount = Math.round((subtotal * coupon.discountPercentage) / 100);
-    let isMax = false;
+    if (discount > coupon.maximumDiscount) discount = coupon.maximumDiscount;
 
-    if (discount > coupon.maximumDiscount) {
-      discount = coupon.maximumDiscount;
-      isMax = true;
-    }
+    cart.products.forEach(item => {
+      const itemRatio = (item.originalPrice * item.quantity) / subtotal;
+      const itemDiscount = Math.round(discount * itemRatio);
+      item.productDiscount = itemDiscount / item.quantity;
+      item.pricePerUnit = item.originalPrice - item.productDiscount;
+    });
 
     cart.subtotal = subtotal;
+    cart.coupon = { name: coupon.couponCode, discount: discount, isMax: true, maxPurchase: coupon.maximumDiscount };
     cart.grandTotal = subtotal - discount + (cart.shippingCost || 40);
-    cart.coupon = {
-      name: coupon.couponCode,
-      discount,
-      isMax,
-      maxPurchase: coupon.maximumDiscount
-    };
 
     await cart.save();
-
-    return res.json({
-      success: true,
-      message: `Coupon applied successfully! You saved ₹${discount}`,
-      discount,
-      subtotal: cart.subtotal,
-      newGrandTotal: cart.grandTotal,
-      couponCode: coupon.couponCode
-    });
+    return res.json({ success: true, message: "Coupon applied!", discount, newGrandTotal: cart.grandTotal });
   } catch (err) {
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };
+// const applyCoupon = async (req, res) => {
+//   try {
+//     const user = req.session.user;
+//     if (!user) {
+//       return res.status(401).json({ success: false, message: "Please log in first" });
+//     }
+
+//     const { couponCode } = req.body;
+//     if (!couponCode || !couponCode.trim()) {
+//       return res.status(400).json({ success: false, message: "Enter a coupon code" });
+//     }
+
+//     const coupon = await Coupon.findOne({
+//       couponCode: { $regex: new RegExp(`^${couponCode.trim()}$`, "i") },
+//       isListed: true,
+//       currentStatus: "active"
+//     });
+
+//     if (!coupon) {
+//       return res.status(404).json({ success: false, message: "Invalid coupon code" });
+//     }
+
+//     const now = new Date();
+//     if (
+//       (coupon.couponStartDate && now < coupon.couponStartDate) ||
+//       (coupon.couponExpiryDate && now > coupon.couponExpiryDate)
+//     ) {
+//       return res.status(400).json({ success: false, message: "Coupon is not active now" });
+//     }
+
+//     const cart = await Cart.findOne({ userId: user.id });
+//     if (!cart || cart.products.length === 0) {
+//       return res.status(400).json({ success: false, message: "Your cart is empty" });
+//     }
+
+//     let subtotal = 0;
+//     cart.products.forEach(i => {
+//       subtotal += i.originalPrice * i.quantity;
+//     });
+
+//     if (subtotal < coupon.minimumPurchase) {
+//       return res.status(400).json({
+//         success: false,
+//         message: `Minimum purchase should be ₹${coupon.minimumPurchase}`
+//       });
+//     }
+
+//     let discount = Math.round((subtotal * coupon.discountPercentage) / 100);
+//     let isMax = false;
+
+//     if (discount > coupon.maximumDiscount) {
+//       discount = coupon.maximumDiscount;
+//       isMax = true;
+//     }
+
+//     cart.subtotal = subtotal;
+//     cart.grandTotal = subtotal - discount + (cart.shippingCost || 40);
+//     cart.coupon = {
+//       name: coupon.couponCode,
+//       discount,
+//       isMax,
+//       maxPurchase: coupon.maximumDiscount
+//     };
+
+//     await cart.save();
+
+//     return res.json({
+//       success: true,
+//       message: `Coupon applied successfully! You saved ₹${discount}`,
+//       discount,
+//       subtotal: cart.subtotal,
+//       newGrandTotal: cart.grandTotal,
+//       couponCode: coupon.couponCode
+//     });
+//   } catch (err) {
+//     return res.status(500).json({ success: false, message: "Server error" });
+//   }
+// };
 
 
 

@@ -472,6 +472,104 @@ const checkout = async (req, res) => {
 };
 
 
+// const getCheckoutPage = async (req, res) => {
+//   try {
+//     const user = req.session.user;
+//     if (!user) return res.redirect("/signin");
+
+//     let cart = await Cart.findOne({ userId: user.id }).populate({
+//       path: "products.productId",
+//       model: "Product",
+//       select: "name productPic prices sizes isBlocked isDeleted",
+//       populate: {
+//         path: "category",
+//         select: "isBlocked isDeleted"
+//       }
+//     });
+
+//     if (!cart || !cart.products.length) {
+//       return res.render("user/empty-cart-alert", { user });
+//     }
+
+//     let cartUpdated = false;
+
+//     for (let i = cart.products.length - 1; i >= 0; i--) {
+//       const item = cart.products[i];
+//       const product = item.productId;
+
+//       if (!product || product.isBlocked || product.isDeleted) {
+//         cart.products.splice(i, 1);
+//         cartUpdated = true;
+//         continue;
+//       }
+
+//       if (
+//         product.category &&
+//         (product.category.isBlocked || product.category.isDeleted)
+//       ) {
+//         cart.products.splice(i, 1);
+//         cartUpdated = true;
+//         continue;
+//       }
+
+//       const sizeIndex = product.sizes.indexOf(item.selectedSize);
+//       if (sizeIndex === -1) {
+//         cart.products.splice(i, 1);
+//         cartUpdated = true;
+//         continue;
+//       }
+//     }
+
+//     if (cartUpdated) {
+//       await cart.save();
+//     }
+
+//     cart = await Cart.findOne({ userId: user.id }).populate({
+//       path: "products.productId",
+//       model: "Product",
+//       select: "name productPic prices sizes",
+//     });
+
+//     if (!cart.products.length) {
+//       return res.render("user/empty-cart-alert", { user });
+//     }
+
+//     const subtotal = cart.products.reduce(
+//       (sum, p) => sum + p.pricePerUnit * p.quantity,
+//       0
+//     );
+
+//     // const shippingCost = cart.shippingCost || 40;
+//     // const grandTotal = subtotal + shippingCost;
+
+// const shippingCost = cart.shippingCost || 40;
+// const discount = cart.coupon?.discount || 0;
+// const grandTotal = subtotal - discount + shippingCost;
+
+
+//     cart.subtotal = subtotal;
+//     cart.grandTotal = grandTotal;
+//     await cart.save();
+
+//     const addresses = await Address.find({ userId: user.id, isActive: true });
+//     const wallet = await Wallet.findOne({ userId: user.id });
+
+//     res.render("user/checkout", {
+//       user,
+//       cart,
+//       subtotal,
+//       shippingCost,
+//       grandTotal,
+//       addresses,
+//       wallet,
+//     });
+
+//   } catch (err) {
+//     console.error("Checkout page error:", err);
+//     res.status(500).send("Server error");
+//   }
+// }
+
 const getCheckoutPage = async (req, res) => {
   try {
     const user = req.session.user;
@@ -480,7 +578,7 @@ const getCheckoutPage = async (req, res) => {
     let cart = await Cart.findOne({ userId: user.id }).populate({
       path: "products.productId",
       model: "Product",
-      select: "name productPic prices sizes isBlocked isDeleted",
+      select: "name productPic prices sizes quantities isBlocked isDeleted",
       populate: {
         path: "category",
         select: "isBlocked isDeleted"
@@ -518,50 +616,50 @@ const getCheckoutPage = async (req, res) => {
         cartUpdated = true;
         continue;
       }
+
+      if (product.quantities[sizeIndex] < item.quantity) {
+        cart.products.splice(i, 1);
+        cartUpdated = true;
+        continue;
+      }
     }
 
     if (cartUpdated) {
       await cart.save();
     }
 
-    cart = await Cart.findOne({ userId: user.id }).populate({
-      path: "products.productId",
-      model: "Product",
-      select: "name productPic prices sizes",
-    });
-
     if (!cart.products.length) {
       return res.render("user/empty-cart-alert", { user });
     }
+    const subtotal = cart.products.reduce((sum, item) => {
+      const unitPrice =
+        item.pricePerUnit && item.pricePerUnit > 0
+          ? item.pricePerUnit
+          : item.originalPrice;
 
-    const subtotal = cart.products.reduce(
-      (sum, p) => sum + p.pricePerUnit * p.quantity,
-      0
-    );
+      return sum + unitPrice * item.quantity;
+    }, 0);
 
-    // const shippingCost = cart.shippingCost || 40;
-    // const grandTotal = subtotal + shippingCost;
+    const shippingCost =
+      cart.products.length > 0 ? (cart.shippingCost || 40) : 0;
 
-const shippingCost = cart.shippingCost || 40;
-const discount = cart.coupon?.discount || 0;
-const grandTotal = subtotal - discount + shippingCost;
+    const grandTotal = subtotal + shippingCost;
 
+    const addresses = await Address.find({
+      userId: user.id,
+      isActive: true
+    });
 
-    cart.subtotal = subtotal;
-    cart.grandTotal = grandTotal;
-    await cart.save();
-
-    const addresses = await Address.find({ userId: user.id, isActive: true });
     const wallet = await Wallet.findOne({ userId: user.id });
 
-    res.render("user/checkout", {
+    return res.render("user/checkout", {
       user,
-      cart,
-      subtotal,
-      shippingCost,
-      grandTotal,
+      cart,          
+      subtotal,      
+      shippingCost,  
+      grandTotal,    
       addresses,
-      wallet,
+      wallet
     });
 
   } catch (err) {
@@ -569,6 +667,7 @@ const grandTotal = subtotal - discount + shippingCost;
     res.status(500).send("Server error");
   }
 }
+
 
 
 const verifyPayment = async (req, res) => {

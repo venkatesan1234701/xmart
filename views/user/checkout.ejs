@@ -1639,7 +1639,7 @@ nav .nav-link:hover {
 
                             <!-- Order Summary -->
   
-<div class="py-3 px-6 border-b border-gray-300 flex flex-col gap-2">
+<!-- <div class="py-3 px-6 border-b border-gray-300 flex flex-col gap-2">
 
   <div class="flex items-center justify-between">
     <div>Item Subtotal</div>
@@ -1662,7 +1662,6 @@ nav .nav-link:hover {
     </div>
   <% } %>
 
-  <!-- Shipping Fee -->
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
       <span>Shipping Fee</span>
@@ -1672,7 +1671,6 @@ nav .nav-link:hover {
     </div>
   </div>
 
-  <!-- Grand Total -->
   <div class="flex items-center justify-between border-t border-gray-300 pt-3">
     <div class="font-bold text-gray-800">Grand Total</div>
     <div class="font-bold text-green-700 text-lg">
@@ -1680,8 +1678,52 @@ nav .nav-link:hover {
     </div>
   </div>
 
-</div>
+</div> -->
 
+
+<!-- Order Summary -->
+<div class="py-3 px-6 border-b border-gray-300 flex flex-col gap-2">
+
+  <!-- Item Subtotal -->
+  <div class="flex items-center justify-between">
+    <div>Item Subtotal</div>
+    <div class="font-bold text-gray-800">
+      ₹<%= subtotal.toFixed(2) %>
+    </div>
+  </div>
+
+  <!-- Coupon Discount -->
+  <% if (cart?.coupon && cart.coupon.discount > 0) { %>
+    <div class="flex items-center justify-between text-green-600">
+      <div>
+        Discount
+        <span class="text-xs text-gray-500">
+          (<%= cart.coupon.name %>)
+        </span>
+      </div>
+      <div class="font-bold">
+        - ₹<%= cart.coupon.discount.toFixed(2) %>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- Shipping Fee -->
+  <div class="flex items-center justify-between">
+    <div>Shipping Fee</div>
+    <div class="font-bold text-gray-800">
+      ₹<%= shippingCost.toFixed(2) %>
+    </div>
+  </div>
+
+  <!-- Grand Total -->
+  <div class="flex items-center justify-between border-t border-gray-300 pt-3">
+    <div class="font-bold text-gray-800">Grand Total</div>
+    <div class="font-bold text-green-700 text-lg">
+      ₹<%= grandTotal.toFixed(2) %>
+    </div>
+  </div>
+
+</div>
 
                             <!-- Action Buttons -->
                             <div class="p-6">
