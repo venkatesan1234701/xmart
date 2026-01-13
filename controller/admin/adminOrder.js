@@ -170,107 +170,13 @@ const getSingleOrder = async (req, res) => {
 
 
 
-// const approveAllReturns = async (req, res) => {
-//   try {
-//     console.log("APPROVE RETURNS HIT:", req.params.orderId);
-    
-//     const { orderId } = req.params;
-//     const order = await Order.findById(orderId).populate("products.productId");
-    
-//     if (!order) {
-//       return res.status(404).json({ success: false, message: "Order not found" });
-//     }
-
-//     const returningItems = order.products.filter(item => 
-//       item.itemStatus?.toString().toLowerCase().trim() === 'returning'  
-//     );
-
-
-//     if (returningItems.length === 0) {
-//       return res.json({ success: true, message: "No returning items found" });
-//     }
-
-//     let totalRefund = 0;
-
-//     for (const item of returningItems) {
-//       // console.log(" product item:", item.productId?.name, item.selectedSize);
-      
-//       item.itemStatus = "Returned";
-      
-//       const price = Number(item.price) || Number(item.pricePerUnit) || Number(item.productId?.price) || 0;
-//       const qty = Number(item.quantity) || 1;
-//       const refundAmount = price * qty;
-      
-//       totalRefund += refundAmount;
-
-//       if (item.productId && refundAmount > 0) {
-//         const product = await Product.findById(item.productId._id);
-//         if (product) {
-//           const sizeIndex = product.sizes.indexOf(item.selectedSize);
-//           if (sizeIndex !== -1) {
-//             product.quantities[sizeIndex] += qty;
-//             await product.save();
-//           }
-//         }
-//       }
-//     }
-
-
-//     if (totalRefund > 0) {
-//       const userId = order.userId;
-//       let wallet = await Wallet.findOne({ userId });
-//       if (!wallet) {
-//         wallet = await Wallet.create({ userId, balance: 0, transactions: [] });
-//       }
-
-//        const refundTransactionId = "REF" + Math.floor(100000 + Math.random() * 900000)
-
-//       wallet.transactions.push({
-//         amount: totalRefund,
-//         type: "OrderRefund",
-//         status: "completed",
-//         transactionType: "Credit",
-//         transactionDetail: `Refund for ${returningItems.length} returned items - Order ${orderId}`,
-//         orderId: orderId,
-//         transactionId: refundTransactionId,
-//         createdAt: new Date()
-//       });
-      
-//       wallet.balance += totalRefund;
-//       console.log('return amount',wallet.balance )
-//       await wallet.save();
-//     }
-
-//     const allReturned = order.products.every(p => p.itemStatus === "Returned");
-//     if (allReturned) {
-//       order.orderStatus = "Returned";
-//       if (order.paymentDetails) order.paymentDetails.status = "Refunded";
-//     } else {
-//       order.orderStatus = "Returning";
-//       if (order.paymentDetails) order.paymentDetails.status = "Partially Refunded";
-//     }
-
-//     await order.save();
-
-//     res.json({
-//       success: true,
-//       message: `${returningItems.length} items approved! ₹${totalRefund} refunded`,
-//       totalRefund,
-//       processedCount: returningItems.length
-//     });
-
-//   } catch (err) {
-//     console.error("Approve Returns ERROR:", err);
-//     res.status(500).json({ success: false, message: "Server error" });
-//   }
-// }
-
-
 const approveAllReturns = async (req, res) => {
   try {
+    console.log("APPROVE RETURNS HIT:", req.params.orderId);
+    
     const { orderId } = req.params;
     const order = await Order.findById(orderId).populate("products.productId");
-
+    
     if (!order) {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
@@ -279,29 +185,22 @@ const approveAllReturns = async (req, res) => {
       item.itemStatus?.toString().toLowerCase().trim() === 'returning'  
     );
 
+
     if (returningItems.length === 0) {
       return res.json({ success: true, message: "No returning items found" });
     }
 
-    // Calculate Discount Ratio
-    let subtotalBeforeCoupon = 0;
-    order.products.forEach(p => {
-      subtotalBeforeCoupon += (Number(p.pricePerUnit) * Number(p.quantity));
-    });
-
-    const totalDiscount = Number(order.coupon?.discount || 0);
-    const discountRatio = subtotalBeforeCoupon > 0 ? (subtotalBeforeCoupon - totalDiscount) / subtotalBeforeCoupon : 1;
-
     let totalRefund = 0;
 
     for (const item of returningItems) {
+      // console.log(" product item:", item.productId?.name, item.selectedSize);
+      
       item.itemStatus = "Returned";
       
+      const price = Number(item.price) || Number(item.pricePerUnit) || Number(item.productId?.price) || 0;
       const qty = Number(item.quantity) || 1;
-      const originalItemTotal = Number(item.pricePerUnit) * qty;
+      const refundAmount = price * qty;
       
-      // Calculate actual paid price for this item after coupon
-      const refundAmount = Math.round(originalItemTotal * discountRatio);
       totalRefund += refundAmount;
 
       if (item.productId && refundAmount > 0) {
@@ -316,6 +215,7 @@ const approveAllReturns = async (req, res) => {
       }
     }
 
+
     if (totalRefund > 0) {
       const userId = order.userId;
       let wallet = await Wallet.findOne({ userId });
@@ -323,20 +223,21 @@ const approveAllReturns = async (req, res) => {
         wallet = await Wallet.create({ userId, balance: 0, transactions: [] });
       }
 
-      const refundTransactionId = "REF" + Math.floor(100000 + Math.random() * 900000);
+       const refundTransactionId = "REF" + Math.floor(100000 + Math.random() * 900000)
 
       wallet.transactions.push({
         amount: totalRefund,
         type: "OrderRefund",
         status: "completed",
         transactionType: "Credit",
-        transactionDetail: `Refund for returned items (Coupon Adjusted) - Order ${order.orderId}`,
-        orderId: order._id,
+        transactionDetail: `Refund for ${returningItems.length} returned items - Order ${orderId}`,
+        orderId: orderId,
         transactionId: refundTransactionId,
         createdAt: new Date()
       });
       
       wallet.balance += totalRefund;
+      console.log('return amount',wallet.balance )
       await wallet.save();
     }
 
@@ -345,6 +246,7 @@ const approveAllReturns = async (req, res) => {
       order.orderStatus = "Returned";
       if (order.paymentDetails) order.paymentDetails.status = "Refunded";
     } else {
+      order.orderStatus = "Returning";
       if (order.paymentDetails) order.paymentDetails.status = "Partially Refunded";
     }
 
@@ -352,8 +254,9 @@ const approveAllReturns = async (req, res) => {
 
     res.json({
       success: true,
-      message: `${returningItems.length} items approved! ₹${totalRefund} refunded (after discount adjustment)`,
-      totalRefund
+      message: `${returningItems.length} items approved! ₹${totalRefund} refunded`,
+      totalRefund,
+      processedCount: returningItems.length
     });
 
   } catch (err) {
@@ -361,6 +264,7 @@ const approveAllReturns = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 }
+
 
 
 const updateOrderStatus = async (req, res) => {
