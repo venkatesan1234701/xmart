@@ -121,15 +121,24 @@ app.get("/dashboard", (req, res) => {
   res.send(`Welcome ${req.user.firstName}! You are logged in.`)
 })
 
-mongoose.connection.once("open", () => {
-  console.log("DB connection OPENED");
-});
+// mongoose.connection.once("open", () => {
+//   console.log("DB connection OPENED");
+// });
 
 
 // app.listen(3000, () => {
 //   console.log("Server running on http://localhost:3000");
 // })
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on http://0.0.0.0:${PORT}`);
-});
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("MongoDB Atlas connected successfully");
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on http://0.0.0.0:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+    process.exit(1)
+  });

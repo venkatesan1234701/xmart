@@ -452,20 +452,41 @@ profileUpload.addEventListener('change', (e) => {
     });
 
     // Crop & submit
+    // document.getElementById('cropImageBtn').addEventListener('click', () => {
+    //   const canvas = cropper.getCroppedCanvas({ width: 200, height: 200 });
+    //   canvas.toBlob((blob) => {
+    //     const reader = new FileReader();
+    //     reader.readAsDataURL(blob);
+    //     reader.onloadend = () => {
+    //       croppedImageInput.value = reader.result; // Base64
+    //       profileForm.submit(); // submit after crop
+    //     };
+    //   });
+    //   cropper.destroy();
+    //   modal.remove();
+    // });
+  
+
     document.getElementById('cropImageBtn').addEventListener('click', () => {
-      const canvas = cropper.getCroppedCanvas({ width: 200, height: 200 });
-      canvas.toBlob((blob) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => {
-          croppedImageInput.value = reader.result; // Base64
-          profileForm.submit(); // submit after crop
-        };
-      });
-      cropper.destroy();
-      modal.remove();
-    });
+  const canvas = cropper.getCroppedCanvas({ width: 200, height: 200 });
+
+  canvas.toBlob((blob) => {
+    const file = new File([blob], "profile.png", { type: "image/png" });
+
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+
+    profileUpload.files = dataTransfer.files; // 🔥 IMPORTANT
+    profileForm.submit(); // normal multipart submit
+  });
+
+  cropper.destroy();
+  modal.remove();
+});
+
+  
   }
+
 });
 
 
