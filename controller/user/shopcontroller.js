@@ -8,150 +8,10 @@ const Cart = require('../../models/card');
 const ProductOffer = require("../../models/productOfferModel.js")
 const Review = require("../../models/reviewModel.js");
 const { models } = require("mongoose")
+const STATUS = require('../../utils/statusCodes');
+const AppError = require('../../utils/appError')
 
 
-
-
-// const getShopPage = async (req, res) => {
-//   try {
-//     const user = req.session.user || null;
-//     const perPage = 12;
-//     const page = parseInt(req.query.page) || 1;
-//     const sort = req.query.sort || 'newest';
-//     const query = req.query.query || ''; 
-//     const categoryFilter = req.query.category || 'all'; 
-
-//     let sortOption = { createdAt: -1 };
-//     if (sort === 'lowToHigh') sortOption = { 'prices.0': 1 };
-//     if (sort === 'highToLow') sortOption = { 'prices.0': -1 };
-//     if (sort === 'nameAToZ') sortOption = { name: 1 };
-//     if (sort === 'nameZToA') sortOption = { name: -1 };
-
-//     const categories = await Category.find({ 
-//       isBlocked: false, 
-//       isDeleted: false 
-//     }).lean();
-
-//     let productFilter = { 
-//       isDeleted: false 
-//     };
-
-//     if (query && query.trim().length >= 2) {
-//       productFilter.name = { 
-//         $regex: query.trim(), 
-//         $options: "i" 
-//       };
-//     }
-
-//     if (categoryFilter && categoryFilter !== 'all') {
-//       productFilter.category = categoryFilter;
-//     }
-
-//     let products = await Product.find(productFilter)
-//       .populate({ 
-//         path: 'category', 
-//         match: { isBlocked: false, isDeleted: false } 
-//       })
-//       .sort(sortOption)
-//       .lean();
-
-//     products = products.filter(p => 
-//       p.category && 
-//       p.name.toLowerCase() !== 'siva'
-//     );
-
-//     const now = new Date();
-//     const activeProductOffers = await ProductOffer.find({
-//       currentStatus: 'active',
-//       isListed: true,
-//       startDate: { $lte: now },
-//       endDate: { $gte: now }
-//     }).lean()
-
-//     const activeCategoryOffers = await CategoryOffer.find({
-//       status: 'list',
-//       isListed: true,
-//       startDate: { $lte: now },
-//       endDate: { $gte: now }
-//     }).lean()
-
-//     const productsWithOffer = products.map(product => {
-//       const productOffer = activeProductOffers.find(
-//         o => o.product.toString() === product._id.toString()
-//       );
-      
-//       let categoryOffer = null;
-//       if (product.category) {
-//         categoryOffer = activeCategoryOffers.find(
-//           c => c.category.toString() === product.category._id.toString()
-//         );
-//       }
-
-//       let finalOffer = null;
-//       if (productOffer && categoryOffer) {
-//         finalOffer = productOffer.offerPercentage >= categoryOffer.offerPercentage 
-//           ? productOffer 
-//           : categoryOffer;
-//       } else if (productOffer) {
-//         finalOffer = productOffer;
-//       } else if (categoryOffer) {
-//         finalOffer = categoryOffer;
-//       }
-
-//       return { 
-//         ...product, 
-//         offer: finalOffer 
-//       };
-//     });
-
-//     const totalProducts = productsWithOffer.length;
-//     const pages = Math.ceil(totalProducts / perPage);
-//     const paginatedProducts = productsWithOffer.slice(
-//       (page - 1) * perPage, 
-//       page * perPage
-//     );
-
-//     let searchMessage = "Browse our products";
-//     let noProductsMessage = "No products available";
-    
-//     if (query.trim()) {
-//       searchMessage = `Showing results for "${query}"`;
-//       if (totalProducts === 0) {
-//         noProductsMessage = `No products found for "${query}"`;
-//       }
-//     }
-
-//     if (categoryFilter !== 'all') {
-//       const selectedCategory = categories.find(c => c._id.toString() === categoryFilter);
-//       if (selectedCategory) {
-//         searchMessage = `Products in ${selectedCategory.name}`;
-//       }
-//     }
-
-//     res.render('user/shop', {
-//       user,
-//       products: paginatedProducts,
-//       allProductsCount: totalProducts,       
-//       categories,
-//       current: page,
-//       pages,
-//       sort,
-//       query: query || '',                    
-//       categoryFilter,                         
-//       searchMessage,                         
-//       noProducts: totalProducts === 0,       
-//       noProductsMessage,                     
-//       hasSearch: !!query.trim(),             
-//       hasCategoryFilter: categoryFilter !== 'all' 
-//     });
-
-//   } catch (err) {
-//     console.error("getShopPage error:", err);
-//     res.status(500).render('user/error', { 
-//       error: 'Shop page failed to load. Please try again.' 
-//     });
-//   }
-// }
 
 
 const getShopPage = async (req, res) => {
@@ -281,7 +141,7 @@ const getShopPage = async (req, res) => {
 
   } catch (err) {
     console.error('getShopPage error:', err);
-    res.status(500).render('user/error', {
+    res.status(STATUS.INTERNAL_SERVER_ERROR).render('user/error', {
       error: 'Shop page failed to load. Please try again.'
     });
   }
@@ -374,7 +234,7 @@ const getCartTotals = async (req, res) => {
 
     const userId = req.session?.user?.id || req.user?.id;
     if (!userId) {
-      return res.status(401).json({ success: false, message: "Login required" });
+      return res.status(STATUS.UNAUTHORIZED).json({ success: false, message: "Login required" });
     }
 
     const cart = await Cart.findOne({ userId })
@@ -414,7 +274,7 @@ const getCartTotals = async (req, res) => {
 
   } catch (err) {
     console.error("Error fetching cart:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: "Server error" });
   }
 };
 
@@ -424,7 +284,7 @@ const addToCart = async (req, res) => {
     const { productId, qty, size, pricePerUnit } = req.body;
 
     if (!req.user || !req.user.id) {
-      return res.status(401).json({ success: false, message: "Login required" });
+      return res.status(STATUS.UNAUTHORIZED).json({ success: false, message: "Login required" });
     }
 
     const userId = req.user.id;
@@ -526,7 +386,7 @@ const addToCart = async (req, res) => {
 
   } catch (err) {
     console.error("AddToCart Error:", err);
-    return res.status(500).json({ success: false, message: "Server error" });
+    return res.status(STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: "Server error" });
   }
 }
 
@@ -562,7 +422,7 @@ const searchProducts = async (req, res) => {
     res.json(filteredProducts);
   } catch (err) {
     console.error("Search error:", err);
-    res.status(500).json({ products: [] });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ products: [] });
   }
 };
 
@@ -586,7 +446,7 @@ const getProfilePage = async (req, res) => {
     res.render("user/profile", { user, addresses,googleBlock });
   } catch (err) {
     console.error("Profile Page Error:", err);
-    res.status(500).send("Server Error");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error");
   }
 }
 
@@ -621,16 +481,16 @@ const updateProfile = async (req, res) => {
     const { firstName, secondName, phone } = req.body;
 
     if (!firstName || !secondName || !phone) {
-      return res.status(400).json({ success: false, msg: "All fields required" });
+      return res.status(STATUS.BAD_REQUEST).json({ success: false, msg: "All fields required" });
     }
 
     if (phone.length !== 10) {
-      return res.status(400).json({ success: false, msg: "Phone must be 10 digits" });
+      return res.status(STATUS.BAD_REQUEST).json({ success: false, msg: "Phone must be 10 digits" });
     }
 
     const exists = await User.findOne({ phone, _id: { $ne: userId } });
     if (exists) {
-      return res.status(400).json({ success: false, msg: "Phone number already exists" });
+      return res.status(STATUS.BAD_REQUEST).json({ success: false, msg: "Phone number already exists" });
     }
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -651,34 +511,9 @@ const updateProfile = async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ success: false, msg: "Server error" });
+    return res.status(STATUS.INTERNAL_SERVER_ERROR).json({ success: false, msg: "Server error" });
   }
 };
-
-
-// const uploadProfileImage = async (req, res) => {
-//   try {
-//     const userId = req.session.user.id;
-
-//     if (!req.file) {
-//       console.log("No file uploaded");
-//       return res.redirect("/user/profile");
-//     }
-
-//     const updatedUser = await User.findByIdAndUpdate(
-//       userId,
-//       { profile: "/uploads/products/" + req.file.filename },
-//       { new: true }
-//     );
-
-//     req.session.user.profile = updatedUser.profile;
-
-//     res.redirect("/user/profile");
-//   } catch (err) {
-//     console.error("Profile Image Upload Error:", err);
-//     res.redirect("/user/profile");
-//   }
-// };
 
 
 const uploadProfileImage = async (req, res) => {

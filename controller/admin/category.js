@@ -1,7 +1,8 @@
 const Category = require("../../models/category");
 const slugify = require("slugify");
 const mongoose = require("mongoose");
-
+const STATUS = require('../../utils/statusCodes');
+const AppError = require('../../utils/appError')
 
 
 const renderCategories = async (req, res) => {
@@ -25,7 +26,7 @@ const renderCategories = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server Error");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error");
   }
 }
 
@@ -40,7 +41,7 @@ const getCategories = async (req, res) => {
     res.render("admin/categories", { categories });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server error");
   }
 };
 
@@ -51,7 +52,7 @@ const addCategory = async (req, res) => {
   const { name, description } = req.body;
 
   if (!name || !description || name.trim() === "" || description.trim() === "") {
-    return res.status(400).json({ success: false, message: "Name and description are required" });
+    return res.status(STATUS.BAD_REQUEST).json({ success: false, message: "Name and description are required" });
   }
 
   try {
@@ -61,7 +62,7 @@ const addCategory = async (req, res) => {
 
     if (existing) {
       return res
-        .status(400)
+        .status(STATUS.NOT_FOUND)
         .json({ success: false, message: "Category already exists" });
     }
 
@@ -81,7 +82,7 @@ const addCategory = async (req, res) => {
     console.error("Add Category Error:", error.message);
 
     return res
-      .status(500)
+      .status(STATUS.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "Server error, please try again" });
   }
 }
@@ -92,7 +93,7 @@ const deleteCategory = async (req, res) => {
   try {
     const id = req.params.id;
     if (!id) {
-      return res.status(400).json({ success: false, message: "Category ID not provided" });
+      return res.status(STATUS.BAD_REQUEST).json({ success: false, message: "Category ID not provided" });
     }
 
     const deleted = await Category.findByIdAndUpdate(
@@ -102,13 +103,13 @@ const deleteCategory = async (req, res) => {
     );
 
     if (!deleted) {
-      return res.status(404).json({ success: false, message: "Category not found" })
+      return res.status(STATUS.NOT_FOUND).json({ success: false, message: "Category not found" })
     }
 
     res.json({ success: true, message: "Category soft deleted successfully" })
   } catch (err) {
     console.error("Soft Delete Error:", err.message);
-    res.status(500).json({ success: false, message: "Error deleting category" })
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: "Error deleting category" })
   }
 }
 
@@ -184,7 +185,7 @@ const searchCategories = async (req, res) => {
     res.json({ success: true, categories });
   } catch (err) {
     console.error("Search Error:", err.message);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: "Server error" });
   }
 }
 
@@ -200,7 +201,7 @@ const toggleCategory = async (req, res) => {
     res.json({ message: category.isDeleted ? 'Category blocked' : 'Category unblocked' });
   } catch(err){
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Server error' });
   }
 };
 
@@ -208,16 +209,21 @@ const toggleCategory = async (req, res) => {
 const toggleBlockCategory = async (req, res, next) => {
   try {
     const category = await Category.findById(req.params.id);
-    if (!category) return res.status(404).json({ message: 'Category not found' });
+    if (!category) return res.status(STATUS.NOT_FOUND).json({ message: 'Category not found' });
 
     category.isBlocked = !category.isBlocked; 
     await category.save();
 
-    res.status(200).json({ message: 'Block status updated', isBlocked: category.isBlocked });
+    res.status(STATUS.OK).json({ message: 'Block status updated', isBlocked: category.isBlocked });
   } catch (err) {
-    console.error(err);
-    next(new AppError('Failed to toggle block status', 500));
-  }
+  console.error(err);
+  next(
+    new AppError(
+      'Failed to toggle block status',
+      STATUS.INTERNAL_SERVER_ERROR
+    )
+  );
+}
 };
 
 

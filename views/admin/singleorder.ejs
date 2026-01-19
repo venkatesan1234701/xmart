@@ -277,10 +277,10 @@ body {
         <h5 class="border-bottom pb-2 mb-3">🧾 Order Details</h5>
         <p><strong>Payment Method:</strong> <%= order.paymentDetails.method %></p>
         <p><strong>Payment Status:</strong> <%= order.paymentDetails.status %></p>
-        <p><strong>Shipping Cost:</strong> ₹<%= order.shippingCost.toFixed(2) %></p>
-        <p><strong>Expected Delivery:</strong>
+        <p><strong>Shipping Cost:</strong> ₹40</p>
+        <!-- <p><strong>Expected Delivery:</strong>
           <%= order.expectedDelivery ? new Date(order.expectedDelivery).toLocaleDateString() : "N/A" %>
-        </p>
+        </p> -->
       </div>
     </div>
   </div>

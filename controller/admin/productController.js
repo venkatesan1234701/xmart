@@ -2,7 +2,8 @@ const Product = require("../../models/productModel");
 const  Category = require('../../models/category')
 const path = require("path");
 const { postEditCategory } = require("./category");
-
+const STATUS = require('../../utils/statusCodes');
+const AppError = require('../../utils/appError')
 const mongoose = require("mongoose");
 
 
@@ -33,7 +34,7 @@ const products = await Product.find()
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server Error");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error");
   }
 };
 
@@ -44,15 +45,15 @@ const addProduct = async (req, res) => {
   try {
     const { name, description, category } = req.body;
 
-    if(!category) return res.status(400).json({ success: false, message: "Category is required" })
-    if(!name || !name.trim()) return res.status(400).json({ success: false, message: "Product name is required" })
+    if(!category) return res.status(STATUS.BAD_REQUEST).json({ success: false, message: "Category is required" })
+    if(!name || !name.trim()) return res.status(STATUS.BAD_REQUEST).json({ success: false, message: "Product name is required" })
         const existingProduct = await Product.findOne({
       category,
       name: { $regex: `^${name.trim()}$`, $options: "i" }
     });
 
     if (existingProduct) {
-      return res.status(400).json({
+      return res.status(STATUS.BAD_REQUEST).json({
         success: false,
         message: "Product already exists in this category"
       });
@@ -91,7 +92,7 @@ const addProduct = async (req, res) => {
 
   } catch(err){
     console.error("Add Product Error:", err);
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: "Server Error" });
   }
 }
 
@@ -110,7 +111,7 @@ const getAddProductPage = async (req, res) => {
     res.render("admin/addProduct", { categories });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server Error");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error");
   }
 };
 
@@ -121,7 +122,7 @@ const searchProducts = async (req, res) => {
     const query = req.query.query || "";
 
     if (!query) {
-      return res.status(400).json({ message: "Search query is required" });
+      return res.status(STATUS.BAD_REQUEST).json({ message: "Search query is required" });
     }
 
     const products = await Product.find({
@@ -153,7 +154,7 @@ const searchProducts = async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server Error" });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: "Server Error" });
   }
 };
 
@@ -163,12 +164,12 @@ const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(id);
     const categories = await Category.find().lean();
-    if(!product) return res.status(404).send("Product not found");
+    if(!product) return res.status(STATUS.NOT_FOUND).send("Product not found");
 
     res.json({ product, categories });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error fetching product");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Error fetching product");
   }
 };
 
@@ -183,7 +184,7 @@ const updateProduct = async (req, res) => {
     const productId = req.params.id;
 
     const product = await Product.findById(productId);
-    if (!product) return res.status(404).json({ success: false, message: "Product not found" })
+    if (!product) return res.status(STATUS.NOT_FOUND).json({ success: false, message: "Product not found" })
 
       const duplicate = await Product.findOne({
       _id: { $ne: productId },
@@ -192,7 +193,7 @@ const updateProduct = async (req, res) => {
     });
 
     if (duplicate) {
-      return res.status(400).json({
+      return res.status(STATUS.BAD_REQUEST).json({
         success: false,
         message: "Product already exists in this category"
       });
@@ -225,7 +226,7 @@ const updateProduct = async (req, res) => {
     res.json({ success: true, message: "Product updated!" });
   } catch (err) {
     console.error("Update Product Error:", err);
-    res.status(500).json({ success: false, message: "Server Error" })
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: "Server Error" })
   }
 }
 
@@ -236,7 +237,7 @@ const toggleProductStatus = async (req, res) => {
     const product = await Product.findById(req.params.id);
 
     if (!product) {
-      return res.status(404).send("Product not found");
+      return res.status(STATUS.NOT_FOUND).send("Product not found");
     }
 
     product.isDeleted = !product.isDeleted;
@@ -245,7 +246,7 @@ const toggleProductStatus = async (req, res) => {
     res.redirect("/admin/products");
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server Error");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error");
   }
 };
 

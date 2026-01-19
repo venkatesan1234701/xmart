@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const Wishlist = require('../../models/wishlistModel');
 const Product = require('../../models/productModel');
 const User = require('../../models/userSchema')
+const STATUS = require('../../utils/statusCodes');
+const AppError = require('../../utils/appError')
+
 const bcrypt = require("bcrypt")
 
 const getWishlistPage = async (req, res) => {
@@ -108,7 +111,7 @@ const getWishlistPage = async (req, res) => {
     });
   } catch (err) {
     console.error("Get wishlist error:", err);
-    res.status(500).send("Server Error");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error");
   }
 };
 
@@ -121,27 +124,27 @@ const addToWishlist = async (req, res) => {
     const userId = req.session?.user?.id || null; 
 
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({ success: false, message: "Invalid product ID" });
+      return res.status(STATUS.BAD_REQUEST).json({ success: false, message: "Invalid product ID" });
     }
 
     const product = await Product.findById(productId);
     if (!product) {
-      return res.status(404).json({ success: false, message: "Product not found" });
+      return res.status(STATUS.NOT_FOUND).json({ success: false, message: "Product not found" });
     }
 
     if (product.sizes && product.sizes.length && size) {
       const idx = product.sizes.indexOf(size);
       if (idx === -1)
-        return res.status(400).json({ success: false, message: "Invalid size" });
+        return res.status(STATUS.BAD_REQUEST).json({ success: false, message: "Invalid size" });
       if ((product.quantities[idx] || 0) <= 0)
-        return res.status(400).json({ success: false, message: "Selected size out of stock" });
+        return res.status(STATUS.BAD_REQUEST).json({ success: false, message: "Selected size out of stock" });
     }
 
     let wishlist = await Wishlist.findOne({ userId });
 
     if (!wishlist) {
       if (!userId) {
-        return res.status(401).json({
+        return res.status(STATUS.UNAUTHORIZED).json({
           success: false,
           message: "Please log in to use wishlist",
         });
@@ -158,7 +161,7 @@ const addToWishlist = async (req, res) => {
       );
 
     if (exists) {
-      return res.status(200).json({
+      return res.status(STATUS.OK).json({
         success: false,
         message: "This item is already in your wishlist",
       });
@@ -177,7 +180,7 @@ const addToWishlist = async (req, res) => {
   } catch (err) {
     console.error("Add to wishlist error:", err);
     return res
-      .status(500)
+      .status(STATUS.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "Server error while adding to wishlist" });
   }
 };
@@ -194,7 +197,7 @@ const deleteWishlistItem = async (req, res) => {
 
     const wishlist = await Wishlist.findOne({ userId });
     if (!wishlist) {
-      return res.status(404).json({ success: false, message: "Wishlist not found" });
+      return res.status(STATUS.NOT_FOUND).json({ success: false, message: "Wishlist not found" });
     }
 
     wishlist.products = wishlist.products.filter((item) => {
@@ -208,7 +211,7 @@ const deleteWishlistItem = async (req, res) => {
     return res.json({ success: true, message: "Product removed from wishlist " });
   } catch (err) {
     console.error(" Error deleting wishlist item:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: "Server error" });
   }
 };
 
@@ -227,7 +230,7 @@ const changepassword = async (req, res) => {
 
   } catch (err) {
     console.error("Error:", err);
-    res.status(500).send("Server error");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server error");
   }
 };
 

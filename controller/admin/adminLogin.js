@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const User = require('../../models/userSchema')
 const Order = require('../../models/order')
 const Product = require('../../models/productModel')
-
+const STATUS = require('../../utils/statusCodes');
 
 
 async function signIn(req, res, next) {
@@ -33,12 +33,19 @@ async function signIn(req, res, next) {
 async function renderSignInPage(req, res, next) {
   try {
     if (req.session.isAdminLogged) {
-      return res.redirect('/admin/dashboard')
+      return res.redirect(STATUS.REDIRECT, '/admin/dashboard')
     } else {
-      return res.render('admin/AdminSignup', { message: null })
+      return res.status(STATUS.OK).render('admin/AdminSignup', {
+        message: null
+      })
     }
   } catch (error) {
-    next(new AppError('Sorry...Something went wrong', 500))
+    next(
+      new AppError(
+        'Sorry...Something went wrong',
+        STATUS.INTERNAL_SERVER_ERROR
+      )
+    )
   }
 }
 
@@ -257,7 +264,7 @@ const getOrdersSummary = async (req, res) => {
 
   } catch (err) {
     console.error("getOrdersSummary error:", err);
-    res.status(500).json({ error: "Server error" });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ error: "Server error" });
   }
 };
 
@@ -318,7 +325,7 @@ const getDashboard = async (req, res) => {
 
   } catch (err) {
     console.error("Error loading dashboard:", err);
-    res.status(500).send("Server Error");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error");
   }
 };
 
@@ -334,7 +341,10 @@ async function renderProductsPage(req, res, next) {
       return res.redirect('/admin/login');
     }
   } catch (error) {
-    next(new AppError('Sorry...Something went wrong', 500));
+      new AppError(
+        'Sorry...Something went wrong',
+        STATUS.INTERNAL_SERVER_ERROR
+      )
   }
 }
 
@@ -345,7 +355,7 @@ async function renderProductsPage(req, res) {
     res.render("admin/products", { categories })
   } catch (err) {
     console.error("Error fetching categories:", err)
-    res.status(500).send("Server Error")
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error")
   }
 }
 
@@ -412,7 +422,7 @@ const getSalesReport = async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server Error");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error");
   }
 };
 
@@ -445,8 +455,14 @@ const renderCustomers = async (req, res, next) => {
       totalCustomers
     });
   } catch (error) {
-    next(new AppError('Server Error', 500));
-  }
+  next(
+    new AppError(
+      'Server Error',
+      STATUS.INTERNAL_SERVER_ERROR
+    )
+  );
+}
+
 }
 
 
@@ -471,7 +487,7 @@ const toggleBlockUser = async (req, res, next) => {
     );
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res.status(STATUS.NOT_FOUND).json({ success: false, message: "User not found" });
     }
 
     res.json({
@@ -501,7 +517,7 @@ const earchCustomers = async (req, res) => {
     return res.json({ success: true, users });
   } catch (err) {
     console.error("Search Error:", err);
-    return res.status(500).json({ success: false, message: "Server error" });
+    return res.status(STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: "Server error" });
   }
 }
 
@@ -511,10 +527,16 @@ async function adminLogout(req, res, next) {
   try {
     if (req.session) {
       req.session.destroy(err => {
-        if (err) {
-          console.error('Admin session destroy error:', err);
-          return next(new AppError('Logout failed. Please try again.', 500));
-        }
+if (err) {
+  console.error('Admin session destroy error:', err);
+  return next(
+    new AppError(
+      'Logout failed. Please try again.',
+      STATUS.INTERNAL_SERVER_ERROR
+    )
+  );
+}
+
 
         res.clearCookie('connect.sid', { path: '/', httpOnly: true });
         res.redirect('/admin/login');
@@ -523,9 +545,15 @@ async function adminLogout(req, res, next) {
       res.redirect('/admin/login');
     }
   } catch (error) {
-    console.error('Admin logout error:', error);
-    next(new AppError('Something went wrong during admin logout', 500));
-  }
+  console.error('Admin logout error:', error);
+  next(
+    new AppError(
+      'Something went wrong during admin logout',
+      STATUS.INTERNAL_SERVER_ERROR
+    )
+  );
+}
+
 }
 
 

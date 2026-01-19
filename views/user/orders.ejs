@@ -11,6 +11,10 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
 
 <style>
+  .swal2-container {
+  z-index: 99999 !important;
+}
+
   /* ------------------------------------
    GLOBAL PAGE FEEL (Clean + Premium)
 ------------------------------------ */
@@ -622,7 +626,8 @@ document.getElementById("orderDetailsModal").addEventListener("shown.bs.modal", 
         const order = orders[index];
 
         document.getElementById("modalOrderId").innerText = order.orderId;
-        document.getElementById("modalPayment").innerText = order.paymentDetails.method || "N/A";
+        // document.getElementById("modalPayment").innerText = order.paymentDetails.method || "N/A";
+        document.getElementById("modalPayment").innerText = order.paymentDetails?.method || "N/A";
         document.getElementById("modalStatus").innerText = order.orderStatus;
         document.getElementById("modalTotal").innerText = order.grandTotal;
         document.getElementById("modalDate").innerText = new Date(order.createdAt).toLocaleString();
@@ -830,7 +835,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function showOrderDetails(order) {
   document.getElementById("modalOrderId").innerText = order.orderId;
-  document.getElementById("modalPayment").innerText = order.paymentMethod || "N/A";
+  // document.getElementById("modalPayment").innerText = order.paymentMethod || "N/A";
+  document.getElementById("modalPayment").innerText = order.paymentDetails?.method || "N/A";
   document.getElementById("modalStatus").innerText = order.orderStatus;
   document.getElementById("modalTotal").innerText = order.grandTotal;
 
@@ -857,32 +863,6 @@ function showOrderDetails(order) {
     let actionBtns = "";
     const itemStatus = item.itemStatus;
     const orderStatus = order.orderStatus;
-
-    // ---------------------------
-    // 🚀 ITEM STATUS BASED BUTTONS
-    // ---------------------------
-
-//     if (itemStatus === "Returned") {
-//   actionBtns = `<span class="badge bg-secondary">Returned</span>`;
-// } else if (itemStatus === "Cancelled") {
-//   actionBtns = `<span class="badge bg-danger">Cancelled</span>`;
-// } else if(itemStatus === "Returning"){
-//   actionBtns = `<span class="badge bg-danger">Returning</span>`;
-// }
-// else if (orderStatus === "Delivered") {
-//   actionBtns = `
-//     <button class="btn btn-sm btn-outline-warning"
-//       onclick="returnProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
-//       Return
-//     </button>`;
-// } else {
-//   actionBtns = `
-//     <button class="btn btn-sm btn-outline-danger"
-//       onclick="cancelProduct('${order._id}', '${item.productId._id}', '${item.selectedSize}')">
-//       Cancel
-//     </button>`;
-// }
-
 
 if (itemStatus === "Returned") {
   actionBtns = `<span class="badge bg-secondary">Returned</span>`;
@@ -916,23 +896,55 @@ if (itemStatus === "Returned") {
 
 
     // PRODUCT HTML
+    // const productHtml = `
+    //   <div class="d-flex align-items-center justify-content-between border p-2 rounded mb-2">
+    //     <div class="d-flex align-items-center gap-3">
+    //       <img src="${img}" width="60" height="60" class="rounded border" style="object-fit:cover;">
+    //       <div>
+    //         <p class="fw-semibold mb-1">${prod.name || "Product"}</p>
+    //         <small class="text-muted">Size: ${item.selectedSize || "-"} | Qty: ${item.quantity}</small><br>
+    //         <small class="text-muted">₹${item.paidPrice ?? item.totalPrice}</small>
+    //       </div>
+    //     </div>
+    //     <div>${actionBtns}</div>
+    //   </div>`;
+
     const productHtml = `
-      <div class="d-flex align-items-center justify-content-between border p-2 rounded mb-2">
-        <div class="d-flex align-items-center gap-3">
-          <img src="${img}" width="60" height="60" class="rounded border" style="object-fit:cover;">
-          <div>
-            <p class="fw-semibold mb-1">${prod.name || "Product"}</p>
-            <small class="text-muted">Size: ${item.selectedSize || "-"} | Qty: ${item.quantity}</small><br>
-            <small class="text-muted">₹${item.paidPrice ?? item.totalPrice}</small>
-          </div>
+  <div class="border p-2 rounded mb-2">
+    <div class="d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <img src="${img}" width="60" height="60" class="rounded border" style="object-fit:cover;">
+        <div>
+          <p class="fw-semibold mb-1">${prod.name || "Product"}</p>
+          <small class="text-muted">
+            Size: ${item.selectedSize || "-"} | Qty: ${item.quantity}
+          </small><br>
+          <small class="text-muted">₹${item.paidPrice ?? item.totalPrice}</small>
         </div>
-        <div>${actionBtns}</div>
-      </div>`;
+      </div>
+      <div>${actionBtns}</div>
+    </div>
+
+    ${
+      item.itemStatus === "Cancelled" && item.cancelReason
+        ? `
+        <div class="mt-2 p-2 bg-light border rounded">
+          <small class="text-muted fw-semibold">
+            Cancellation Reason:
+          </small>
+          <p class="mb-0 text-danger">
+            ${item.cancelReason}
+          </p>
+        </div>
+        `
+        : ""
+    }
+  </div>
+`;
 
     productsContainer.insertAdjacentHTML("beforeend", productHtml);
   });
 
-  // Entire Order Cancel Button
   const cancelOrderBtn = document.getElementById("cancelOrderBtn");
   if (order.orderStatus === "Delivered" || order.orderStatus === "Cancelled") {
     cancelOrderBtn.style.display = "none";
@@ -988,27 +1000,71 @@ function openReturnPopup(orderId, productId, size) {
   }, 300);
 }
 
+// async function cancelProduct(orderId, productId, size) {
+//   const confirm = await Swal.fire({
+//     title: "Cancel this product?",
+//     icon: "warning",
+//     showCancelButton: true,
+//     confirmButtonText: "Yes, cancel it"
+//   });
+//   if (!confirm.isConfirmed) return;
+
+//   const res = await fetch(`/user/orders/${orderId}/cancel-item`, {
+//     method: "PUT",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({ productId, selectedSize: size })
+//   });
+
+//   const data = await res.json();
+//   if (res.ok) {
+//     await Swal.fire("✅ Cancelled!", data.message, "success");
+//     location.reload();
+//   } else {
+//     Swal.fire("❌ Error", data.message || "Failed to cancel product.", "error");
+//   }
+// }
+
+
 async function cancelProduct(orderId, productId, size) {
-  const confirm = await Swal.fire({
-    title: "Cancel this product?",
-    icon: "warning",
+
+  // 👇 Close bootstrap modal first
+  const bsModal = bootstrap.Modal.getInstance(
+    document.getElementById("orderDetailsModal") 
+  );
+  if (bsModal) bsModal.hide();
+
+  const { value: reason } = await Swal.fire({
+    title: "Cancel Product",
+    input: "textarea",
+    inputLabel: "Reason for cancellation",
+    inputPlaceholder: "Type your reason here...",
     showCancelButton: true,
-    confirmButtonText: "Yes, cancel it"
+    confirmButtonText: "Confirm Cancel",
+    allowOutsideClick: false,
+    inputValidator: (value) => {
+      if (!value) return "Cancellation reason is required";
+    }
   });
-  if (!confirm.isConfirmed) return;
+
+  if (!reason) return;
 
   const res = await fetch(`/user/orders/${orderId}/cancel-item`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ productId, selectedSize: size })
+    body: JSON.stringify({
+      productId,
+      selectedSize: size,
+      cancelReason: reason
+    })
   });
 
   const data = await res.json();
+
   if (res.ok) {
-    await Swal.fire("✅ Cancelled!", data.message, "success");
+    await Swal.fire("Cancelled", data.message, "success");
     location.reload();
   } else {
-    Swal.fire("❌ Error", data.message || "Failed to cancel product.", "error");
+    Swal.fire("Error", data.message || "Failed", "error");
   }
 }
 

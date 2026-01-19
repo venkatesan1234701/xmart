@@ -2,6 +2,8 @@
 const User  = require("../../models/userSchema")
 const Address  = require('../../models/address')
 const mongoose = require("mongoose");
+const STATUS = require('../../utils/statusCodes');
+const AppError = require('../../utils/appError')
 
 
 const getAddAddress = (req, res) => {
@@ -84,7 +86,7 @@ const getEditAddress = async (req, res) => {
 
   } catch (err) {
     console.error("Get Edit Address Error:", err);
-    res.status(500).send("Server Error");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error");
   }
 };
 

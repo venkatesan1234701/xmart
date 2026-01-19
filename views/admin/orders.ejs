@@ -601,7 +601,7 @@ td:last-child {
 
           <% orders.forEach(order => { %>
 
-            <% if (order.orderStatus === 'payment faild') { return; } %>
+            <% if (order.orderStatus === 'payment faild' || order.orderStatus === 'Cancelled') { return; } %>
 
             <tr class="border-t hover:bg-gray-50 transition">
               

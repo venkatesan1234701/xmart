@@ -4,139 +4,9 @@ const Product = require("../../models/productModel");
 const Wishlist = require("../../models/wishlistModel");
 const Coupon = require("../../models/couponSchema ");
 const Order = require("../../models/order")
+const STATUS = require('../../utils/statusCodes');
+const AppError = require('../../utils/appError')
 
-
-
-// const applyCoupon = async (req, res) => {
-//   try {
-//     const user = req.session.user;
-//     if (!user) {
-//       return res.status(401).json({
-//         success: false,
-//         message: "Please log in first"
-//       });
-//     }
-
-//     const { couponCode } = req.body;
-//     if (!couponCode || !couponCode.trim()) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Enter a coupon code"
-//       });
-//     }
-
-//     const coupon = await Coupon.findOne({
-//       couponCode: { $regex: new RegExp(`^${couponCode.trim()}$`, "i") },
-//       isListed: true,
-//       currentStatus: "active"
-//     });
-
-//     if (!coupon) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Invalid coupon code"
-//       });
-//     }
-
-//     const now = new Date();
-//     if (
-//       (coupon.couponStartDate && now < coupon.couponStartDate) ||
-//       (coupon.couponExpiryDate && now > coupon.couponExpiryDate)
-//     ) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Coupon is not active now"
-//       });
-//     }
-
-//     const cart = await Cart.findOne({ userId: user.id });
-//     if (!cart || cart.products.length === 0) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Your cart is empty"
-//       });
-//     }
-
-//     let originalSubtotal = 0;
-//     cart.products.forEach(item => {
-//       originalSubtotal += item.originalPrice * item.quantity;
-//     });
-
-//     if (originalSubtotal < coupon.minimumPurchase) {
-//       return res.status(400).json({
-//         success: false,
-//         message: `Minimum purchase should be ₹${coupon.minimumPurchase} to use this coupon`
-//       });
-//     }
-
-//     let discount = Math.round(
-//       (originalSubtotal * coupon.discountPercentage) / 100
-//     );
-//     let isMax = false;
-
-//     if (discount > coupon.maximumDiscount) {
-//       discount = coupon.maximumDiscount;
-//       isMax = true;
-//     }
-
-//     let distributed = 0;
-
-//     cart.products.forEach(item => {
-//       const contribution =
-//         (item.originalPrice * item.quantity) / originalSubtotal;
-
-//       const productDiscount = Math.round(discount * contribution);
-//       const perItemDiscount = productDiscount / item.quantity;
-
-//       item.productDiscount = productDiscount;
-//       item.pricePerUnit = Math.round(
-//         item.originalPrice - perItemDiscount
-//       );
-
-//       distributed += productDiscount;
-//     });
-
-//     const diff = discount - distributed;
-//     if (diff !== 0 && cart.products.length > 0) {
-//       const item = cart.products[0];
-//       item.productDiscount += diff;
-
-//       const perItemDiscount = item.productDiscount / item.quantity;
-//       item.pricePerUnit = Math.round(
-//         item.originalPrice - perItemDiscount
-//       );
-//     }
-
- 
-
-//     cart.subtotal = originalSubtotal;
-//     cart.grandTotal =
-//       originalSubtotal - discount + (cart.shippingCost || 40);
-
-//     cart.coupon = {
-//       name: coupon.couponCode,
-//       discount,
-//       isMax,
-//       maxPurchase: coupon.maximumDiscount
-//     };
-
-//     await cart.save();
-
-//     return res.status(200).json({
-//       success: true,
-//       message: `Coupon applied successfully! You saved ₹${discount}.`,
-//       newGrandTotal: cart.grandTotal,
-//       discount,
-//       couponCode: coupon.couponCode
-//     });
-//   } catch (error) {
-//     console.error("Error applying coupon:", error);
-//     return res.status(500).json({
-//       success: false,
-//       message: "Server error while applying coupon"
-//     });
-//   }
-// }
 
 const applyCoupon = async (req, res) => {
   try {
@@ -159,7 +29,7 @@ const applyCoupon = async (req, res) => {
     });
 
     if (subtotal < coupon.minimumPurchase) {
-      return res.status(400).json({ success: false, message: `Min purchase ₹${coupon.minimumPurchase} required` });
+      return res.status(STATUS.BAD_REQUEST).json({ success: false, message: `Min purchase ₹${coupon.minimumPurchase} required` });
     }
 
     let discount = Math.round((subtotal * coupon.discountPercentage) / 100);
@@ -179,88 +49,9 @@ const applyCoupon = async (req, res) => {
     await cart.save();
     return res.json({ success: true, message: "Coupon applied!", discount, newGrandTotal: cart.grandTotal });
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Server error" });
+    return res.status(STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: "Server error" });
   }
-};
-// const applyCoupon = async (req, res) => {
-//   try {
-//     const user = req.session.user;
-//     if (!user) {
-//       return res.status(401).json({ success: false, message: "Please log in first" });
-//     }
-
-//     const { couponCode } = req.body;
-//     if (!couponCode || !couponCode.trim()) {
-//       return res.status(400).json({ success: false, message: "Enter a coupon code" });
-//     }
-
-//     const coupon = await Coupon.findOne({
-//       couponCode: { $regex: new RegExp(`^${couponCode.trim()}$`, "i") },
-//       isListed: true,
-//       currentStatus: "active"
-//     });
-
-//     if (!coupon) {
-//       return res.status(404).json({ success: false, message: "Invalid coupon code" });
-//     }
-
-//     const now = new Date();
-//     if (
-//       (coupon.couponStartDate && now < coupon.couponStartDate) ||
-//       (coupon.couponExpiryDate && now > coupon.couponExpiryDate)
-//     ) {
-//       return res.status(400).json({ success: false, message: "Coupon is not active now" });
-//     }
-
-//     const cart = await Cart.findOne({ userId: user.id });
-//     if (!cart || cart.products.length === 0) {
-//       return res.status(400).json({ success: false, message: "Your cart is empty" });
-//     }
-
-//     let subtotal = 0;
-//     cart.products.forEach(i => {
-//       subtotal += i.originalPrice * i.quantity;
-//     });
-
-//     if (subtotal < coupon.minimumPurchase) {
-//       return res.status(400).json({
-//         success: false,
-//         message: `Minimum purchase should be ₹${coupon.minimumPurchase}`
-//       });
-//     }
-
-//     let discount = Math.round((subtotal * coupon.discountPercentage) / 100);
-//     let isMax = false;
-
-//     if (discount > coupon.maximumDiscount) {
-//       discount = coupon.maximumDiscount;
-//       isMax = true;
-//     }
-
-//     cart.subtotal = subtotal;
-//     cart.grandTotal = subtotal - discount + (cart.shippingCost || 40);
-//     cart.coupon = {
-//       name: coupon.couponCode,
-//       discount,
-//       isMax,
-//       maxPurchase: coupon.maximumDiscount
-//     };
-
-//     await cart.save();
-
-//     return res.json({
-//       success: true,
-//       message: `Coupon applied successfully! You saved ₹${discount}`,
-//       discount,
-//       subtotal: cart.subtotal,
-//       newGrandTotal: cart.grandTotal,
-//       couponCode: coupon.couponCode
-//     });
-//   } catch (err) {
-//     return res.status(500).json({ success: false, message: "Server error" });
-//   }
-// };
-
+}
 
 
 const getCartPage = async (req, res) => {
@@ -391,7 +182,7 @@ cart.grandTotal = cart.subtotal - discount + (cart.shippingCost || 40);
 
   } catch (error) {
     console.error("Error loading cart page:", error);
-    res.status(500).send("Server Error - Cannot load cart page");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error - Cannot load cart page");
   }
 };
 
@@ -403,7 +194,7 @@ const moveToCart = async (req, res) => {
     const { productId, size } = req.body;
 
     if (!req.session.user || !req.session.user.id) {
-      return res.status(401).json({
+      return res.status(STATUS.UNAUTHORIZED).json({
         success: false,
         message: "Please login first",
         redirectUrl: "/signin",
@@ -411,14 +202,14 @@ const moveToCart = async (req, res) => {
     }
     const userId = req.session.user.id;
     if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({
+      return res.status(STATUS.BAD_REQUEST).json({
         success: false,
         message: "Invalid product ID",
       })
     }
     const product = await Product.findById(productId);
     if (!product) {
-      return res.status(404).json({ success: false, message: "Product not found" });
+      return res.status(STATUS.NOT_FOUND).json({ success: false, message: "Product not found" });
     }
     const sizeIndex = product.sizes.indexOf(size);
     if (sizeIndex === -1) {
@@ -487,7 +278,7 @@ const moveToCart = async (req, res) => {
 
   } catch (err) {
     console.error("MoveToCart Error:", err);
-    return res.status(500).json({
+    return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Server error while moving to cart",
     });
@@ -543,34 +334,34 @@ const updateCartQuantity = async (req, res) => {
   try {
     const userId = req.session.user?.id;
     if (!userId) {
-      return res.status(401).json({ success: false, message: "Login required" });
+      return res.status(STATUS.UNAUTHORIZED).json({ success: false, message: "Login required" });
     }
 
     const { productId, selectedSize, action } = req.body;
     if (!productId || !selectedSize || !action) {
-      return res.status(400).json({ success: false, message: "Missing data" });
+      return res.status(STATUS.BAD_REQUEST).json({ success: false, message: "Missing data" });
     }
 
     const cart = await Cart.findOne({ userId });
     if (!cart) {
-      return res.status(404).json({ success: false, message: "Cart not found" });
+      return res.status(STATUS.NOT_FOUND).json({ success: false, message: "Cart not found" });
     }
 
     const cartItem = cart.products.find(
       p => p.productId.toString() === productId && p.selectedSize === selectedSize
     );
     if (!cartItem) {
-      return res.status(404).json({ success: false, message: "Item not found in cart" });
+      return res.status(STATUS.NOT_FOUND).json({ success: false, message: "Item not found in cart" });
     }
 
     const product = await Product.findById(productId);
     if (!product) {
-      return res.status(404).json({ success: false, message: "Product not found" });
+      return res.status(STATUS.NOT_FOUND).json({ success: false, message: "Product not found" });
     }
 
     const sizeIndex = product.sizes.indexOf(selectedSize);
     if (sizeIndex === -1) {
-      return res.status(400).json({ success: false, message: "Invalid size selected" });
+      return res.status(STATUS.BAD_REQUEST).json({ success: false, message: "Invalid size selected" });
     }
 
     const availableQty = product.quantities[sizeIndex];
@@ -659,91 +450,9 @@ const updateCartQuantity = async (req, res) => {
 
   } catch (err) {
     console.error("Quantity update error:", err);
-    return res.status(500).json({ success: false, message: "Server error" });
+    return res.status(STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: "Server error" });
   }
 };
-
-
-// const updateCartQuantity = async (req, res) => {
-//   try {
-//     const userId = req.session.user?.id;
-//     if (!userId) {
-//       return res.status(401).json({ success: false, message: "Login required" });
-//     }
-
-//     const { productId, selectedSize, action } = req.body;
-
-//     const cart = await Cart.findOne({ userId });
-//     if (!cart) {
-//       return res.status(404).json({ success: false, message: "Cart not found" });
-//     }
-
-//     const cartItem = cart.products.find(
-//       p =>
-//         p.productId.toString() === productId &&
-//         p.selectedSize === selectedSize
-//     );
-
-//     if (!cartItem) {
-//       return res.status(404).json({ success: false, message: "Item not found" });
-//     }
-
-//     if (action === "increase") {
-//       if (cartItem.quantity >= 8) {
-//         return res.json({ success: false, message: "Max limit 8 reached" });
-//       }
-//       cartItem.quantity += 1;
-//     }
-
-//     if (action === "decrease") {
-//       if (cartItem.quantity <= 1) {
-//         return res.json({ success: false, message: "Min quantity is 1" });
-//       }
-//       cartItem.quantity -= 1;
-//     }
-
-//     cart.coupon = {
-//       name: null,
-//       discount: 0,
-//       isMax: false,
-//       maxPurchase: 0,
-//     };
-
-//     cart.products.forEach(item => {
-//       item.productDiscount = 0;
-//       item.pricePerUnit = item.originalPrice;
-//     });
-
-//     cart.subtotal = cart.products.reduce(
-//       (sum, p) => sum + p.originalPrice * p.quantity,
-//       0
-//     );
-
-//     cart.grandTotal = cart.subtotal + (cart.shippingCost || 40);
-
-//     await cart.save();
-
-//     return res.json({
-//       success: true,
-//       productId,
-//       selectedSize,
-//       updatedQty: cartItem.quantity,
-//       rowTotal: cartItem.originalPrice * cartItem.quantity,
-//       subtotal: cart.subtotal,
-//       couponDiscount: 0,
-//       shippingCost: cart.shippingCost || 40,
-//       grandTotal: cart.grandTotal,
-//       couponRemoved: true
-//     });
-
-//   } catch (err) {
-//     console.error("Quantity update error:", err);
-//     return res.status(500).json({
-//       success: false,
-//       message: "Server error"
-//     });
-//   }
-// };
 
 
 
@@ -751,17 +460,17 @@ const removeFromCart = async (req, res) => {
   try {
     const user = req.session.user;
     if (!user || !user.id) {
-      return res.status(401).json({ success: false, message: "User not logged in" });
+      return res.status(STATUS.UNAUTHORIZED).json({ success: false, message: "User not logged in" });
     }
 
     const { productId, selectedSize } = req.params;
     if (!productId || !selectedSize) {
-      return res.status(400).json({ success: false, message: "Product ID or size missing" });
+      return res.status(STATUS.BAD_REQUEST).json({ success: false, message: "Product ID or size missing" });
     }
 
     const cart = await Cart.findOne({ userId: user.id });
     if (!cart) {
-      return res.status(404).json({ success: false, message: "Cart not found" });
+      return res.status(STATUS.NOT_FOUND).json({ success: false, message: "Cart not found" });
     }
 
     cart.products = cart.products.filter(
@@ -776,7 +485,7 @@ const removeFromCart = async (req, res) => {
     res.json({ success: true, message: "Product removed from cart", cart });
   } catch (err) {
     console.error("Remove from cart error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: "Server error" });
   }
 };
 

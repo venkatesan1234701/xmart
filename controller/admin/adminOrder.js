@@ -1,8 +1,66 @@
 const Order = require("../../models/order");
 const User = require("../../models/userSchema");
-
+const STATUS = require('../../utils/statusCodes');
+const AppError = require('../../utils/appError')
 const Wallet = require("../../models/walletSchema");
 const Product = require("../../models/productModel")
+
+// const getAllOrders = async (req, res) => {
+//   try {
+//     if (!req.session.isAdminLogged) {
+//       return res.redirect("/admin/login");
+//     }
+
+//     const perPage = 5;
+//     const page = parseInt(req.query.page) || 1;
+
+//     const search = req.query.search ? req.query.search.trim() : "";
+
+//     let query = {};
+
+//     if (search) {
+//       const regex = new RegExp(search, "i")
+//       query = {
+//         $or: [
+//           { "shippingAddress.firstName": regex },
+//           { orderStatus: regex },
+//         ],
+//       };
+//     }
+
+//     const totalOrders = await Order.countDocuments(query);
+//     const totalPages = Math.ceil(totalOrders / perPage);
+
+//     const orders = await Order.find(query)
+//       .populate("userId", "name email phone")
+//       .populate("products.productId", "name images productPic")
+//       .sort({ createdAt: -1 })
+//       .skip((page - 1) * perPage)
+//       .limit(perPage)
+//       .lean();
+
+//     if (search) {
+//       const lower = search.toLowerCase();
+//       orders.sort((a, b) => {
+//         const aMatch =
+//           a.shippingAddress?.firstName?.toLowerCase() === lower ? -1 : 1;
+//         const bMatch =
+//           b.shippingAddress?.firstName?.toLowerCase() === lower ? -1 : 1;
+//         return aMatch - bMatch;
+//       });
+//     }
+
+//     res.render("admin/orders", {
+//       orders,
+//       currentPage: page,
+//       totalPages,
+//       search,
+//     });
+//   } catch (err) {
+//     console.error(" Error fetching admin orders:", err);
+//     res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server error while fetching orders");
+//   }
+// }
 
 const getAllOrders = async (req, res) => {
   try {
@@ -12,19 +70,18 @@ const getAllOrders = async (req, res) => {
 
     const perPage = 5;
     const page = parseInt(req.query.page) || 1;
-
     const search = req.query.search ? req.query.search.trim() : "";
 
-    let query = {};
+    let query = {
+      orderStatus: { $ne: "Cancelled" }
+    };
 
     if (search) {
-      const regex = new RegExp(search, "i")
-      query = {
-        $or: [
-          { "shippingAddress.firstName": regex },
-          { orderStatus: regex },
-        ],
-      };
+      const regex = new RegExp(search, "i");
+      query.$or = [
+        { "shippingAddress.firstName": regex },
+        { orderStatus: regex },
+      ];
     }
 
     const totalOrders = await Order.countDocuments(query);
@@ -38,17 +95,6 @@ const getAllOrders = async (req, res) => {
       .limit(perPage)
       .lean();
 
-    if (search) {
-      const lower = search.toLowerCase();
-      orders.sort((a, b) => {
-        const aMatch =
-          a.shippingAddress?.firstName?.toLowerCase() === lower ? -1 : 1;
-        const bMatch =
-          b.shippingAddress?.firstName?.toLowerCase() === lower ? -1 : 1;
-        return aMatch - bMatch;
-      });
-    }
-
     res.render("admin/orders", {
       orders,
       currentPage: page,
@@ -56,10 +102,12 @@ const getAllOrders = async (req, res) => {
       search,
     });
   } catch (err) {
-    console.error(" Error fetching admin orders:", err);
-    res.status(500).send("Server error while fetching orders");
+    console.error("Error fetching admin orders:", err);
+    res
+      .status(STATUS.INTERNAL_SERVER_ERROR)
+      .send("Server error while fetching orders");
   }
-}
+};
 
 
 const cancelReturnOrder = async (req, res) => {
@@ -91,7 +139,7 @@ const cancelReturnOrder = async (req, res) => {
 
   } catch (error) {
     console.error("Cancel Return Error:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: "Server error" });
   }
 };
 
@@ -110,7 +158,7 @@ const getSingleOrder = async (req, res) => {
       .lean();
 
     if (!order) {
-      return res.status(404).render("admin/404", { message: "Order not found" });
+      return res.status(STATUS.NOT_FOUND).render("admin/404", { message: "Order not found" });
     }
 
     const toNumber = (val) => (isNaN(Number(val)) ? 0 : Number(val));
@@ -162,7 +210,7 @@ const getSingleOrder = async (req, res) => {
     res.render("admin/singleorder", { order: formattedOrder });
   } catch (err) {
     // console.error("Error loading single order:", err);
-    res.status(500).render("admin/500", {
+    res.status(STATUS.INTERNAL_SERVER_ERROR).render("admin/500", {
       message: "Order not found",
     });
   }
@@ -178,7 +226,7 @@ const approveAllReturns = async (req, res) => {
     const order = await Order.findById(orderId).populate("products.productId");
     
     if (!order) {
-      return res.status(404).json({ success: false, message: "Order not found" });
+      return res.status(STATUS.NOT_FOUND).json({ success: false, message: "Order not found" });
     }
 
     const returningItems = order.products.filter(item => 
@@ -261,7 +309,7 @@ const approveAllReturns = async (req, res) => {
 
   } catch (err) {
     console.error("Approve Returns ERROR:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: "Server error" });
   }
 }
 
@@ -292,7 +340,7 @@ const updateOrderStatus = async (req, res) => {
     const order = await Order.findById(orderId);
     if (!order) {
       return res
-        .status(404)
+        .status(STATUS.NOT_FOUND)
         .json({ success: false, message: "Order not found" });
     }
 
@@ -323,7 +371,7 @@ const updateOrderStatus = async (req, res) => {
   } catch (err) {
     console.error("Error updating order status:", err);
     res
-      .status(500)
+      .status(STATUS.INTERNAL_SERVER_ERROR)
       .json({ success: false, message: "Server error updating status" });
   }
 };

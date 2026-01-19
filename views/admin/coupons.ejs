@@ -934,6 +934,16 @@ if (data.couponCode.length > 13) {
   );
 }
 
+// ====================
+// LOGICAL VALIDATION
+// ====================
+if (Number(data.minimumPurchase) <= Number(data.maximumDiscount)) {
+  return Swal.fire(
+    "Validation Error",
+    "Maximum Discount must be less than Minimum Purchase",
+    "warning"
+  );
+}
 
 
 // ====================

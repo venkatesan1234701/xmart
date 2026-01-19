@@ -2,7 +2,8 @@
 const ProductOffer = require('../../models/productOfferModel');
 const Product = require('../../models/productModel');
 const Category = require("../../models/category")
-
+const STATUS = require('../../utils/statusCodes');
+const AppError = require('../../utils/appError')
 
 const getProductOffers = async (req, res) => {
   try {
@@ -69,7 +70,7 @@ const getProductOffers = async (req, res) => {
     });
   } catch (err) {
     console.error("Error loading product offer page:", err);
-    res.status(500).send("Server Error");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error");
   }
 }
 
@@ -82,7 +83,7 @@ const addOffer = async (req, res) => {
 
     const existing = await ProductOffer.findOne({ product: productId });
     if (existing) {
-      return res.status(400).json({ error: "An offer for this product already exists!" });
+      return res.status(STATUS.BAD_REQUEST).json({ error: "An offer for this product already exists!" });
     }
 
     const newOffer = new ProductOffer({
@@ -94,11 +95,11 @@ const addOffer = async (req, res) => {
     });
 
     await newOffer.save();
-    res.status(200).json({ message: "Offer added successfully!" });
+    res.status(STATUS.OK).json({ message: "Offer added successfully!" });
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ error: "Server error" });
   }
 }
 
@@ -110,7 +111,7 @@ const updateOffer = async (req, res) => {
 
     const existing = await ProductOffer.findOne({ product: productId, _id: { $ne: productOfferId } });
     if (existing) {
-      return res.status(400).json({ error: "Another offer already exists for this product!" });
+      return res.status(STATUS.BAD_REQUEST).json({ error: "Another offer already exists for this product!" });
     }
 
     const updatedOffer = await ProductOffer.findByIdAndUpdate(productOfferId, {
@@ -121,11 +122,11 @@ const updateOffer = async (req, res) => {
       isListed
     }, { new: true })
 
-    res.status(200).json({ message: "Offer updated successfully!" })
+    res.status(STATUS.OK).json({ message: "Offer updated successfully!" })
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ error: "Server error" });
   }
 }
 
@@ -136,13 +137,13 @@ const deleteOffer = async (req, res) => {
   try {
     const { id } = req.params;
     const offer = await ProductOffer.findById(id);
-    if (!offer) return res.status(404).json({ error: "Offer not found" });
+    if (!offer) return res.status(STATUS.NOT_FOUND).json({ error: "Offer not found" });
 
     await offer.deleteOne();
     res.json({ message: "Offer deleted successfully" })
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" })
+    res.status(STATUS.BAD_REQUEST).json({ error: "Server error" })
   }
 };
 

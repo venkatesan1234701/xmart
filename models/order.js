@@ -67,41 +67,6 @@ const OrderSchema = new mongoose.Schema(
       default: "Pending",
     },
 
-    // products: [
-    //   {
-    //     productId: {
-    //       type: mongoose.Schema.Types.ObjectId,
-    //       ref: "Product",
-    //       required: true,
-    //     },
-    //     name: { type: String, required: true },
-    //     selectedSize: {
-    //       type: String,
-    //       enum: ["S", "M", "L"],
-    //       required: true,
-    //     },
-    //     quantity: { type: Number, required: true },
-    //     pricePerUnit: { type: Number, required: true },
-    //     totalPrice: { type: Number, required: true },
-
-    //     itemStatus: {
-    //       type: String,
-    //       enum: [
-    //         "Pending",
-    //         "Processing",
-    //         "Shipped",
-    //         "Delivered",
-    //         "Cancelled",
-    //         "Return Requested",
-    //         "Returning",
-    //         "Returned",
-    //       ],
-    //       default: "Pending",
-    //     },
-    //   },
-    // ],
-
-
     products: [
   {
     productId: {
@@ -129,7 +94,10 @@ const OrderSchema = new mongoose.Schema(
       ],
       default: "Pending",
     },
-
+    cancelReason: {
+          type: String,
+          default: null,
+    },
     returnReason: {
       type: String,
       default: null,

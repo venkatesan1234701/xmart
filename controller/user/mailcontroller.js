@@ -5,7 +5,9 @@ const User = require("../../models/userSchema");
 const Otp = require("../../models/otpSchema");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer")
+const STATUS = require('../../utils/statusCodes');
+const AppError = require('../../utils/appError')
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -27,7 +29,7 @@ const renderChangeMail = (req, res) => {
 const sendOtp = async (req, res) => {
   try {
     const user = req.session.user;
-    if (!user) return res.status(401).json({ success: false, message: "Login required" })
+    if (!user) return res.status(STATUS.UNAUTHORIZED).json({ success: false, message: "Login required" })
 
     const { newEmail } = req.body;
     if (!newEmail) return res.json({ success: false, message: "Please provide an email" })
@@ -63,7 +65,7 @@ const sendOtp = async (req, res) => {
     res.json({ success: true, message: "OTP sent to your email" });
   } catch (err) {
     console.error("Send OTP Error:", err);
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: "Server Error" });
   }
 }
 
@@ -74,7 +76,7 @@ const verifyOtp = async (req, res) => {
     const user = req.session.user;
     const email = req.session.otpEmail;
 
-    if (!user) return res.status(401).json({ success: false, message: "Login required" });
+    if (!user) return res.status(STATUS.UNAUTHORIZED).json({ success: false, message: "Login required" });
     if (!email) return res.json({ success: false, message: "OTP session expired. Please resend OTP." })
 
     const { otp } = req.body;
@@ -102,7 +104,7 @@ const verifyOtp = async (req, res) => {
     res.json({ success: true, message: "Email updated successfully!", email: updatedUser.email })
   } catch (err) {
     console.error("Verify OTP Error:", err);
-    res.status(500).json({ success: false, message: "Server Error" })
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: "Server Error" })
   }
 }
 

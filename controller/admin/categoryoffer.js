@@ -1,5 +1,7 @@
 const CategoryOffer = require('../../models/categoryOffer');
 const Category = require('../../models/category');
+const STATUS = require('../../utils/statusCodes');
+const AppError = require('../../utils/appError')
 
 
 const getCategoryOfferPage = async (req, res) => {
@@ -66,7 +68,7 @@ const getCategoryOfferPage = async (req, res) => {
     });
   } catch (err) {
     console.error("Error loading category offer page:", err);
-    res.status(500).send("Server Error");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error");
   }
 };
 
@@ -81,7 +83,7 @@ const addCategoryOffer = async (req, res) => {
     const existing = await CategoryOffer.findOne({ category: categoryId });
     if (existing) {
       return res
-        .status(400)
+        .status(STATUS.NOT_FOUND)
         .json({ message: 'Offer already exists for this category' });
     }
     const newOffer = new CategoryOffer({
@@ -93,11 +95,11 @@ const addCategoryOffer = async (req, res) => {
     });
     await newOffer.save();
     return res
-      .status(201)
+      .status(STATUS.CREATED)
       .json({ message: 'Offer added successfully', offer: newOffer });
   } catch (err) {
     console.error('Error adding category offer:', err);
-    res.status(500).json({ message: 'Server Error' });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Server Error' });
   }
 };
 
@@ -107,12 +109,12 @@ const deleteCategoryOffer = async (req, res) => {
 
     const offer = await CategoryOffer.findById(id);
     if (!offer) {
-      return res.status(404).json({ message: 'Offer not found' });
+      return res.status(STATUS.NOT_FOUND).json({ message: 'Offer not found' });
     }
 
     await CategoryOffer.findByIdAndDelete(id);
 
-    return res.status(200).json({ message: 'Category offer deleted successfully' });
+    return res.status(STATUS.OK).json({ message: 'Category offer deleted successfully' });
   } catch (err) {
     console.error('Error deleting category offer:', err);
     res.status(500).json({ message: 'Server Error' });
@@ -126,21 +128,21 @@ const updateCategoryOffer = async (req, res) => {
     const { categoryId, offerPercentage, startDate, endDate, isListed } = req.body;
 
     if (!categoryId || !offerPercentage || !startDate || !endDate) {
-      return res.status(400).json({ message: 'All fields are required.' });
+      return res.status(STATUS.BAD_REQUEST).json({ message: 'All fields are required.' });
     }
 
     if (new Date(endDate) <= new Date(startDate)) {
-      return res.status(400).json({ message: 'End date must be after start date.' });
+      return res.status(STATUS.BAD_REQUEST).json({ message: 'End date must be after start date.' });
     }
 
     const offer = await CategoryOffer.findById(id);
     if (!offer) {
-      return res.status(404).json({ message: 'Category offer not found.' });
+      return res.status(STATUS.BAD_REQUEST).json({ message: 'Category offer not found.' });
     }
 
     const categoryExists = await Category.findById(categoryId);
     if (!categoryExists) {
-      return res.status(404).json({ message: 'Category not found.' });
+      return res.status(STATUS.BAD_REQUEST).json({ message: 'Category not found.' });
     }
 
     const duplicateOffer = await CategoryOffer.findOne({
@@ -149,7 +151,7 @@ const updateCategoryOffer = async (req, res) => {
     });
 
     if (duplicateOffer) {
-      return res.status(400).json({ message: 'An offer already exists for this category.' });
+      return res.status(STATUS.NOT_FOUND).json({ message: 'An offer already exists for this category.' });
     }
 
     offer.category = categoryId;
@@ -160,10 +162,10 @@ const updateCategoryOffer = async (req, res) => {
 
     await offer.save();
 
-    return res.status(200).json({ message: 'Category offer updated successfully.' });
+    return res.status(STATUS.OK).json({ message: 'Category offer updated successfully.' });
   } catch (err) {
     console.error('Error updating category offer:', err);
-    res.status(500).json({ message: 'Server Error' });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: 'Server Error' });
   }
 };
 

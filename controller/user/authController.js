@@ -15,6 +15,8 @@ const cron = require("node-cron")
 const ProductOffer = require('../../models/productOfferModel')
 const CategoryOffer = require("../../models/categoryOffer");
 const Wallet = require("../../models/walletSchema");
+const STATUS = require('../../utils/statusCodes');
+
 
 
 
@@ -73,7 +75,7 @@ const gethomepage = async (req, res) => {
 
   } catch(err) {
     console.error("getHomepage error:", err);
-    res.status(500).send("Server Error");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error");
   }
 };
 
@@ -83,14 +85,14 @@ const gethomepage = async (req, res) => {
 const getProductDetails = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).lean()
-    if(!product) return res.status(404).send("Product not found")
+    if(!product) return res.status(STATUS.NOT_FOUND).send("Product not found")
 
     if(!product.images) product.images = [];
 
     res.render('user/product-details', { product, user: req.session.userName ? { name: req.session.userName } : null })
   } catch(err) {
     console.error(err)
-    res.status(500).send("Server Error")
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error")
   }
 }
 
@@ -228,7 +230,7 @@ const postSignup = async (req, res) => {
       formData: req.body,
     });
   }
-    res.status(500).redirect("/signin");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).redirect("/signin");
   }
 }
 
@@ -358,7 +360,7 @@ const refundTransactionId = "REF" + Math.floor(100000 + Math.random() * 900000);
 
   } catch (err) {
     console.error("OTP Verification Error:", err);
-    res.status(500).send("Server Error");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error");
   }
 };
 
@@ -389,7 +391,7 @@ const resendOtp = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).render("user/signup", { error: "User not found! Please signup." });
+      return res.status(STATUS.BAD_REQUEST).render("user/signup", { error: "User not found! Please signup." });
     }
 
     if (user.isVerified) {
@@ -426,7 +428,7 @@ const resendOtp = async (req, res) => {
 
   } catch (err) {
     console.error("Resend OTP Error:", err)
-    res.status(500).send("Server Error")
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error")
   }
 }
 
@@ -438,29 +440,76 @@ const getResetPassword = (req, res) => {
   res.render("user/reset-password", { email });
 }
 
+// const postResetPassword = async (req, res) => {
+//   try {
+//     const { email, password, confirmPassword } = req.body;
+//     if (!password || !confirmPassword) {
+//       return res.render("user/reset-password", { email, error: "Please fill all fields!" })
+//     }
+//     if (password !== confirmPassword) {
+//       return res.render("user/reset-password", { email, error: "Passwords do not match!" })
+//     }
+//     const hashedPassword = await bcrypt.hash(password, 10)
+//     const result = await User.updateOne({ email }, { $set: { password: hashedPassword } })
+
+//     if (result.modifiedCount === 0) {
+//       return res.render("user/reset-password", { email, error: "User not found or password not updated!" })
+//     }
+
+//     return res.redirect("/signin")
+
+//   } catch (err) {
+//     console.error("Reset Password Error:", err)
+//     res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error")
+//   }
+// }
+
+
 const postResetPassword = async (req, res) => {
   try {
     const { email, password, confirmPassword } = req.body;
+
     if (!password || !confirmPassword) {
-      return res.render("user/reset-password", { email, error: "Please fill all fields!" })
+      return res.render("user/reset-password", {
+        email,
+        error: "Please fill all fields!"
+      });
     }
+
     if (password !== confirmPassword) {
-      return res.render("user/reset-password", { email, error: "Passwords do not match!" })
-    }
-    const hashedPassword = await bcrypt.hash(password, 10)
-    const result = await User.updateOne({ email }, { $set: { password: hashedPassword } })
-
-    if (result.modifiedCount === 0) {
-      return res.render("user/reset-password", { email, error: "User not found or password not updated!" })
+      return res.render("user/reset-password", {
+        email,
+        error: "Passwords do not match!"
+      });
     }
 
-    return res.redirect("/signin")
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.render("user/reset-password", {
+        email,
+        error: "User not found"
+      });
+    }
+
+    if (user.loginType === "google") {
+      return res.render("user/reset-password", {
+        email,
+        error: "Google account users cannot reset password. Please login using Google."
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.redirect("/signin");
 
   } catch (err) {
-    console.error("Reset Password Error:", err)
-    res.status(500).send("Server Error")
+    console.error("Reset Password Error:", err);
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error");
   }
-}
+};
 
 
 const getSigninPage = (req, res) => {
@@ -530,7 +579,7 @@ const postSignin = async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ ok: false, msg: 'Server error' });
+    return res.status(STATUS.INTERNAL_SERVER_ERROR).json({ ok: false, msg: 'Server error' });
   }
 }
 
@@ -600,7 +649,7 @@ const postForgotPassword = async (req, res) => {
     res.render("user/otpPage", { email })
   } catch (err) {
     console.error("Forgot Password Error:", err)
-    res.status(500).send("Server Error")
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error")
   }
 }
 
@@ -654,7 +703,7 @@ const postResetforgotPassword = async (req, res) => {
     return res.render("user/login", { success: "Password reset successful. Please login." })
   } catch (err) {
     console.error("postResetPassword error:", err)
-    return res.status(500).send("Server Error")
+    return res.status(STATUS.INTERNAL_SERVER_ERROR).send("Server Error")
   }
 };
 
@@ -663,13 +712,13 @@ const checkPasswordMatch = async (req, res) => {
   try {
     const { email, newPassword } = req.body;
     if (!email || !newPassword) {
-      return res.status(400).json({ error: 'Missing fields', match: false });
+      return res.status(STATUS.BAD_REQUEST).json({ error: 'Missing fields', match: false });
     }
 
     const user = await User.findOne({ email }).lean();
     if (!user) {
    
-      return res.status(404).json({ error: 'User not found', match: false });
+      return res.status(STATUS.NOT_FOUND).json({ error: 'User not found', match: false });
     }
 
     const match = await bcrypt.compare(newPassword, user.passwordHash || user.password);
@@ -677,7 +726,7 @@ const checkPasswordMatch = async (req, res) => {
     return res.json({ match: !!match });
   } catch (err) {
     console.error('checkPasswordMatch error:', err);
-    return res.status(500).json({ error: 'Server error', match: false });
+    return res.status(STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Server error', match: false });
   }
 }
 
@@ -802,14 +851,14 @@ const logout = (req, res) => {
     req.session.destroy((err) => {
       if (err) {
         console.error("Logout error:", err);
-        return res.status(500).send("Something went wrong")
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).send("Something went wrong")
       }
       res.clearCookie("connect.sid")
       res.redirect("/")
     })
   } catch (err) {
     console.error(err);
-    res.status(500).send("Something went wrong");
+    res.status(STATUS.INTERNAL_SERVER_ERROR).send("Something went wrong");
   }
 }
 
@@ -820,16 +869,16 @@ const loginUser = async (req, res, next) => {
   
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).send("Invalid credentials");
+      return res.status(STATUS.BAD_REQUEST).send("Invalid credentials");
     }
 
     if (user.isBlocked) {
-      return res.status(403).send("Your account is blocked. Contact admin.");
+      return res.status(STATUS.FORBIDDEN).send("Your account is blocked. Contact admin.");
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).send("Invalid credentials");
+      return res.status(STATUS.BAD_REQUEST).send("Invalid credentials");
     }
 
     user.lastLogin = new Date();
@@ -854,7 +903,7 @@ const checkBlocked = async (req, res) => {
     res.json({ isBlocked: user.isBlocked });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ isBlocked: false });
+    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ isBlocked: false });
   }
 }
 
